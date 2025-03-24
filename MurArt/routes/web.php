@@ -324,3 +324,4 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
     Route::get('/sales-chart-data', [AdminDashboardController::class, 'getSalesChartData']);
     Route::get('/filter-users', [AdminDashboardController::class, 'filterUsers']);
 });
+// Updated on 2025-03-24 09:19:01 by red-jen
