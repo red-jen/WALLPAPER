@@ -1,12 +1,14 @@
 <?php
 
-namespace App\Http\Controllers\Designer;
+namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
 use App\Models\Design;
+use App\Models\Category;
+use App\Models\Paper;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class DesignController extends Controller
 {
@@ -15,7 +17,11 @@ class DesignController extends Controller
      */
     public function index()
     {
-        $designs = Auth::user()->designs()->latest()->get();
+        $designs = Design::where('designer_id', Auth::id())
+            ->orderBy('created_at', 'desc')
+            ->with(['category'])
+            ->paginate(12);
+
         return view('designer.designs.index', compact('designs'));
     }
 
@@ -24,7 +30,8 @@ class DesignController extends Controller
      */
     public function create()
     {
-        return view('designer.designs.create');
+        $categories = Category::all(['id', 'name']);
+        return view('designer.designs.create', compact('categories'));
     }
 
     /**
@@ -32,26 +39,30 @@ class DesignController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
+        $validatedData = $request->validate([
             'title' => 'required|string|max:255',
-            'description' => 'nullable|string',
+            'category_id' => 'required|exists:categories,id',
             'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'status' => 'required|in:draft,published',
         ]);
 
-        // Handle file upload
-        $imagePath = $request->file('image')->store('designs', 'public');
+        // Handle image upload
+        $imagePath = null;
+        if ($request->hasFile('image')) {
+            $image = $request->file('image');
+            $filename = time() . '_' . Str::slug($request->title) . '.' . $image->getClientOriginalExtension();
+            $imagePath = $image->storeAs('designs', $filename, 'public');
+        }
 
-        // Create design
-        Auth::user()->designs()->create([
-            'title' => $request->title,
-            'description' => $request->description,
+        // Create design with the fields from migration
+        $design = Design::create([
+            'title' => $validatedData['title'],
             'image_path' => $imagePath,
-            'status' => $request->status,
+            'designer_id' => Auth::id(),
+            'category_id' => $validatedData['category_id'],
         ]);
 
-        return redirect()->route('designer.designs.index')
-            ->with('success', 'Design posted successfully!');
+        return redirect()->route('designs.show', $design)
+            ->with('success', 'Design created successfully!');
     }
 
     /**
@@ -59,8 +70,16 @@ class DesignController extends Controller
      */
     public function show(Design $design)
     {
-        $this->authorize('view', $design);
-        return view('designer.designs.show', compact('design'));
+        // Load related papers
+        $design->load(['category', 'designer']);
+        
+        // Get recommended papers for this design
+        $recommendedPapers = Paper::where('is_active', true)
+            ->inRandomOrder()
+            ->limit(4)
+            ->get();
+        
+        return view('designer.designs.show', compact('design', 'recommendedPapers'));
     }
 
     /**
@@ -68,8 +87,15 @@ class DesignController extends Controller
      */
     public function edit(Design $design)
     {
-        $this->authorize('update', $design);
-        return view('designer.designs.edit', compact('design'));
+        // Check if the current user owns this design
+        if ($design->designer_id !== Auth::id()) {
+            return redirect()->route('designs.index')
+                ->with('error', 'You are not authorized to edit this design.');
+        }
+
+        $categories = Category::orderBy('name')->pluck('name', 'id');
+        
+        return view('designer.designs.edit', compact('design', 'categories'));
     }
 
     /**
@@ -77,36 +103,37 @@ class DesignController extends Controller
      */
     public function update(Request $request, Design $design)
     {
-        $this->authorize('update', $design);
-
-        $request->validate([
-            'title' => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'status' => 'required|in:draft,published,archived',
-        ]);
-
-        // Update design data
-        $data = [
-            'title' => $request->title,
-            'description' => $request->description,
-            'status' => $request->status,
-        ];
-
-        // Handle image update if provided
-        if ($request->hasFile('image')) {
-            // Delete old image
-            if ($design->image_path) {
-                Storage::disk('public')->delete($design->image_path);
-            }
-            
-            // Store new image
-            $data['image_path'] = $request->file('image')->store('designs', 'public');
+        // Check if the current user owns this design
+        if ($design->designer_id !== Auth::id()) {
+            return redirect()->route('designs.index')
+                ->with('error', 'You are not authorized to update this design.');
         }
 
-        $design->update($data);
+        $validatedData = $request->validate([
+            'title' => 'required|string|max:255',
+            'category_id' => 'required|exists:categories,id',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ]);
 
-        return redirect()->route('designer.designs.index')
+        // Handle image upload if provided
+        if ($request->hasFile('image')) {
+            // Delete old image if exists
+            if ($design->image_path && Storage::disk('public')->exists($design->image_path)) {
+                Storage::disk('public')->delete($design->image_path);
+            }
+
+            $image = $request->file('image');
+            $filename = time() . '_' . Str::slug($request->title) . '.' . $image->getClientOriginalExtension();
+            $imagePath = $image->storeAs('designs', $filename, 'public');
+            $design->image_path = $imagePath;
+        }
+
+        // Update design fields
+        $design->title = $validatedData['title'];
+        $design->category_id = $validatedData['category_id'];
+        $design->save();
+
+        return redirect()->route('designs.show', $design)
             ->with('success', 'Design updated successfully!');
     }
 
@@ -115,17 +142,21 @@ class DesignController extends Controller
      */
     public function destroy(Design $design)
     {
-        $this->authorize('delete', $design);
+        // Check if the current user owns this design
+        if ($design->designer_id !== Auth::id()) {
+            return redirect()->route('designs.index')
+                ->with('error', 'You are not authorized to delete this design.');
+        }
 
         // Delete the image file
-        if ($design->image_path) {
+        if ($design->image_path && Storage::disk('public')->exists($design->image_path)) {
             Storage::disk('public')->delete($design->image_path);
         }
 
         // Delete the design
         $design->delete();
 
-        return redirect()->route('designer.designs.index')
+        return redirect()->route('designs.index')
             ->with('success', 'Design deleted successfully!');
     }
 }
