@@ -30,7 +30,7 @@ class DesignController extends Controller
      */
     public function create()
     {
-        $categories = Category::all(['id', 'name']);
+        $categories = Category::orderBy('name')->pluck('name', 'id');
         return view('designer.designs.create', compact('categories'));
     }
 
