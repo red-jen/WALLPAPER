@@ -60,34 +60,84 @@
             </div>
             
             <!-- Reviews Section -->
-            <div class="card shadow mb-4">
-                <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Reviews</h6>
+          <!-- Add this section to your existing design show page -->
+
+<div class="card shadow mb-4 mt-4">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">Reviews</h6>
+    </div>
+    <div class="card-body">
+        @auth
+            <!-- Review Form -->
+            <form action="{{ route('reviews.store', $design) }}" method="POST" class="mb-4">
+                @csrf
+                <div class="form-group">
+                    <label for="rating">Rating</label>
+                    <select class="form-control @error('rating') is-invalid @enderror" id="rating" name="rating" required>
+                        <option value="">Select a rating</option>
+                        <option value="5">5 - Excellent</option>
+                        <option value="4">4 - Very Good</option>
+                        <option value="3">3 - Good</option>
+                        <option value="2">2 - Fair</option>
+                        <option value="1">1 - Poor</option>
+                    </select>
+                    @error('rating')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
                 </div>
-                <div class="card-body">
-                    @if($design->reviews->count() > 0)
-                        @foreach($design->reviews as $review)
-                            <div class="card mb-3">
-                                <div class="card-body">
-                                    <div class="d-flex justify-content-between align-items-center mb-2">
-                                        <div>
-                                            <h6 class="font-weight-bold mb-0">{{ $review->user->name }}</h6>
-                                            <small class="text-muted">{{ $review->created_at->format('M d, Y') }}</small>
-                                        </div>
-                                        <div>
-                                            <span class="badge badge-primary">Rating: {{ $review->rating }}/5</span>
-                                        </div>
-                                    </div>
-                                    <p class="mb-0">{{ $review->comment }}</p>
-                                </div>
-                            </div>
-                        @endforeach
-                    @else
-                        <p class="text-center mb-0">No reviews yet.</p>
-                    @endif
+                <div class="form-group">
+                    <label for="comment">Your Review (Optional)</label>
+                    <textarea class="form-control @error('comment') is-invalid @enderror" id="comment" name="comment" rows="3">{{ old('comment') }}</textarea>
+                    @error('comment')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
                 </div>
+                <button type="submit" class="btn btn-primary">Submit Review</button>
+            </form>
+        @else
+            <div class="alert alert-info">
+                Please <a href="{{ route('login') }}">log in</a> to leave a review.
             </div>
-        </div>
+        @endauth
+
+        <!-- Display Reviews -->
+        <h5>Customer Reviews</h5>
+        
+        @if($design->reviews()->where('is_approved', true)->count() > 0)
+            @foreach($design->reviews()->where('is_approved', true)->with('user')->latest()->get() as $review)
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <h6 class="card-title font-weight-bold">{{ $review->user->name }}</h6>
+                                <p class="card-subtitle mb-2 text-muted small">{{ $review->created_at->format('M d, Y') }}</p>
+                            </div>
+                            <div>
+                                <span class="badge badge-primary">Rating: {{ $review->rating }}/5</span>
+                                
+                                @if(Auth::id() == $review->user_id)
+                                    <form action="{{ route('reviews.destroy', $review) }}" method="POST" class="d-inline">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to delete your review?')">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </form>
+                                @endif
+                            </div>
+                        </div>
+                        
+                        @if($review->comment)
+                            <p class="card-text mt-2">{{ $review->comment }}</p>
+                        @endif
+                    </div>
+                </div>
+            @endforeach
+        @else
+            <p class="text-muted">No reviews yet. Be the first to leave a review!</p>
+        @endif
+    </div>
+</div>
         
         <!-- Recommended Papers -->
         <div class="col-lg-4">
