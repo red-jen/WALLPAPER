@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers\Auth;
+
 use App\Models\User;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -16,28 +17,38 @@ class LoginController extends Controller
 
     public function login(Request $request)
     {
-        // $request->validate([
-        //     'email' => ['required', 'string', 'email'],
-        //     'password' => ['required', 'string'],
-        // ]);
-        return redirect()->route('designer.designs.create');
-        // if (Auth::attempt($request->only('email', 'password'), $request->boolean('remember'))) {
-        //     $request->session()->regenerate();
+        $request->validate([
+            'email' => 'required|email',
+            'password' => 'required',
+        ]);
 
-        //     $user = new User;
-        //     // Check roles using a safer approach
-        //     if ($user->role === 'admin' || $user->isAdmin() === "admin") {
-        //         return redirect()->route('admin.dashboard');
-        //     } elseif ($user->role === 'designer' || $user->isDesigner() === "designer") {
-        //         return redirect()->route('designer.designs.create');
-        //     } else {
-        //         return redirect()->route('client.dashboard');
-        //     }
-        // }
-
-        // throw ValidationException::withMessages([
-        //     'email' => trans('auth.failed'),
-        // ]);
+        if (Auth::attempt([
+            'email' => $request->email,
+            'password' => $request->password
+        ], $request->filled('remember'))) {
+            
+            $request->session()->regenerate();
+            
+            // Get current authenticated user
+            $user = Auth::user();
+            
+            // Redirect based on role
+            switch ($user->role) {
+                case 'admin':
+                    return view('welcome');
+                    // return redirect()->route('admin.categories.create');
+                case 'designer':
+                    return view('welcome');
+                    // return redirect()->route('designer.designs.create');
+                case 'client':
+                default:
+                    return redirect()->route('client.dashboard');
+            }
+        }
+        
+        return back()->withErrors([
+            'email' => 'The provided credentials do not match our records.',
+        ]);
     }
 
     public function logout(Request $request)

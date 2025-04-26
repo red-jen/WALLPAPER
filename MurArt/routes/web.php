@@ -12,74 +12,141 @@ use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\TagController;
 
 use App\Http\Controllers\Admin\PaperController;
+// use App\Http\Controllers\ReviewController;
+use App\Http\Controllers\ReviewController;
 // use App\Http\Controllers\Client\DashboardController as ClientDashboardController;
-
+use App\Http\Controllers\Client\DashboardController as ClientDashboardController;
+use App\Http\Controllers\Client\ArtworkController as ClientArtworkController;
+use App\Http\Controllers\admin\WallpaperController;
+use App\Http\Controllers\HomeController;
 // Home route
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', [HomeController::class, 'index'])->name('home');
+
+
+Route::get('/about', [HomeController::class, 'about'])->name('about');
+Route::get('/contact', [HomeController::class, 'contact'])->name('contact');
+Route::get('/contact', [HomeController::class, 'contact'])->name('dashboard');
+
+Route::post('/contact', [HomeController::class, 'contact'])->name('dashboard');
+Route::get('/nav', function (){
+    return view('layouts.navbar');})->name('navbar');
 
 // Authentication Routes
 
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
+Route::get('/logout', [LoginController::class, 'logout'])->name('logout');
 Route::post('/login', [LoginController::class, 'login']);
 Route::get('designer.designs.create', function (){
     return view('designer/designs/create');})->name('designer.designs.create');
 
-//     // Route::get('designer.designs.store', function (){
-//     //     return view('designer/designs/store');})->name('designer.designs.store');
+    // Route::get('designer.designs.store', function (){
+    //     return view('designer/designs/store');})->name('designer.designs.store');
 
-// Route::get('/register', [RegisterController::class, 'showRegistrationForm'])->name('registerform');
+Route::get('/register', [RegisterController::class, 'showRegistrationForm'])->name('registerform');
 
-// Route::post('/register', [RegisterController::class, 'register'])->name('register');
-// Route::get('admin.category.create', function (){
-//     return view('admin/categories/create');})->name('admin.category.create');
-//         // Route::post('designer.designs.create', function (){
-//         //     return view('designer/designs/create');})->name('designer.designs.create');
+Route::post('/register', [RegisterController::class, 'register'])->name('register');
+Route::get('admin.category.create', function (){
+    return view('admin/categories/create');})->name('admin.category.create');
+        // Route::post('designer.designs.create', function (){
+        //     return view('designer/designs/create');})->name('designer.designs.create');
 
-//         //     Route::post('/designer/store', [DesignController::class, 'store'])->name('designer.designs.store');
+        //     Route::post('/designer/store', [DesignController::class, 'store'])->name('designer.designs.store');
 
-//             Route::get('/designs/create', [DesignController::class, 'create'])->name('designs.create');
-//             Route::post('/designs', [DesignController::class, 'store'])->name('designs.store');
-//             Route::get('/designs', [DesignController::class, 'index'])->name('designs.index');
-//             Route::get('/designs/{design}', [DesignController::class, 'show'])->name('designs.show');
-//             Route::get('/designs/{design}/edit', [DesignController::class, 'edit'])->name('designs.edit');
-//             Route::put('/designs/{design}', [DesignController::class, 'update'])->name('designs.update');
-//             Route::delete('/designs/{design}', [DesignController::class, 'destroy'])->name('designs.destroy');
-
-            
-//             // Categories routes - expanded from Route::resource
-//             Route::get('/categories', [CategoryController::class, 'index'])->name('admin.categories.index');
-//             Route::get('/categories/create', [CategoryController::class, 'create'])->name('admin.categories.create');
-//             Route::post('/categories', [CategoryController::class, 'store'])->name('admin.categories.store');
-//             Route::get('/categories/{category}', [CategoryController::class, 'show'])->name('admin.categories.show');
-//             Route::get('/categories/{category}/edit', [CategoryController::class, 'edit'])->name('admin.categories.edit');
-//             Route::put('/categories/{category}', [CategoryController::class, 'update'])->name('admin.categories.update');
-//             Route::delete('/categories/{category}', [CategoryController::class, 'destroy'])->name('admin.categories.destroy');
-
-
-//             Route::get('/tags', [TagController::class, 'index'])->name('admin.tags.index');
-//             Route::get('/tags/create', [TagController::class, 'create'])->name('admin.tags.create');
-//             Route::post('/tags', [TagController::class, 'store'])->name('admin.tags.store');
-//             Route::get('/tags/{tag}', [TagController::class, 'show'])->name('admin.tags.show');
-//             Route::get('/tags/{tag}/edit', [TagController::class, 'edit'])->name('admin.tags.edit');
-//             Route::put('/tags/{tag}', [TagController::class, 'update'])->name('admin.tags.update');
-//             Route::delete('/tags/{tag}', [TagController::class, 'destroy'])->name('admin.tags.destroy');
-
-
-
-
-//             Route::get('/papers', [PaperController::class, 'index'])->name('admin.papers.index');
-// Route::get('/papers/create', [PaperController::class, 'create'])->name('admin.papers.create');
-// Route::post('/papers', [PaperController::class, 'store'])->name('admin.papers.store');
-// Route::get('/papers/{paper}', [PaperController::class, 'show'])->name('admin.papers.show');
-// Route::get('/papers/{paper}/edit', [PaperController::class, 'edit'])->name('admin.papers.edit');
-// Route::put('/papers/{paper}', [PaperController::class, 'update'])->name('admin.papers.update');
-// Route::delete('/papers/{paper}', [PaperController::class, 'destroy'])->name('admin.papers.destroy');
-
+            Route::get('/designs/create', [DesignController::class, 'create'])->name('designs.create');
+            Route::post('/designs', [DesignController::class, 'store'])->name('designs.store');
+            Route::get('/designs', [DesignController::class, 'index'])->name('designs.index');
+            Route::get('/designs/{design}', [DesignController::class, 'show'])->name('designs.show');
+            Route::get('/designs/{design}/edit', [DesignController::class, 'edit'])->name('designs.edit');
+            Route::put('/designs/{design}', [DesignController::class, 'update'])->name('designs.update');
+            Route::delete('/designs/{design}', [DesignController::class, 'destroy'])->name('designs.destroy');
 
             
+            // Categories routes - expanded from Route::resource
+            Route::get('/categories', [CategoryController::class, 'index'])->name('admin.categories.index');
+            Route::get('/categories/create', [CategoryController::class, 'create'])->name('admin.categories.create');
+            Route::post('/categories', [CategoryController::class, 'store'])->name('admin.categories.store');
+            Route::get('/categories/{category}', [CategoryController::class, 'show'])->name('admin.categories.show');
+            Route::get('/categories/{category}/edit', [CategoryController::class, 'edit'])->name('admin.categories.edit');
+            Route::put('/categories/{category}', [CategoryController::class, 'update'])->name('admin.categories.update');
+            Route::delete('/categories/{category}', [CategoryController::class, 'destroy'])->name('admin.categories.destroy');
+
+
+            Route::get('/tags', [TagController::class, 'index'])->name('admin.tags.index');
+            Route::get('/tags/create', [TagController::class, 'create'])->name('admin.tags.create');
+            Route::post('/tags', [TagController::class, 'store'])->name('admin.tags.store');
+            Route::get('/tags/{tag}', [TagController::class, 'show'])->name('admin.tags.show');
+            Route::get('/tags/{tag}/edit', [TagController::class, 'edit'])->name('admin.tags.edit');
+            Route::put('/tags/{tag}', [TagController::class, 'update'])->name('admin.tags.update');
+            Route::delete('/tags/{tag}', [TagController::class, 'destroy'])->name('admin.tags.destroy');
+
+
+
+
+            Route::get('/papers', [PaperController::class, 'index'])->name('admin.papers.index');
+Route::get('/papers/create', [PaperController::class, 'create'])->name('admin.papers.create');
+Route::post('/papers', [PaperController::class, 'store'])->name('admin.papers.store');
+Route::get('/papers/{paper}', [PaperController::class, 'show'])->name('admin.papers.show');
+Route::get('/papers/{paper}/edit', [PaperController::class, 'edit'])->name('admin.papers.edit');
+Route::put('/papers/{paper}', [PaperController::class, 'update'])->name('admin.papers.update');
+Route::delete('/papers/{paper}', [PaperController::class, 'destroy'])->name('admin.papers.destroy');
+
+
             
+// Route::get('/gallery', [App\Http\Controllers\Client\DesignGalleryController::class, 'index'])->name('designs.gallery');
+// Route::get('/gallery/{design}', [App\Http\Controllers\Client\DesignGalleryController::class, 'show'])->name('designs.gallery.show');
+
+// Review routes - require authentication
+Route::post('/designs/{design}/review', [ReviewController::class, 'store'])->name('reviews.store');
+    Route::delete('/reviews/{review}', [ReviewController::class, 'destroy'])->name('reviews.destroy');
+// Admin review management
+Route::get('/reviews', [ReviewController::class, 'index'])->name('admin.reviews.index');
+Route::put('/reviews/{review}/approve', [ReviewController::class, 'approve'])->name('admin.reviews.approve');
+Route::delete('/reviews/{review}', [ReviewController::class, 'destroy'])->name('admin.reviews.destroy');
+
+
+
+Route::get('/artworks', [ClientArtworkController::class, 'index'])->name('artworks.index');
+Route::get('/artworks/create', [ClientArtworkController::class, 'create'])->name('artworks.create');
+Route::post('/artworks', [ClientArtworkController::class, 'store'])->name('artworks.store');
+Route::get('/artworks/{artwork}', [ClientArtworkController::class, 'show'])->name('artworks.show');
+Route::get('/artworks/{artwork}/edit', [ClientArtworkController::class, 'edit'])->name('artworks.edit');
+Route::put('/artworks/{artwork}', [ClientArtworkController::class, 'update'])->name('artworks.update');
+Route::delete('/artworks/{artwork}', [ClientArtworkController::class, 'destroy'])->name('artworks.destroy');
+
+
+
+
+
+Route::get('/wallpapers', [WallpaperController::class, 'index'])->name('admin.wallpapers.index');
+Route::get('/wallpapers/create', [WallpaperController::class, 'create'])->name('admin.wallpapers.create');
+Route::post('/wallpapers', [WallpaperController::class, 'store'])->name('admin.wallpapers.store');
+Route::get('/wallpapers/{wallpaper}', [WallpaperController::class, 'show'])->name('admin.wallpapers.show');
+Route::get('/wallpapers/{wallpaper}/edit', [WallpaperController::class, 'edit'])->name('admin.wallpapers.edit');
+Route::put('/wallpapers/{wallpaper}', [WallpaperController::class, 'update'])->name('admin.wallpapers.update');
+Route::delete('/wallpapers/{wallpaper}', [WallpaperController::class, 'destroy'])->name('admin.wallpapers.destroy');
+
+// Add these lines after your existing wallpaper routes
+Route::put('/wallpapers/{wallpaper}/stock', [WallpaperController::class, 'updateStock'])
+    ->name('admin.wallpapers.updateStock');
+Route::post('/wallpapers/{wallpaper}/reorder', [WallpaperController::class, 'reorderImages'])
+    ->name('admin.wallpapers.reorderImages');
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
             // Instead of:
             // Route::resource('categories', CategoryController::class);
     // Route::resource('designs', DesignController::class)->names([

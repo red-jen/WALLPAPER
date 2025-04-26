@@ -47,7 +47,7 @@
         </form>
         
         <div class="auth-footer">
-            <p>Vous n'avez pas de compte? <a href="{{ route('register') }}">Inscrivez-vous</a></p>
+            {{-- <p>Vous n'avez pas de compte? <a href="{{ route('register') }}">Inscrivez-vous</a></p> --}}
         </div>
     </div>
 </div>

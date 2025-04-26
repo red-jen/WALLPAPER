@@ -11,13 +11,17 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('comments', function (Blueprint $table) {
+        Schema::create('reviews', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->foreignId('artwork_id')->constrained()->onDelete('cascade');
-            $table->text('content');
-            $table->foreignId('parent_id')->nullable()->constrained('comments')->onDelete('cascade');
+            $table->foreignId('design_id')->constrained()->onDelete('cascade');
+            $table->unsignedTinyInteger('rating')->comment('Rating from 1-5');
+            $table->text('comment')->nullable();
+            $table->boolean('is_approved')->default(false);
             $table->timestamps();
+            
+            // Ensure one review per user per design
+            $table->unique(['user_id', 'design_id']);
         });
     }
 
@@ -26,6 +30,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('comments');
+        Schema::dropIfExists('reviews');
     }
 };

@@ -14,18 +14,17 @@ return new class extends Migration
         Schema::create('categories', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('slug')->unique();
             $table->text('description')->nullable();
-            $table->string('image_path')->nullable();
             $table->timestamps();
         });
 
-        Schema::create('artwork_category', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('artwork_id')->constrained()->onDelete('cascade');
-            $table->foreignId('category_id')->constrained()->onDelete('cascade');
-            $table->timestamps();
-        });
+        // Create the category_design pivot table for many-to-many relationship
+        // Schema::create('category_design', function (Blueprint $table) {
+        //     $table->id();
+        //     $table->foreignId('category_id')->constrained()->onDelete('cascade');
+        //     $table->foreignId('design_id')->constrained()->onDelete('cascade');
+        //     $table->timestamps();
+        // });
     }
 
     /**
@@ -33,7 +32,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('artwork_category');
+        // Schema::dropIfExists('category_design');
         Schema::dropIfExists('categories');
     }
 };
