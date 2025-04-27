@@ -2,6 +2,7 @@
 @extends('layouts.app')
 
 @section('content')
+<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 <div class="container py-6">
     <div class="max-w-5xl mx-auto">
         <h1 class="text-3xl font-bold mb-6">Your Shopping Cart</h1>

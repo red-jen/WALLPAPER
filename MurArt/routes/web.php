@@ -6,7 +6,7 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 // use App\Http\Controllers\Designer\DashboardController as DesignerDashboardController;
-use App\Http\Controllers\DesignController;
+use App\Http\Controllers\Designer\DesignController;
 use Illuminate\Console\View\Components\Warn;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\TagController;
@@ -57,13 +57,13 @@ Route::get('admin.category.create', function (){
 
         //     Route::post('/designer/store', [DesignController::class, 'store'])->name('designer.designs.store');
 
-            Route::get('/designs/create', [DesignController::class, 'create'])->name('designs.create');
-            Route::post('/designs', [DesignController::class, 'store'])->name('designs.store');
-            Route::get('/designs', [DesignController::class, 'index'])->name('designs.index');
-            Route::get('/designs/{design}', [DesignController::class, 'show'])->name('designs.show');
-            Route::get('/designs/{design}/edit', [DesignController::class, 'edit'])->name('designs.edit');
-            Route::put('/designs/{design}', [DesignController::class, 'update'])->name('designs.update');
-            Route::delete('/designs/{design}', [DesignController::class, 'destroy'])->name('designs.destroy');
+            Route::get('/designer/designs/create', [DesignController::class, 'create'])->name('designer.designs.create');
+            Route::post('/designer/designs', [DesignController::class, 'store'])->name('designer.designs.store');
+            Route::get('/designer/designs', [DesignController::class, 'index'])->name('designer.designs.index');
+            Route::get('/designer/designs/{design}', [DesignController::class, 'show'])->name('designer.designs.show');
+            Route::get('/designer/designs/{design}/edit', [DesignController::class, 'edit'])->name('designer.designs.edit');
+            Route::put('/designer/designs/{design}', [DesignController::class, 'update'])->name('designer.designs.update');
+            Route::delete('/designer/designs/{design}', [DesignController::class, 'destroy'])->name('designer.designs.destroy');
 
             
             // Categories routes - expanded from Route::resource
@@ -154,9 +154,9 @@ Route::post('/wallpapers/{wallpaper}/reorder', [WallpaperController::class, 'reo
     Route::post('artworks/{artwork}/preview', [ArtworkController::class, 'storePreview'])->name('admin.artworks.preview.store');
     Route::delete('artworks/{artwork}/preview', [ArtworkController::class, 'deletePreview'])->name('admin.artworks.preview.delete');
     Route::patch('artworks/{artwork}/status', [ArtworkController::class, 'updateStatus'])->name('admin.artworks.status.update');
-    Route::post('artworks/{artwork}/production-image', [ArtworkController::class, 'storeProductionImage'])->name('artworks.production-image.store');
-    Route::delete('artworks/{artwork}/production-image/{index}', [ArtworkController::class, 'deleteProductionImage'])->name('artworks.production-image.delete');
-    Route::patch('artworks/{artwork}/production-status', [ArtworkController::class, 'updateProductionStatus'])->name('artworks.production-status.update');
+    Route::post('artworks/{artwork}/production-image', [ArtworkController::class, 'storeProductionImage'])->name('admin.artworks.production-image.store');
+    Route::delete('artworks/{artwork}/production-image/{index}', [ArtworkController::class, 'deleteProductionImage'])->name('admin.artworks.production-image.delete');
+    Route::patch('artworks/{artwork}/production-status', [ArtworkController::class, 'updateProductionStatus'])->name('admin.artworks.production-status.update');
 
 
 

@@ -1,4 +1,4 @@
-_create_design_tag_table.php
+
 <?php
 
 // use Illuminate\Database\Migrations\Migration;

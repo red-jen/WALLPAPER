@@ -1,217 +1,162 @@
 <?php
 
-// namespace App\Http\Controllers;
+namespace App\Http\Controllers\Designer;
+use App\Http\Controllers\Controller;
+use App\Models\Design;
+use App\Models\Category;
+use App\Models\Paper;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
-// use App\Models\Design;
-// use Illuminate\Http\Request;
-// use Illuminate\Support\Facades\Auth;
-// use Illuminate\Support\Facades\Storage;
-// use Illuminate\Support\Str;
+class DesignController extends Controller
+{
+    /**
+     * Display a listing of the designs.
+     */
+    public function index()
+    {
+        $designs = Design::where('designer_id', Auth::id())
+            ->orderBy('created_at', 'desc')
+            ->with(['category'])
+            ->paginate(12);
 
-// class DesignController extends Controller
-// {
-//     /**
-//      * Display a listing of the designs.
-//      */
-//     public function index()
-//     {
-//         $designs = Design::where('user_id', Auth::id())
-//             ->orderBy('created_at', 'desc')
-//             ->paginate(12);
+        return view('designer.designs.index', compact('designs'));
+    }
 
-//         return view('designs.index', compact('designs'));
-//     }
+    /**
+     * Show the form for creating a new design.
+     */
+    public function create()
+    {
+        $categories = Category::orderBy('name')->pluck('name', 'id');
+        return view('designer.designs.create', compact('categories'));
+    }
 
-//     /**
-//      * Show the form for creating a new design.
-//      */
-//     public function create()
-//     {
-//         return view('designs.create');
-//     }
+    /**
+     * Store a newly created design in storage.
+     */
+    public function store(Request $request)
+    {
+        $validatedData = $request->validate([
+            'title' => 'required|string|max:255',
+            'category_id' => 'required|exists:categories,id',
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ]);
 
-//     /**
-//      * Store a newly created design in storage.
-//      */
-//     public function store(Request $request)
-//     {
-//         $validatedData = $request->validate([
-//             'title' => 'required|string|max:255',
-//             'description' => 'nullable|string',
-//             'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
-//             'price' => 'nullable|numeric|min:0',
-//             'width' => 'nullable|string|max:255',
-//             'height' => 'nullable|string|max:255',
-//             'format' => 'nullable|string|max:255',
-//             'tags' => 'nullable|string',
-//         ]);
+        // Handle image upload
+        $imagePath = null;
+        if ($request->hasFile('image')) {
+            $image = $request->file('image');
+            $filename = time() . '_' . Str::slug($request->title) . '.' . $image->getClientOriginalExtension();
+            $imagePath = $image->storeAs('designs', $filename, 'public');
+        }
 
-//         // Handle image upload
-//         $imagePath = null;
-//         if ($request->hasFile('image')) {
-//             $image = $request->file('image');
-//             $filename = time() . '_' . Str::slug($request->title) . '.' . $image->getClientOriginalExtension();
-//             $imagePath = $image->storeAs('designs', $filename, 'public');
-//         }
+        // Create design with the fields from migration
+        $design = Design::create([
+            'title' => $validatedData['title'],
+            'image_path' => $imagePath,
+            'designer_id' => Auth::id(),
+            'category_id' => $validatedData['category_id'],
+        ]);
 
-//         // Process tags
-//         $tags = [];
-//         if (!empty($validatedData['tags'])) {
-//             $tags = array_map('trim', explode(',', $validatedData['tags']));
-//         }
+        return redirect()->route('designs.show', $design)
+            ->with('success', 'Design created successfully!');
+    }
 
-//         // Create design
-//         $design = Design::create([
-//             'title' => $validatedData['title'],
-//             'description' => $validatedData['description'],
-//             'image_path' => $imagePath,
-//             'user_id' => Auth::id(),
-//             'status' => 'draft',
-//             'price' => $validatedData['price'],
-//             'width' => $validatedData['width'],
-//             'height' => $validatedData['height'],
-//             'format' => $validatedData['format'] ?? $request->file('image')->getClientOriginalExtension(),
-//             'tags' => $tags,
-//         ]);
-
-//         return redirect()->route('designs.show', $design)
-//             ->with('success', 'Design created successfully!');
-//     }
-
-//     /**
-//      * Display the specified design.
-//      */
-//     public function show(Design $design)
-//     {
-//         // Increment view count
-//         $design->increment('views');
+    /**
+     * Display the specified design.
+     */
+    public function show(Design $design)
+    {
+        // Load related papers
+        $design->load(['category', 'designer']);
         
-//         return view('designs.show', compact('design'));
-//     }
-
-//     /**
-//      * Show the form for editing the specified design.
-//      */
-//     public function edit(Design $design)
-//     {
-//         // Check if the current user owns this design
-//         if ($design->user_id !== Auth::id()) {
-//             return redirect()->route('designs.index')
-//                 ->with('error', 'You are not authorized to edit this design.');
-//         }
-
-//         return view('designs.edit', compact('design'));
-//     }
-
-//     /**
-//      * Update the specified design in storage.
-//      */
-//     public function update(Request $request, Design $design)
-//     {
-//         // Check if the current user owns this design
-//         if ($design->user_id !== Auth::id()) {
-//             return redirect()->route('designs.index')
-//                 ->with('error', 'You are not authorized to update this design.');
-//         }
-
-//         $validatedData = $request->validate([
-//             'title' => 'required|string|max:255',
-//             'description' => 'nullable|string',
-//             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-//             'price' => 'nullable|numeric|min:0',
-//             'width' => 'nullable|string|max:255',
-//             'height' => 'nullable|string|max:255',
-//             'format' => 'nullable|string|max:255',
-//             'tags' => 'nullable|string',
-//             'status' => 'nullable|in:draft,pending,published',
-//         ]);
-
-//         // Handle image upload if provided
-//         if ($request->hasFile('image')) {
-//             // Delete old image if exists
-//             if ($design->image_path && Storage::disk('public')->exists($design->image_path)) {
-//                 Storage::disk('public')->delete($design->image_path);
-//             }
-
-//             $image = $request->file('image');
-//             $filename = time() . '_' . Str::slug($request->title) . '.' . $image->getClientOriginalExtension();
-//             $imagePath = $image->storeAs('designs', $filename, 'public');
-//             $design->image_path = $imagePath;
-//         }
-
-//         // Process tags
-//         if (isset($validatedData['tags'])) {
-//             $tags = array_map('trim', explode(',', $validatedData['tags']));
-//             $design->tags = $tags;
-//         }
-
-//         // Update design fields
-//         $design->title = $validatedData['title'];
-//         $design->description = $validatedData['description'];
-//         $design->price = $validatedData['price'];
-//         $design->width = $validatedData['width'];
-//         $design->height = $validatedData['height'];
-//         $design->format = $validatedData['format'] ?? $design->format;
+        // Get recommended papers for this design
+        $recommendedPapers = Paper::where('is_active', true)
+            ->inRandomOrder()
+            ->limit(4)
+            ->get();
         
-//         // Update status if provided and it's a valid transition
-//         if (isset($validatedData['status'])) {
-//             $design->status = $validatedData['status'];
-//         }
+        return view('designer.designs.show', compact('design', 'recommendedPapers'));
+    }
 
-//         $design->save();
+    /**
+     * Show the form for editing the specified design.
+     */
+    public function edit(Design $design)
+    {
+        // Check if the current user owns this design
+        if ($design->designer_id !== Auth::id()) {
+            return redirect()->route('designs.index')
+                ->with('error', 'You are not authorized to edit this design.');
+        }
 
-//         return redirect()->route('designs.show', $design)
-//             ->with('success', 'Design updated successfully!');
-//     }
-
-//     /**
-//      * Remove the specified design from storage.
-//      */
-//     public function destroy(Design $design)
-//     {
-//         // Check if the current user owns this design
-//         if ($design->user_id !== Auth::id()) {
-//             return redirect()->route('designs.index')
-//                 ->with('error', 'You are not authorized to delete this design.');
-//         }
-
-//         // Delete the image file
-//         if ($design->image_path && Storage::disk('public')->exists($design->image_path)) {
-//             Storage::disk('public')->delete($design->image_path);
-//         }
-
-//         // Delete the design
-//         $design->delete();
-
-//         return redirect()->route('designs.index')
-//             ->with('success', 'Design deleted successfully!');
-//     }
-
-//     /**
-//      * Publish a design (change status to pending for review).
-//      */
-//     public function publish(Design $design)
-//     {
-//         // Check if the current user owns this design
-//         if ($design->user_id !== Auth::id()) {
-//             return redirect()->route('designs.index')
-//                 ->with('error', 'You are not authorized to publish this design.');
-//         }
-
-//         $design->status = 'pending';
-//         $design->save();
-
-//         return redirect()->route('designs.show', $design)
-//             ->with('success', 'Design submitted for review!');
-//     }
-
-//     /**
-//      * Like a design.
-//      */
-//     public function like(Design $design)
-//     {
-//         $design->increment('likes');
+        $categories = Category::orderBy('name')->pluck('name', 'id');
         
-//         return back()->with('success', 'Design liked!');
-//     }
+        return view('designer.designs.edit', compact('design', 'categories'));
+    }
+
+    /**
+     * Update the specified design in storage.
+     */
+    public function update(Request $request, Design $design)
+    {
+        // Check if the current user owns this design
+        if ($design->designer_id !== Auth::id()) {
+            return redirect()->route('designs.index')
+                ->with('error', 'You are not authorized to update this design.');
+        }
+
+        $validatedData = $request->validate([
+            'title' => 'required|string|max:255',
+            'category_id' => 'required|exists:categories,id',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ]);
+
+        // Handle image upload if provided
+        if ($request->hasFile('image')) {
+            // Delete old image if exists
+            if ($design->image_path && Storage::disk('public')->exists($design->image_path)) {
+                Storage::disk('public')->delete($design->image_path);
+            }
+
+            $image = $request->file('image');
+            $filename = time() . '_' . Str::slug($request->title) . '.' . $image->getClientOriginalExtension();
+            $imagePath = $image->storeAs('designs', $filename, 'public');
+            $design->image_path = $imagePath;
+        }
+
+        // Update design fields
+        $design->title = $validatedData['title'];
+        $design->category_id = $validatedData['category_id'];
+        $design->save();
+
+        return redirect()->route('designs.show', $design)
+            ->with('success', 'Design updated successfully!');
+    }
+
+    /**
+     * Remove the specified design from storage.
+     */
+    public function destroy(Design $design)
+    {
+        // Check if the current user owns this design
+        if ($design->designer_id !== Auth::id()) {
+            return redirect()->route('designs.index')
+                ->with('error', 'You are not authorized to delete this design.');
+        }
+
+        // Delete the image file
+        if ($design->image_path && Storage::disk('public')->exists($design->image_path)) {
+            Storage::disk('public')->delete($design->image_path);
+        }
+
+        // Delete the design
+        $design->delete();
+
+        return redirect()->route('designs.index')
+            ->with('success', 'Design deleted successfully!');
+    }
 }

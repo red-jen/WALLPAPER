@@ -298,6 +298,33 @@
 @push('scripts')
 <script>
     document.addEventListener('DOMContentLoaded', function() {
+        // Check if there's a pre-selected design
+        const selectedDesignId = "{{ $selectedDesignId ?? '' }}";
+        if (selectedDesignId) {
+            // Find the design radio input and select it
+            const designInput = document.getElementById('design_' + selectedDesignId);
+            if (designInput) {
+                designInput.checked = true;
+                
+                // Trigger the change event to update the UI
+                const event = new Event('change');
+                designInput.dispatchEvent(event);
+                
+                // Update the design selection display
+                const label = document.querySelector(`label[for="design_${selectedDesignId}"]`);
+                const designName = label.querySelector('h4').textContent;
+                document.getElementById('selected-design').textContent = designName;
+                
+                // Scroll to the designs section with a small delay to ensure the page is ready
+                setTimeout(() => {
+                    const designsSection = document.querySelector('.bg-white.rounded-xl.shadow-subtle:nth-child(3)');
+                    if (designsSection) {
+                        designsSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }
+                }, 300);
+            }
+        }
+        
         // Reference image handling
         const imageInput = document.getElementById('image');
         const previewContainer = document.getElementById('preview-container');

@@ -178,4 +178,42 @@ class CartController extends Controller
             return $item->price * $item->quantity;
         });
     }
+    /**
+ * Calculate the price of the artwork.
+ * 
+ * @return float
+ */
+// public function calculatePrice()
+// {
+//     // Base price
+//     $basePrice = 50.00;
+    
+//     // Add cost based on dimensions (example calculation)
+//     $sizePrice = ($this->width * $this->height) / 100 * 0.5;
+    
+//     // Add cost based on paper type
+//     $paperPrice = $this->paper && $this->paper->price ? $this->paper->price : 10.00;
+    
+//     // Processing fee
+//     $processingFee = 5.00;
+    
+//     // Shipping estimate
+//     $shippingFee = 15.00;
+    
+//     return $basePrice + $sizePrice + $paperPrice + $processingFee + $shippingFee;
+// }
+
+// /**
+//  * Get the image URL for display.
+//  * 
+//  * @return string
+//  */
+// public function getImageUrl()
+// {
+//     if ($this->preview_image_path) {
+//         return url('storage/' . $this->preview_image_path);
+//     }
+    
+//     return url('storage/' . $this->image_path);
+// }
 }
