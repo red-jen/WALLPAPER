@@ -21,6 +21,14 @@ class Artwork extends Model
         'image_path',
         'paper_id',
         'design_id',
+        'preview_status',
+        'preview_image_path',
+        'preview_updated_at',
+        'status_notes',
+        'production_images',
+        'production_status',
+        'production_notes',
+        'tracking_number',
     ];
 
     /**
@@ -31,6 +39,8 @@ class Artwork extends Model
     protected $casts = [
         'width' => 'integer',
         'height' => 'integer',
+        'preview_updated_at' => 'datetime',
+        'production_images' => 'array',
     ];
 
     /**

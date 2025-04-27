@@ -18,6 +18,9 @@
                 <a href="{{ route('designs.index') }}" class="bg-gold hover:bg-gold-light text-charcoal font-medium px-8 py-3 rounded transition duration-300 mr-4">
                     Browse Collection
                 </a>
+                <a href="{{ route('artworks.create') }}" class="bg-navy hover:bg-navy-light text-ivory font-medium px-8 py-3 rounded transition duration-300 mr-4">
+                    Make
+                </a>
                 <a href="{{ route('about') }}" class="border-2 border-ivory text-ivory hover:bg-ivory hover:text-navy font-medium px-8 py-3 rounded transition duration-300">
                     About Us
                 </a>
@@ -29,6 +32,163 @@
             <svg class="w-8 h-8 text-ivory" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
             </svg>
+        </div>
+    </div>
+    
+    <!-- Dynamic Wallpaper Showcase -->
+    <div class="bg-neutral py-24">
+        <div class="container mx-auto px-6">
+            <h2 class="font-serif text-4xl text-charcoal text-center mb-6">Featured <span class="text-navy">Wallpapers</span></h2>
+            <p class="text-charcoal/80 text-center max-w-3xl mx-auto mb-16">Our most popular and trending wallpaper designs that transform spaces into works of art.</p>
+            
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+                @foreach($featuredArtworks ?? [] as $artwork)
+                <div class="bg-white rounded-lg shadow-subtle overflow-hidden group">
+                    <div class="relative h-80 overflow-hidden">
+                        <img src="{{ asset('storage/' . ($artwork->image_path ?? 'designs/default.jpg')) }}" alt="{{ $artwork->title ?? 'Featured Wallpaper' }}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
+                        <div class="absolute inset-0 bg-gradient-to-t from-navy/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end">
+                            <div class="p-4 w-full">
+                                <h3 class="text-ivory font-serif text-xl">{{ $artwork->title ?? 'Elegant Design' }}</h3>
+                                <p class="text-ivory/90 text-sm mt-1">{{ $artwork->description ?? 'Premium quality wallpaper with elegant design patterns.' }}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-4">
+                        <div class="flex justify-between items-center">
+                            <span class="text-navy font-medium">{{ $artwork->price ?? '€49.99' }}</span>
+                            <a href="{{ $artwork->id ? route('artworks.show', $artwork->id) : '#' }}" class="text-gold hover:text-gold-light">View Details</a>
+                        </div>
+                    </div>
+                </div>
+                @endforeach
+                
+                <!-- Fallback items if no dynamic content -->
+                @if(empty($featuredArtworks))
+                <div class="bg-white rounded-lg shadow-subtle overflow-hidden group">
+                    <div class="relative h-80 overflow-hidden">
+                        <img src="/images/featured-1.jpg" alt="Vintage Floral" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
+                        <div class="absolute inset-0 bg-gradient-to-t from-navy/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end">
+                            <div class="p-4 w-full">
+                                <h3 class="text-ivory font-serif text-xl">Vintage Floral</h3>
+                                <p class="text-ivory/90 text-sm mt-1">Classic floral patterns with contemporary color schemes.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-4">
+                        <div class="flex justify-between items-center">
+                            <span class="text-navy font-medium">€49.99</span>
+                            <a href="#" class="text-gold hover:text-gold-light">View Details</a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-white rounded-lg shadow-subtle overflow-hidden group">
+                    <div class="relative h-80 overflow-hidden">
+                        <img src="/images/featured-2.jpg" alt="Geometric Patterns" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
+                        <div class="absolute inset-0 bg-gradient-to-t from-navy/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end">
+                            <div class="p-4 w-full">
+                                <h3 class="text-ivory font-serif text-xl">Geometric Patterns</h3>
+                                <p class="text-ivory/90 text-sm mt-1">Modern geometric designs for contemporary spaces.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-4">
+                        <div class="flex justify-between items-center">
+                            <span class="text-navy font-medium">€39.99</span>
+                            <a href="#" class="text-gold hover:text-gold-light">View Details</a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-white rounded-lg shadow-subtle overflow-hidden group">
+                    <div class="relative h-80 overflow-hidden">
+                        <img src="/images/featured-3.jpg" alt="Art Nouveau" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
+                        <div class="absolute inset-0 bg-gradient-to-t from-navy/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end">
+                            <div class="p-4 w-full">
+                                <h3 class="text-ivory font-serif text-xl">Art Nouveau</h3>
+                                <p class="text-ivory/90 text-sm mt-1">Elegant Art Nouveau inspired wallpaper designs.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-4">
+                        <div class="flex justify-between items-center">
+                            <span class="text-navy font-medium">€59.99</span>
+                            <a href="#" class="text-gold hover:text-gold-light">View Details</a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-white rounded-lg shadow-subtle overflow-hidden group">
+                    <div class="relative h-80 overflow-hidden">
+                        <img src="/images/cat-botanical.jpg" alt="Botanical Collection" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
+                        <div class="absolute inset-0 bg-gradient-to-t from-navy/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end">
+                            <div class="p-4 w-full">
+                                <h3 class="text-ivory font-serif text-xl">Botanical Collection</h3>
+                                <p class="text-ivory/90 text-sm mt-1">Nature-inspired designs for a refreshing ambiance.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-4">
+                        <div class="flex justify-between items-center">
+                            <span class="text-navy font-medium">€44.99</span>
+                            <a href="#" class="text-gold hover:text-gold-light">View Details</a>
+                        </div>
+                    </div>
+                </div>
+                @endif
+            </div>
+            
+            <div class="text-center mt-12">
+                <a href="{{ route('designs.index') }}" class="bg-navy hover:bg-navy-light text-ivory font-medium px-8 py-3 rounded transition duration-300 inline-flex items-center">
+                    View All Designs
+                    <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+                    </svg>
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <!-- How to Create Your Wallpaper -->
+    <div class="bg-ivory py-24">
+        <div class="container mx-auto px-6">
+            <h2 class="font-serif text-4xl text-charcoal text-center mb-6">Create Your <span class="text-navy">Custom Wallpaper</span></h2>
+            <p class="text-charcoal/80 text-center max-w-3xl mx-auto mb-16">Design your own unique wallpaper in just a few simple steps. Express your style with our easy-to-use customization tools.</p>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-12">
+                <div class="text-center">
+                    <div class="w-20 h-20 bg-gold rounded-full flex items-center justify-center mx-auto mb-6">
+                        <span class="text-3xl font-serif font-bold text-charcoal">1</span>
+                    </div>
+                    <h3 class="font-serif text-2xl text-navy mb-4">Choose Your Paper</h3>
+                    <p class="text-charcoal/80">Select from our premium quality paper options with different textures and finishes to match your interior design.</p>
+                </div>
+                
+                <div class="text-center">
+                    <div class="w-20 h-20 bg-gold rounded-full flex items-center justify-center mx-auto mb-6">
+                        <span class="text-3xl font-serif font-bold text-charcoal">2</span>
+                    </div>
+                    <h3 class="font-serif text-2xl text-navy mb-4">Select or Upload Design</h3>
+                    <p class="text-charcoal/80">Browse our extensive collection of designs or upload your own artwork to create a truly personalized wallpaper.</p>
+                </div>
+                
+                <div class="text-center">
+                    <div class="w-20 h-20 bg-gold rounded-full flex items-center justify-center mx-auto mb-6">
+                        <span class="text-3xl font-serif font-bold text-charcoal">3</span>
+                    </div>
+                    <h3 class="font-serif text-2xl text-navy mb-4">Customize & Order</h3>
+                    <p class="text-charcoal/80">Specify your dimensions, preview your creation, and place your order. We'll handle the production and delivery.</p>
+                </div>
+            </div>
+            
+            <div class="mt-16 text-center">
+                <a href="{{ route('artworks.create') }}" class="bg-gold hover:bg-gold-light text-charcoal font-medium px-10 py-4 rounded-lg text-lg transition duration-300 inline-flex items-center">
+                    Start Creating Now
+                    <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+                    </svg>
+                </a>
+            </div>
         </div>
     </div>
     

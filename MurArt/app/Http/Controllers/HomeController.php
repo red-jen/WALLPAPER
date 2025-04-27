@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Wallpaper;
 use App\Models\Design;
 use App\Models\Paper;
+use App\Models\Artwork;
 use Illuminate\Http\Request;
 
 class HomeController extends Controller
@@ -32,8 +33,14 @@ class HomeController extends Controller
         $papers = Paper::where('is_active', true)
             ->take(4)
             ->get();
+        
+        // Get featured artworks for the home page
+        $featuredArtworks = Artwork::with(['paper', 'design'])
+            ->latest()
+            ->take(4)
+            ->get();
             
-        return view('public.landing', compact('wallpapers', 'designs', 'papers'));
+        return view('home', compact('wallpapers', 'designs', 'papers', 'featuredArtworks'));
     }
     
     /**

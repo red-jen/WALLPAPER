@@ -19,6 +19,11 @@ use App\Http\Controllers\Client\DashboardController as ClientDashboardController
 use App\Http\Controllers\Client\ArtworkController as ClientArtworkController;
 use App\Http\Controllers\admin\WallpaperController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\CartController;
+
+
+
+use App\Http\Controllers\Admin\ArtworkController;
 // Home route
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
@@ -114,6 +119,13 @@ Route::put('/artworks/{artwork}', [ClientArtworkController::class, 'update'])->n
 Route::delete('/artworks/{artwork}', [ClientArtworkController::class, 'destroy'])->name('artworks.destroy');
 
 
+// Add these routes after your existing artwork routes in web.php
+Route::post('/artworks/{artwork}/preview/approve', [ClientArtworkController::class, 'approvePreview'])
+    ->name('artworks.preview.approve');
+    
+Route::post('/artworks/{artwork}/preview/reject', [ClientArtworkController::class, 'rejectPreview'])
+    ->name('artworks.preview.reject');
+
 
 
 
@@ -136,9 +148,31 @@ Route::post('/wallpapers/{wallpaper}/reorder', [WallpaperController::class, 'reo
 
 
 
+    // Replace the incorrect line with these:
+    Route::get('/admin/artworks', [ArtworkController::class, 'index'])->name('admin.artworks.index');
+    Route::get('/admin/artworks/{artwork}/edit', [ArtworkController::class, 'edit'])->name('admin.artworks.edit');
+    Route::post('artworks/{artwork}/preview', [ArtworkController::class, 'storePreview'])->name('admin.artworks.preview.store');
+    Route::delete('artworks/{artwork}/preview', [ArtworkController::class, 'deletePreview'])->name('admin.artworks.preview.delete');
+    Route::patch('artworks/{artwork}/status', [ArtworkController::class, 'updateStatus'])->name('admin.artworks.status.update');
+    Route::post('artworks/{artwork}/production-image', [ArtworkController::class, 'storeProductionImage'])->name('artworks.production-image.store');
+    Route::delete('artworks/{artwork}/production-image/{index}', [ArtworkController::class, 'deleteProductionImage'])->name('artworks.production-image.delete');
+    Route::patch('artworks/{artwork}/production-status', [ArtworkController::class, 'updateProductionStatus'])->name('artworks.production-status.update');
 
 
 
+
+
+
+
+
+    // Add to cart routes
+    Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
+    Route::post('/artworks/{artwork}/cart', [CartController::class, 'addArtwork'])->name('artworks.addToCart');
+    Route::delete('/cart/{item}', [CartController::class, 'removeItem'])->name('cart.removeItem');
+    Route::put('/cart/{item}', [CartController::class, 'updateItem'])->name('cart.updateItem');
+    Route::get('/checkout', [CartController::class, 'checkout'])->name('cart.checkout')->middleware('auth');
+    
+    // Don't forget to import the controller at the top of the file
 
 
 

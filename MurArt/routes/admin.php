@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\ArtworkController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\DesignController;
 use App\Http\Controllers\Admin\DashboardController;
@@ -39,4 +40,13 @@ Route::prefix('admin')->middleware(['auth', 'admin'])->name('admin.')->group(fun
     
     // Users management
     Route::resource('users', UserController::class)->except(['show']);
+    
+    // Artworks management
+    Route::resource('artworks', ArtworkController::class)->only(['index', 'edit']);
+    Route::post('artworks/{artwork}/preview', [ArtworkController::class, 'storePreview'])->name('artworks.preview.store');
+    Route::delete('artworks/{artwork}/preview', [ArtworkController::class, 'deletePreview'])->name('artworks.preview.delete');
+    Route::patch('artworks/{artwork}/status', [ArtworkController::class, 'updateStatus'])->name('artworks.status.update');
+    Route::post('artworks/{artwork}/production-image', [ArtworkController::class, 'storeProductionImage'])->name('artworks.production-image.store');
+    Route::delete('artworks/{artwork}/production-image/{index}', [ArtworkController::class, 'deleteProductionImage'])->name('artworks.production-image.delete');
+    Route::patch('artworks/{artwork}/production-status', [ArtworkController::class, 'updateProductionStatus'])->name('artworks.production-status.update');
 });
