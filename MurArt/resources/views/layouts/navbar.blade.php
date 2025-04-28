@@ -29,6 +29,9 @@
                 <a href="{{ route('about') }}" class="text-ivory hover:text-gold text-sm uppercase tracking-widest font-light transition duration-200 {{ Route::is('about') ? 'text-gold' : '' }}">
                     About
                 </a>
+                <a href="{{ route('shop.index') }}" class="text-ivory hover:text-gold text-sm uppercase tracking-widest font-light transition duration-200 {{ Route::is('shop.*') ? 'text-gold' : '' }}">
+                    Shop
+                </a>
                 {{-- <a href="{{ route('contact') }}" class="text-ivory hover:text-gold text-sm uppercase tracking-widest font-light transition duration-200 {{ Route::is('contact') ? 'text-gold' : '' }}">
                     Contact
                 </a> --}}
@@ -80,6 +83,9 @@
             </a>
             <a href="{{ route('about') }}" class="block py-2 text-ivory hover:text-gold text-sm uppercase tracking-widest {{ Route::is('about') ? 'text-gold' : '' }}">
                 About
+            </a>
+            <a href="{{ route('shop.index') }}" class="block py-2 text-ivory hover:text-gold text-sm uppercase tracking-widest {{ Route::is('shop.*') ? 'text-gold' : '' }}">
+                Shop
             </a>
             {{-- <a href="{{ route('contact') }}" class="block py-2 text-ivory hover:text-gold text-sm uppercase tracking-widest {{ Route::is('contact') ? 'text-gold' : '' }}">
                 Contact

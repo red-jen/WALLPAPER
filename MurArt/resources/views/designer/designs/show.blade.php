@@ -5,10 +5,10 @@
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
         <h1 class="h3 mb-0 text-gray-800">{{ $design->title }}</h1>
         <div>
-            <a href="{{ route('designs.edit', $design) }}" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">
+            <a href="{{ route('designer.designs.edit', $design) }}" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">
                 <i class="fas fa-edit fa-sm text-white-50"></i> Edit Design
             </a>
-            <a href="{{ route('designs.index') }}" class="d-none d-sm-inline-block btn btn-sm btn-secondary shadow-sm ml-2">
+            <a href="{{ route('designer.designs.index') }}" class="d-none d-sm-inline-block btn btn-sm btn-secondary shadow-sm ml-2">
                 <i class="fas fa-arrow-left fa-sm text-white-50"></i> Back to Designs
             </a>
         </div>
@@ -47,7 +47,7 @@
                     <!-- Design Actions -->
                     <div class="mt-4 d-flex justify-content-between">
                         <div>
-                            <form action="{{ route('designs.destroy', $design) }}" method="POST" class="d-inline" onsubmit="return confirm('Are you sure you want to delete this design? This action cannot be undone.');">
+                            <form action="{{ route('designer.designs.destroy', $design) }}" method="POST" class="d-inline" onsubmit="return confirm('Are you sure you want to delete this design? This action cannot be undone.');">
                                 @csrf
                                 @method('DELETE')
                                 <button type="submit" class="btn btn-danger">

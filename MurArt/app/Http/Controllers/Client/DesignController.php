@@ -14,7 +14,8 @@ class DesignController extends Controller
      */
     public function index(Request $request)
     {
-        $query = Design::where('status', 'approved');
+        // Start with a query builder, not a collection
+        $query = Design::query();
         
         // Filter by category if provided
         if ($request->has('category') && $request->category) {
@@ -22,16 +23,19 @@ class DesignController extends Controller
         }
         
         // Get the designs with their designer and category
-        $designs = $query->with(['designer', 'category'])
-                         ->orderBy('featured', 'desc')
+        $designs = $query->with(['designer', 'category'])  // 'with' not 'where'
+                        //  ->orderBy('featured', 'desc')
                          ->orderBy('created_at', 'desc')
                          ->paginate(12);
         
         // Get all categories for filtering
-        $categories = Category::orderBy('name')->get();
+        $categories = Category::get();
         
         return view('client.designs.index', compact('designs', 'categories'));
     }
+    
+    // Rest of controller remains unchanged
+
     
     /**
      * Display the specified design.
@@ -42,13 +46,13 @@ class DesignController extends Controller
         $design->load(['designer', 'category']);
         
         // Get similar designs in same category
-        $similarDesigns = Design::where('status', 'approved')
-                                ->where('category_id', $design->category_id)
-                                ->where('id', '!=', $design->id)
-                                ->with('designer')
-                                ->inRandomOrder()
-                                ->limit(4)
-                                ->get();
+        $similarDesigns = Design::where('category_id', $design->category_id)
+        ->where('id', '!=', $design->id)
+        ->with('designer')
+        ->inRandomOrder()
+        ->limit(4)
+        ->get();
+                               
         
         return view('client.designs.show', compact('design', 'similarDesigns'));
     }

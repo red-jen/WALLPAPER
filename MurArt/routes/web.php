@@ -21,6 +21,7 @@ use App\Http\Controllers\admin\WallpaperController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\CartController;
 
+use App\Http\Controllers\Client\DesignController as ClientDesignController;
 
 
 use App\Http\Controllers\Admin\ArtworkController;
@@ -170,16 +171,30 @@ Route::post('/wallpapers/{wallpaper}/reorder', [WallpaperController::class, 'reo
     Route::post('/artworks/{artwork}/cart', [CartController::class, 'addArtwork'])->name('artworks.addToCart');
     Route::delete('/cart/{item}', [CartController::class, 'removeItem'])->name('cart.removeItem');
     Route::put('/cart/{item}', [CartController::class, 'updateItem'])->name('cart.updateItem');
-    Route::get('/checkout', [CartController::class, 'checkout'])->name('cart.checkout')->middleware('auth');
-    
+    Route::get('/checkout', [CartController::class, 'checkout'])->name('cart.checkout');
+    Route::get('/shop', [CartController::class, 'check'])->name('shop.index');
     // Don't forget to import the controller at the top of the file
 
 
 
 
+    // Purchase routes
+    Route::post('/checkout/process', [CartController::class, 'processCheckout'])->name('checkout.process')->middleware('auth');
+    Route::get('/checkout/success', [CartController::class, 'checkoutSuccess'])->name('checkout.success');
+    Route::get('/checkout/cancel', [CartController::class, 'checkoutCancel'])->name('checkout.cancel');
 
 
+    Route::get('/designs', [ClientDesignController::class, 'index'])
+    ->name('designs.index');
+Route::get('/designs/{design}', [ClientDesignController::class, 'show'])
+    ->name('designs.show');
+Route::get('/designs/{design}/create-artwork', [ClientDesignController::class, 'createWithDesign'])
+    ->name('designs.create-artwork');
 
+Route::get('/papers', function () {
+    $papers = \App\Models\Paper::all();
+    return view('papers.index', compact('papers'));
+})->name('papers.index');
     
             // Instead of:
             // Route::resource('categories', CategoryController::class);

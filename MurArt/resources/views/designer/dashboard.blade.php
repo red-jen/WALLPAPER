@@ -14,7 +14,7 @@
                 <h1 class="text-4xl md:text-5xl lg:text-6xl font-heading font-semibold text-ivory mb-4 animate-fade-in">Designer Studio</h1>
                 <p class="text-xl text-ivory/90 max-w-2xl mx-auto animate-slide-up">Craft exquisite wall coverings that transform spaces into works of art.</p>
                 <div class="mt-8 flex flex-wrap justify-center gap-4">
-                    <a href="{{ route('designs.create') }}" class="bg-gold hover:bg-gold/90 text-navy font-medium py-3 px-8 rounded-md transition-colors">
+                    <a href="{{ route('designer.designs.create') }}" class="bg-gold hover:bg-gold/90 text-navy font-medium py-3 px-8 rounded-md transition-colors">
                         Create New Design
                     </a>
                     <a href="#featured" class="bg-transparent border border-ivory hover:bg-ivory/10 text-ivory font-medium py-3 px-8 rounded-md transition-colors">
@@ -42,7 +42,7 @@
                         </div>
                     </div>
                     <div class="mt-4">
-                        <a href="{{ route('designs.index') }}" class="text-navy hover:text-gold text-sm font-medium inline-flex items-center transition-colors">
+                        <a href="{{ route('designer.designs.index') }}" class="text-navy hover:text-gold text-sm font-medium inline-flex items-center transition-colors">
                             View all designs
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
@@ -112,7 +112,7 @@
                             <div class="absolute inset-0 bg-gradient-to-t from-charcoal/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end justify-between p-4">
                                 <h3 class="text-xl font-heading font-semibold text-ivory">{{ $design->title }}</h3>
                                 <div class="flex space-x-2">
-                                    <a href="{{ route('designs.edit', $design) }}" class="bg-ivory/20 hover:bg-ivory/40 p-2 rounded-full transition-colors">
+                                    <a href="{{ route('designer.designs.edit', $design) }}" class="bg-ivory/20 hover:bg-ivory/40 p-2 rounded-full transition-colors">
                                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-ivory" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
                                         </svg>
@@ -132,7 +132,7 @@
                                 <div class="flex items-center">
                                     <span class="text-xs text-charcoal/60">Created: {{ $design->created_at->format('M d, Y') }}</span>
                                 </div>
-                                <a href="{{ route('designs.show', $design) }}" class="text-navy hover:text-gold text-sm font-medium inline-flex items-center transition-colors">
+                                <a href="{{ route('designer.designs.show', $design) }}" class="text-navy hover:text-gold text-sm font-medium inline-flex items-center transition-colors">
                                     View design
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
@@ -151,7 +151,7 @@
                         </div>
                         <h3 class="text-xl font-heading font-semibold text-navy mb-2">Create Your First Design</h3>
                         <p class="text-charcoal/70 mb-6">Start your creative journey by adding your first design to the collection.</p>
-                        <a href="{{ route('designs.create') }}" class="bg-gold hover:bg-gold/90 text-navy font-medium py-2 px-6 rounded-md transition-colors">
+                        <a href="{{ route('designer.designs.create') }}" class="bg-gold hover:bg-gold/90 text-navy font-medium py-2 px-6 rounded-md transition-colors">
                             Create Design
                         </a>
                     </div>
@@ -205,7 +205,7 @@
             
             @if(!empty($designs ?? []))
                 <div class="mt-8 text-center">
-                    <a href="{{ route('designs.create') }}" class="bg-navy hover:bg-navy/90 text-ivory font-medium py-3 px-8 rounded-md transition-colors">
+                    <a href="{{ route('designer.designs.create') }}" class="bg-navy hover:bg-navy/90 text-ivory font-medium py-3 px-8 rounded-md transition-colors">
                         Create New Design
                     </a>
                 </div>

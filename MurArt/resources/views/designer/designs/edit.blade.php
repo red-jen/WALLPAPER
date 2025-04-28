@@ -4,7 +4,7 @@
 <div class="container-fluid">
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
         <h1 class="h3 mb-0 text-gray-800">Edit Design</h1>
-        <a href="{{ route('designs.index') }}" class="d-none d-sm-inline-block btn btn-sm btn-secondary shadow-sm">
+        <a href="{{ route('designer.designs.index') }}" class="d-none d-sm-inline-block btn btn-sm btn-secondary shadow-sm">
             <i class="fas fa-arrow-left fa-sm text-white-50"></i> Back to Designs
         </a>
     </div>
@@ -14,7 +14,7 @@
             <h6 class="m-0 font-weight-bold text-primary">Design Details</h6>
         </div>
         <div class="card-body">
-            <form action="{{ route('designs.update', $design) }}" method="POST" enctype="multipart/form-data">
+            <form action="{{ route('designer.designs.update', $design) }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 @method('PUT')
                 
@@ -62,7 +62,7 @@
                 
                 <div class="mt-4">
                     <button type="submit" class="btn btn-primary">Update Design</button>
-                    <a href="{{ route('designs.index') }}" class="btn btn-secondary">Cancel</a>
+                    <a href="{{ route('designer.designs.index') }}" class="btn btn-secondary">Cancel</a>
                 </div>
             </form>
         </div>

@@ -6,7 +6,7 @@
         <p class="text-charcoal/70">{{ isset($design) ? 'Update your design information and preview image.' : 'Add a new wallpaper design to your collection.' }}</p>
     </div>
 
-    <form action="{{ isset($design) ? route('designs.update', $design) : route('designs.store') }}" 
+    <form action="{{ isset($design) ? route('designer.designs.update', $design) : route('designer.designs.store') }}" 
           method="POST" 
           enctype="multipart/form-data"
           class="space-y-8">
@@ -157,7 +157,7 @@
 
         <div class="pt-5 border-t border-charcoal/10">
             <div class="flex justify-end space-x-3">
-                <a href="{{ route('designs.index') }}" class="inline-flex justify-center py-2 px-4 border border-charcoal/20 text-sm font-medium rounded-md text-charcoal bg-white hover:bg-ivory focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-navy/50 transition-colors">
+                <a href="{{ route('designer.designs.index') }}" class="inline-flex justify-center py-2 px-4 border border-charcoal/20 text-sm font-medium rounded-md text-charcoal bg-white hover:bg-ivory focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-navy/50 transition-colors">
                     Cancel
                 </a>
                 <button type="submit" class="inline-flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-navy bg-gold hover:bg-gold/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gold transition-colors">

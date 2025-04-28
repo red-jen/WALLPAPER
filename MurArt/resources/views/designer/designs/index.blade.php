@@ -161,7 +161,7 @@
         <div>
             <p class="text-muted">Showcasing your artistic wall coverings</p>
         </div>
-        <a href="{{ route('designs.create') }}" class="btn create-btn">
+        <a href="{{ route('designer.designs.create') }}" class="btn create-btn">
             <i class="fas fa-plus fa-sm mr-2"></i> Create New Design
         </a>
     </div>
@@ -201,10 +201,10 @@
                         </div>
                         <div class="card-footer bg-transparent">
                             <div class="d-flex justify-content-between">
-                                <a href="{{ route('designs.show', $design) }}" class="btn btn-sm btn-primary">
+                                <a href="{{ route('designer.designs.show', $design) }}" class="btn btn-sm btn-primary">
                                     <i class="fas fa-eye mr-1"></i> View
                                 </a>
-                                <a href="{{ route('designs.edit', $design) }}" class="btn btn-sm btn-info">
+                                <a href="{{ route('designer.designs.edit', $design) }}" class="btn btn-sm btn-info">
                                     <i class="fas fa-edit mr-1"></i> Edit
                                 </a>
                             </div>
@@ -217,7 +217,7 @@
                 <div class="no-designs mb-4">
                     <h5 class="mb-4" style="color: var(--navy);">Your design collection is empty</h5>
                     <p class="mb-4">Create stunning wall coverings to transform any space into a work of art.</p>
-                    <a href="{{ route('designs.create') }}" class="btn create-btn btn-lg">
+                    <a href="{{ route('designer.designs.create') }}" class="btn create-btn btn-lg">
                         <i class="fas fa-plus fa-sm mr-2"></i> Create Your First Design
                     </a>
                 </div>
