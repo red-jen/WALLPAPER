@@ -8,6 +8,8 @@ use App\Models\Paper;
 use App\Models\Artwork;
 use Illuminate\Http\Request;
 use App\Models\Category;
+use Illuminate\Support\Facades\Auth;
+use App\Models\User;
 
 class HomeController extends Controller
 {
@@ -36,7 +38,10 @@ class HomeController extends Controller
             ->take(6)
             ->get();
             
-        return view('home', compact('wallpapers', 'categories', 'designs'));
+            $designers = \App\Models\User::where('role', 'designer')
+            ->take(4)
+            ->get();
+            return view('home', compact('wallpapers', 'categories', 'designs', 'designers'));
     }
     
     /**

@@ -44,6 +44,7 @@ Route::delete('/cart/{item}', [CartController::class, 'removeItem'])->name('cart
 Route::put('/cart/{item}', [CartController::class, 'updateItem'])->name('cart.updateItem');
 Route::get('/checkout', [CartController::class, 'checkout'])->name('cart.checkout');
 Route::get('/shop', [CartController::class, 'check'])->name('shop.index');
+Route::get('/dasshop', [CartController::class, 'check'])->name('client.dashboard');
 // Don't forget to import the controller at the top of the file
 
 
