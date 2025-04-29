@@ -120,7 +120,7 @@ public function processCheckout(Request $request)
         $lineItems = [];
         foreach ($cartItems as $item) {
             $product = $item->artwork ?? $item->wallpaper;
-            $imageUrl = $product->getImageUrl() ?? 'https://via.placeholder.com/150';
+            $imageUrl = $product->getImageUrlAttribute() ?? 'https://via.placeholder.com/150';
             
             $lineItems[] = [
                 'price_data' => [

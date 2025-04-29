@@ -76,20 +76,23 @@ class Wallpaper extends Model
      */
   
    
-   public function getImageUrlAttribute()
-   {
-       if ($this->image_path) {
-           return asset('storage/' . $this->image_path);
-       }
-       
-       // Check if the wallpaper has images relationship
-       if ($this->images && $this->images->count() > 0) {
-           return asset('storage/' . $this->images->first()->path);
-       }
-       
-       // Default image if none exists
-       return asset('images/placeholder.jpg');
-   }
+    
+     public function getImageUrlAttribute()
+     {
+         // First try to get the primary image
+         $primaryImage = $this->primaryImage;
+         if ($primaryImage) {
+             return asset('storage/' . $primaryImage->image_path);
+         }
+         
+         // If no primary image, try to get the first image
+         if ($this->images && $this->images->count() > 0) {
+             return asset('storage/' . $this->images->first()->image_path);
+         }
+         
+         // Default image if none exists
+         return asset('images/placeholder.jpg');
+     }
 
     /**
      * Get the paper types recommended for this wallpaper.
@@ -133,9 +136,10 @@ class Wallpaper extends Model
     /**
      * Check if the wallpaper is in stock.
      */
-    public function getInStockAttribute(): bool
+    public function getStockAttribute($value)
     {
-        return $this->stock ?? 1;
+        // If stock is null in database, return a default value
+        return $value ?? 10;
     }
 
     /**

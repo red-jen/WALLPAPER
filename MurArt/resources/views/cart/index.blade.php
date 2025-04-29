@@ -56,7 +56,7 @@
                                                 </div>
                                             </div>
                                         @elseif($item->wallpaper)
-                                            <img src="{{ asset('storage/' . $item->wallpaper->getMainImagePath()) }}" 
+                                            <img src="{{ asset('storage/' . $item->wallpaper->getImageUrlAttribute()) }}" 
                                                 alt="{{ $item->wallpaper->title }}" 
                                                 class="w-16 h-16 object-cover rounded">
                                             <div class="ml-4">

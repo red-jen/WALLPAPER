@@ -1,0 +1,1882 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1    .customization-steps {
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+      margin-bottom: 2.5rem;
+    }
+    
+    .step {
+      display: flex;
+      gap: 1.5rem;
+      align-items: flex-start;
+    }
+    
+    .step-number {
+      width: 50px;
+      height: 50px;
+      background-color: var(--light);
+      color: var(--primary);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      flex-shrink: 0;
+      font-size: 1.2rem;
+      border: 2px solid var(--primary-light);
+      transition: var(--transition);
+    }
+    
+    .step:hover .step-number {
+      background-color: var(--primary);
+      color: white;
+      transform: scale(1.1);
+    }
+    
+    .step-content h4 {
+      margin-bottom: 0.5rem;
+      font-size: 1.3rem;
+    }
+    
+    .step-content p {
+      color: var(--text-light);
+      margin-bottom: 0;
+      margin-top: 0;
+    }
+    
+    @media (max-width: 992px) {
+      .customization-container {
+        flex-direction: column-reverse;
+        gap: 3rem;
+      }
+      
+      .customization-content h2 {
+        text-align: center;
+      }
+      
+      .customization-content h2::after {
+        left: 50%;
+        transform: translateX(-50%);
+      }
+      
+      .customization-content p {
+        text-align: center;
+      }
+      
+      .customization-steps {
+        max-width: 600px;
+        margin-left: auto;
+        margin-right: auto;
+      }
+    }
+    
+    @media (max-width: 576px) {
+      .step {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+      }
+      
+      .step-number {
+        margin-bottom: 1rem;
+      }
+    }
+    
+    /* Testimonials */
+    .testimonials-section {
+      padding: 6rem 0;
+      background-color: var(--light);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .testimonials-section::before {
+      content: '';
+      position: absolute;
+      width: 500px;
+      height: 500px;
+      border-radius: 50%;
+      background-color: rgba(156, 106, 140, 0.05);
+      bottom: -250px;
+      right: -250px;
+      z-index: 0;
+    }
+    
+    .testimonials {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2.5rem;
+      margin-top: 4rem;
+      position: relative;
+      z-index: 1;
+    }
+    
+    .testimonial {
+      background-color: white;
+      padding: 3rem 2rem;
+      border-radius: 15px;
+      box-shadow: var(--shadow);
+      transition: var(--transition);
+      position: relative;
+    }
+    
+    .testimonial:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+    }
+    
+    .testimonial-quote {
+      position: absolute;
+      top: -15px;
+      right: 30px;
+      color: var(--secondary);
+      font-size: 4rem;
+      opacity: 0.1;
+      line-height: 1;
+    }
+    
+    .testimonial-content {
+      margin-bottom: 2rem;
+      color: var(--text);
+      font-style: italic;
+      font-size: 1.05rem;
+      line-height: 1.8;
+      position: relative;
+    }
+    
+    .testimonial-author {
+      display: flex;
+      align-items: center;
+      gap: 1.2rem;
+    }
+    
+    .author-image {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      overflow: hidden;
+      border: 3px solid var(--light);
+    }
+    
+    .author-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    
+    .author-info h4 {
+      margin-bottom: 0.3rem;
+      font-size: 1.1rem;
+    }
+    
+    .author-info p {
+      color: var(--text-light);
+      font-size: 0.9rem;
+    }
+    
+    .rating {
+      color: var(--secondary);
+      margin-top: 0.8rem;
+      font-size: 0.9rem;
+    }
+    
+    @media (max-width: 992px) {
+      .testimonials {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+    
+    @media (max-width: 768px) {
+      .testimonials {
+        grid-template-columns: 1fr;
+        max-width: 500px;
+        margin-left: auto;
+        margin-right: auto;
+      }
+    }
+    
+    /* Newsletter */
+    .newsletter {
+      padding: 5rem 0;
+      background-color: var(--primary-dark);
+      color: white;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .newsletter::before {
+      content: '';
+      position: absolute;
+      width: 600px;
+      height: 600px;
+      border-radius: 50%;
+      background-color: rgba(255, 255, 255, 0.03);
+      top: -300px;
+      left: -300px;
+    }
+    
+    .newsletter-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: relative;
+      z-index: 1;
+    }
+    
+    .newsletter-content {
+      max-width: 550px;
+    }
+    
+    .newsletter-content h2 {
+      margin-bottom: 1.5rem;
+      font-size: 2.2rem;
+      color: white;
+    }
+    
+    .newsletter-content p {
+      color: rgba(255, 255, 255, 0.8);
+      margin-bottom: 0;
+      font-size: 1.05rem;
+    }
+    
+    .newsletter-form {
+      display: flex;
+      gap: 1rem;
+      max-width: 500px;
+      width: 100%;
+    }
+    
+    .newsletter-input {
+      flex: 1;
+      padding: 1rem 1.5rem;
+      border-radius: 30px;
+      border: none;
+      font-family: 'Poppins', sans-serif;
+      font-size: 0.95rem;
+    }
+    
+    .newsletter-input:focus {
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.2);
+    }
+    
+    @media (max-width: 992px) {
+      .newsletter-container {
+        flex-direction: column;
+        text-align: center;
+        gap: 2.5rem;
+      }
+      
+      .newsletter-content {
+        max-width: 700px;
+      }
+      
+      .newsletter-form {
+        max-width: 500px;
+        margin: 0 auto;
+      }
+    }
+    
+    @media (max-width: 576px) {
+      .newsletter-form {
+        flex-direction: column;
+      }
+    }
+    
+    /* Footer */
+    footer {
+      background-color: var(--dark);
+      color: white;
+      padding: 5rem 0 2rem;
+      position: relative;
+    }
+    
+    .footer-top {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 1fr;
+      gap: 4rem;
+      margin-bottom: 4rem;
+    }
+    
+    .footer-logo {
+      font-family: 'Playfair Display', serif;
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: 1.5rem;
+      color: white;
+      display: inline-block;
+    }
+    
+    .footer-logo span {
+      color: var(--secondary);
+    }
+    
+    .footer-description {
+      color: rgba(255, 255, 255, 0.7);
+      margin-bottom: 2rem;
+      max-width: 350px;
+      line-height: 1.8;
+    }
+    
+    .social-icons {
+      display: flex;
+      gap: 1.2rem;
+    }
+    
+    .social-icon {
+      width: 40px;
+      height: 40px;
+      background-color: rgba(255, 255, 255, 0.05);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: var(--transition);
+      font-size: 1rem;
+      color: white;
+    }
+    
+    .social-icon:hover {
+      background-color: var(--primary);
+      transform: translateY(-5px);
+    }
+    
+    .footer-links-title {
+      font-size: 1.2rem;
+      margin-bottom: 1.8rem;
+      color: white;
+      position: relative;
+      display: inline-block;
+    }
+    
+    .footer-links-title::after {
+      content: '';
+      position: absolute;
+      width: 40px;
+      height: 2px;
+      background-color: var(--secondary);
+      left: 0;
+      bottom: -10px;
+    }
+    
+    .footer-links {
+      list-style: none;
+    }
+    
+    .footer-links li {
+      margin-bottom: 1rem;
+    }
+    
+    .footer-links a {
+      color: rgba(255, 255, 255, 0.7);
+      text-decoration: none;
+      transition: var(--transition);
+      font-size: 0.95rem;
+      display: inline-block;
+    }
+    
+    .footer-links a:hover {
+      color: white;
+      transform: translateX(5px);
+    }
+    
+    .footer-contact li {
+      display: flex;
+      gap: 1rem;
+      align-items: flex-start;
+      margin-bottom: 1.2rem;
+      color: rgba(255, 255, 255, 0.7);
+    }
+    
+    .footer-contact i {
+      font-size: 1.2rem;
+      color: var(--secondary);
+    }
+    
+    .footer-divider {
+      height: 1px;
+      background-color: rgba(255, 255, 255, 0.1);
+      margin: 2rem 0;
+    }
+    
+    .footer-bottom {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: rgba(255, 255, 255, 0.6);
+      font-size: 0.9rem;
+    }
+    
+    .footer-bottom a {
+      color: var(--secondary);
+    }
+    
+    @media (max-width: 992px) {
+      .footer-top {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+    
+    @media (max-width: 768px) {
+      .footer-top {
+        grid-template-columns: 1fr;
+        gap: 3rem;
+      }
+      
+      .footer-description {
+        max-width: 100%;
+      }
+      
+      .footer-bottom {
+        flex-direction: column;
+        gap: 1rem;
+        text-align: center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <header>
+    <div class="container">
+      <div class="header-content">
+        <a href="#" class="logo"><i class="fas fa-brush logo-icon"></i>Wall<span>Art</span></a>
+        <nav>
+          <ul>
+            <li><a href="#" class="active">Accueil</a></li>
+            <li><a href="#">Catalogue</a></li>
+            <li><a href="#">Personnalisation</a></li>
+            <li><a href="#">Designers</a></li>
+            <li><a href="#">Communauté</a></li>
+          </ul>
+        </nav>
+        <div class="header-actions">
+          <input type="text" class="search-box" placeholder="Rechercher...">
+          <button class="btn btn-outline">Connexion</button>
+          <button class="btn btn-primary">Inscription</button>
+          <button class="mobile-menu-toggle">
+            <i class="fas fa-bars"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- Hero Section -->
+    <section class="hero">
+      <div class="container">
+        <div class="hero-container">
+          <div class="hero-content">
+            <span class="hero-tagline">Papiers Peints Premium</span>
+            <h1>Créez le Papier Peint de vos Rêves</h1>
+            <p>Découvrez notre plateforme de personnalisation avancée pour concevoir des papiers peints uniques qui reflètent votre style et votre personnalité.</p>
+            <div class="hero-buttons">
+              <button class="btn btn-primary">Explorer le Catalogue</button>
+              <button class="btn btn-outline">Personnaliser</button>
+            </div>
+            <div class="hero-stats">
+              <div class="hero-stat">
+                <div class="hero-stat-number">12k+</div>
+                <div class="hero-stat-text">Designs</div>
+              </div>
+              <div class="hero-stat">
+                <div class="hero-stat-number">5k+</div>
+                <div class="hero-stat-text">Clients Satisfaits</div>
+              </div>
+              <div class="hero-stat">
+                <div class="hero-stat-number">150+</div>
+                <div class="hero-stat-text">Designers</div>
+              </div>
+            </div>
+          </div>
+          <div class="hero-image-container">
+            <div class="hero-image">
+              <img src="/api/placeholder/600/500" alt="Intérieur avec papier peint design élégant">
+            </div>
+            <div class="hero-badge">
+              <span>NOUVEAU</span>
+              <span>2025</span>
+            </div>
+            <div class="hero-image-accent"></div>
+          </div>
+        </div>
+      </div>
+      <div class="scroll-arrow">
+        <i class="fas fa-angle-down"></i>
+        <span>Découvrir</span>
+      </div>
+    </section>
+
+    <!-- Features -->
+    <section class="features" id="features">
+      <div class="container">
+        <div class="section-title">
+          <h2>Pourquoi Choisir WallArt</h2>
+          <p>Notre plateforme offre une expérience unique pour créer et acheter des papiers peints personnalisés de haute qualité.</p>
+        </div>
+        <div class="feature-cards">
+          <div class="feature-card">
+            <div class="feature-icon">
+              <i class="fas fa-paint-brush"></i>
+            </div>
+            <h3>Personnalisation Avancée</h3>
+            <p>Modifiez les couleurs, les motifs et ajoutez votre touche personnelle à n'importe quel design pour un résultat unique.</p>
+            <a href="#" class="btn-link">En savoir plus <i class="fas fa-arrow-right"></i></a>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">
+              <i class="fas fa-users"></i>
+            </div>
+            <h3>Communauté Active</h3>
+            <p>Échangez avec des designers et d'autres clients pour trouver l'inspiration parfaite pour votre intérieur.</p>
+            <a href="#" class="btn-link">En savoir plus <i class="fas fa-arrow-right"></i></a>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">
+              <i class="fas fa-chart-line"></i>
+            </div>
+            <h3>Suivi Personnalisé</h3>
+            <p>Suivez vos commandes et vos ventes depuis votre tableau de bord interactif et recevez des mises à jour en temps réel.</p>
+            <a href="#" class="btn-link">En savoir plus <i class="fas fa-arrow-right"></i></a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Collections -->
+    <section class="collections" id="collections">
+      <div class="container">
+        <div class="collection-header">
+          <h2>Nos Collections</h2>
+          <button class="btn btn-secondary">Voir Tout</button>
+        </div>
+        <div class="collection-tabs">
+          <div class="collection-tab active">Tous</div>
+          <div class="collection-tab">Moderne</div>
+          <div class="collection-tab">Classique</div>
+          <div class="collection-tab">Nature</div>
+          <div class="collection-tab">Géométrique</div>
+        </div>
+        <div class="collection-grid">
+          <div class="collection-card">
+            <div class="collection-card-img">
+              <img src="/api/placeholder/380/250" alt="Papier peint motif vagues abstraites">
+              <div class="collection-overlay"></div>
+              <div class="collection-badge">Populaire</div>
+            </div>
+            <div class="collection-card-content">
+              <h3>Vagues Abstraites</h3>
+              <p>Design moderne avec motif ondulé, parfait pour les espaces contemporains.</p>
+              <div class="collection-meta">
+                <div class="collection-price">39,99 € <span>/ rouleau</span></div>
+                <div class="collection-actions">
+                  <div class="action-icon">
+                    <i class="fas fa-eye"></i>
+                  </div>
+                  <div class="action-icon">
+                    <i class="fas fa-heart"></i>
+                  </div>
+                  <div class="action-icon">
+                    <i class="fas fa-shopping-cart"></i>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="collection-card">
+            <div class="collection-card-img">
+              <img src="/api/placeholder/380/250" alt="Papier peint motif floral vintage">
+              <div class="collection-overlay"></div>
+              <div class="collection-badge">Nouveau</div>
+            </div>
+            <div class="collection-card-content">
+              <h3>Floral Vintage</h3>
+              <p>Motifs floraux classiques et élégants inspirés des designs traditionnels.</p>
+              <div class="collection-meta">
+                <div class="collection-price">45,99 € <span>/ rouleau</span></div>
+                <div class="collection-actions">
+                  <div class="action-icon">
+                    <i class="fas fa-eye"></i>
+                  </div>
+                  <div class="action-icon">
+                    <i class="fas fa-heart"></i>
+                  </div>
+                  <div class="action-icon">
+                    <i class="fas fa-shopping-cart"></i>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="collection-card">
+            <div class="collection-card-img">
+              <img src="/api/placeholder/380/250" alt="Papier peint motif jungle tropicale">
+              <div class="collection-overlay"></div>
+            </div>
+            <div class="collection-card-content">
+              <h3>Jungle Tropicale</h3>
+              <p>Immersion dans une nature luxuriante avec des motifs exotiques vibrants.</p>
+              <div class="collection-meta">
+                <div class="collection-price">49,99 € <span>/ rouleau</span></div>
+                <div class="collection-actions">
+                  <div class="action-icon">
+                    <i class="fas fa-eye"></i>
+                  </div>
+                  <div class="action-icon">
+                    <i class="fas fa-heart"></i>
+                  </div>
+                  <div class="action-icon">
+                    <i class="fas fa-shopping-cart"></i>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="collection-card">
+            <div class="collection-card-img">
+              <img src="/api/placeholder/380/250" alt="Papier peint motif géométrique urbain">
+              <div class="collection-overlay"></div>
+              <div class="collection-badge">-15%</div>
+            </div>
+            <div class="collection-card-content">
+              <h3>Géométrie Urbaine</h3>
+              <p>Formes géométriques contemporaines pour un intérieur moderne et dynamique.</p>
+              <div class="collection-meta">
+                <div class="collection-price">42,99 € <span>/ rouleau</span></div>
+                <div class="collection-actions">
+                  <div class="action-icon">
+                    <i class="fas fa-eye"></i>
+                  </div>
+                  <div class="action-icon">
+                    <i class="fas fa-heart"></i>
+                  </div>
+                  <div class="action-icon">
+                    <i class="fas fa-shopping-cart"></i>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="view-all-btn">
+          <button class="btn btn-primary">Voir Toutes les Collections</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Customization -->
+    <section class="customization" id="customization">
+      <div class="container">
+        <div class="customization-container">
+          <div class="customization-image">
+            <div class="customization-img-main">
+              <img src="/api/placeholder/550/400" alt="Outil de personnalisation">
+            </div>
+            <div class="customization-tools">
+              <div class="tool-icon">
+                <i class="fas fa-palette"></i>
+              </div>
+              <div class="tool-icon">
+                <i class="fas fa-crop"></i>
+              </div>
+              <div class="tool-icon">
+                <i class="fas fa-adjust"></i>
+              </div>
+              <div class="tool-icon">
+                <i class="fas fa-magic"></i>
+              </div>
+            </div>
+            <div class="customization-img-accent"></div>
+          </div>
+          <div class="customization-content">
+            <h2>Personnalisez à l'Infini</h2>
+            <p>Notre outil de personnalisation avancé vous permet de modifier chaque aspect de votre papier peint pour créer un design qui vous ressemble vraiment et s'adapte parfaitement à votre intérieur.</p>
+            <div class="customization-steps">
+              <div class="step">
+                <div class="step-number">1</div>
+                <div class="step-content">
+                  <h4>Choisissez un Design</h4>
+                  <p>Parcourez notre vaste catalogue et sélectionnez le design qui vous inspire parmi des milliers de modèles.</p>
+                </div>
+              </div>
+              <div class="step">
+                <div class="step-number">2</div>
+                <div class="step-content">
+                  <h4>Personnalisez-le</h4>
+                  <p>Modifiez les couleurs, les motifs, les dimensions et ajoutez des éléments personnels selon vos préférences.</p>
+                </div>
+              </div>
+              <div class="step">
+                <div class="step-number">3</div>
+                <div class="step-content">
+                  <h4>Visualisez le Résultat</h4>
+                  <p>Utilisez notre aperçu en 3D en temps réel pour voir votre création dans un intérieur similaire au vôtre.</p>
+                </div>
+              </div>
+            </div>
+            <button class="btn btn-secondary">Essayer Maintenant</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Testimonials -->
+    <section class="testimonials-section" id="testimonials">
+      <div class="container">
+        <div class="section-title">
+          <h2>Ce que disent nos Clients</h2>
+          <p>Rejoignez des milliers de clients satisfaits qui ont transformé leurs espaces avec nos papiers peints personnalisés.</p>
+        </div>
+        <div class="testimonials">
+          <div class="testimonial">
+            <div class="testimonial-quote">
+              <i class="fas fa-quote-right"></i>
+            </div>
+            <div class="testimonial-content">
+              "J'ai trouvé exactement ce que je cherchais pour ma chambre. La possibilité de personnaliser les couleurs a fait toute la différence et le résultat dépasse mes attentes !"
+            </div>
+            <div class="testimonial-author">
+              <div class="author-image">
+                <img src="/api/placeholder/60/60" alt="Photo client">
+              </div>
+              <div class="author-info">
+                <h4>Sophie Martin</h4>
+                <p>Cliente Particulière</p>
+                <div class="rating">
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="testimonial">
+            <div class="testimonial-quote">
+              <i class="fas fa-quote-right"></i>
+            </div>
+            <div class="testimonial-content">
+              "En tant que designer, cette plateforme m'a permis de toucher un public plus large et de vendre mes créations de manière simple et efficace. L'interface est intuitive et puissante."
+            </div>
+            <div class="testimonial-author">
+              <div class="author-image">
+                <img src="/api/placeholder/60/60" alt="Photo designer">
+              </div>
+              <div class="author-info">
+                <h4>Thomas Durand</h4>
+                <p>Designer d'Intérieur</p>
+                <div class="rating">
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star-half-alt"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="testimonial">
+            <div class="testimonial-quote">
+              <i class="fas fa-quote-right"></i>
+            </div>
+            <div class="testimonial-content">
+              "La qualité des papiers peints est impressionnante et le service client est exceptionnel. Mes clients sont toujours ravis des résultats, je recommande vivement !"
+            </div>
+            <div class="testimonial-author">
+              <div class="author-image">
+                <img src="/api/placeholder/60/60" alt="Photo décorateur">
+              </div>
+              <div class="author-info">
+                <h4>Julie Lefevre</h4>
+                <p>Décoratrice d'Intérieur</p>
+                <div class="rating">
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Newsletter -->
+    <section class="newsletter">
+      <div class="container">
+        <div class="newsletter-container">
+          <div class="newsletter-content">
+            <h2>Restez Informé</h2>
+            <p>Inscrivez-vous à notre newsletter pour recevoir les dernières tendances, conseils de décoration et offres exclusives directement dans votre boîte mail.</p>
+          </div>
+          <form class="newsletter-form">
+            <input type="email" class="newsletter-input" placeholder="Votre email" required>
+            <button type="submit" class="btn btn-secondary">S'inscrire</button>
+          </form>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <div class="footer-top">
+        <div class="footer-info">
+          <a href="#" class="footer-logo">Wall<span>Art</span></a>
+          <p class="footer-description">
+            WallArt est la plateforme leader pour la création et l'achat de papiers peints personnalisés de haute qualité, mettant en relation designers talentueux et clients exigeants.
+          </p>
+          <div class="social-icons">
+            <a href="#" class="social-icon"><i class="fab fa-facebook-f"></i></a>
+            <a href="#" class="social-icon"><i class="fab fa-instagram"></i></a>
+            <a href="#" class="social-icon"><i class="fab fa-pinterest-p"></i></a>
+            <a href="#" class="social-icon"><i class="fab fa-twitter"></i></a>
+          </div>
+        </div>
+        <div class="footer-nav">
+          <h3 class="footer-links-title">Navigation</h3>
+          <ul class="footer-links">
+            <li><a href="#">Accueil</a></li>
+            <li><a href="#">Catalogue</a></li>
+            <li0">
+  <title>WallArt - Papiers Peints Personnalisés</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      /* New softer, more sophisticated color palette */
+      --primary: #4A6C8B;         /* Muted blue - more elegant than the previous bright blue */
+      --primary-light: #6D8BA6;   /* Lighter version for hover states */
+      --primary-dark: #354E64;    /* Darker version for contrast */
+      --secondary: #D9A566;       /* Warm gold - more sophisticated than orange */
+      --secondary-light: #E6C393; /* Lighter gold for hover states */
+      --secondary-dark: #B78546;  /* Darker gold for contrast */
+      --accent: #9C6A8C;          /* Soft purple as an accent */
+      --light: #F8F7F5;           /* Off-white instead of pure white - easier on the eyes */
+      --dark: #2D3142;            /* Deep blue-gray instead of black */
+      --neutral: #E0DED8;         /* Warm gray for backgrounds */
+      --text: #4F4F4F;            /* Softer than black for body text */
+      --text-light: #8E8E8E;      /* For secondary text */
+      --shadow: 0 8px 30px rgba(0, 0, 0, 0.06);
+      --transition: all 0.3s ease-in-out;
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      background-color: var(--light);
+      color: var(--text);
+      line-height: 1.7;
+      font-family: 'Poppins', sans-serif;
+      font-weight: 300;
+      overflow-x: hidden;
+    }
+    
+    h1, h2, h3, h4, h5, h6 {
+      font-family: 'Playfair Display', serif;
+      font-weight: 600;
+      color: var(--dark);
+      line-height: 1.3;
+    }
+    
+    a {
+      text-decoration: none;
+      color: inherit;
+      transition: var(--transition);
+    }
+    
+    img {
+      max-width: 100%;
+      height: auto;
+    }
+    
+    .container {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 0 2rem;
+    }
+    
+    @media (max-width: 768px) {
+      .container {
+        padding: 0 1.5rem;
+      }
+    }
+    
+    /* Buttons */
+    .btn {
+      display: inline-block;
+      padding: 0.75rem 2rem;
+      border-radius: 30px;
+      font-weight: 500;
+      font-size: 0.95rem;
+      letter-spacing: 0.5px;
+      cursor: pointer;
+      transition: var(--transition);
+      text-align: center;
+      border: none;
+      font-family: 'Poppins', sans-serif;
+    }
+    
+    .btn-primary {
+      background-color: var(--primary);
+      color: white;
+      box-shadow: 0 4px 15px rgba(74, 108, 139, 0.2);
+    }
+    
+    .btn-primary:hover {
+      background-color: var(--primary-dark);
+      transform: translateY(-3px);
+      box-shadow: 0 6px 20px rgba(74, 108, 139, 0.25);
+    }
+    
+    .btn-secondary {
+      background-color: var(--secondary);
+      color: var(--dark);
+      box-shadow: 0 4px 15px rgba(217, 165, 102, 0.2);
+    }
+    
+    .btn-secondary:hover {
+      background-color: var(--secondary-dark);
+      color: white;
+      transform: translateY(-3px);
+      box-shadow: 0 6px 20px rgba(217, 165, 102, 0.25);
+    }
+    
+    .btn-outline {
+      background-color: transparent;
+      border: 2px solid var(--primary);
+      color: var(--primary);
+    }
+    
+    .btn-outline:hover {
+      background-color: var(--primary);
+      color: white;
+      transform: translateY(-3px);
+    }
+    
+    .btn-white {
+      background-color: white;
+      color: var(--primary);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    }
+    
+    .btn-white:hover {
+      background-color: var(--light);
+      transform: translateY(-3px);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+    }
+    
+    .btn-link {
+      color: var(--primary);
+      padding: 0;
+      background: none;
+      font-weight: 500;
+      position: relative;
+    }
+    
+    .btn-link::after {
+      content: '';
+      position: absolute;
+      width: 0;
+      height: 2px;
+      bottom: -4px;
+      left: 0;
+      background-color: var(--primary);
+      transition: var(--transition);
+    }
+    
+    .btn-link:hover::after {
+      width: 100%;
+    }
+    
+    /* Header */
+    header {
+      background-color: rgba(255, 255, 255, 0.95);
+      box-shadow: var(--shadow);
+      position: fixed;
+      width: 100%;
+      top: 0;
+      z-index: 1000;
+      padding: 0.75rem 0;
+      backdrop-filter: blur(10px);
+    }
+    
+    .header-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .logo {
+      font-family: 'Playfair Display', serif;
+      font-weight: 700;
+      font-size: 1.8rem;
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+    }
+    
+    .logo span {
+      color: var(--secondary);
+    }
+    
+    .logo-icon {
+      margin-right: 0.5rem;
+      font-size: 1.5rem;
+    }
+    
+    nav ul {
+      display: flex;
+      list-style: none;
+      gap: 2.5rem;
+    }
+    
+    nav a {
+      text-decoration: none;
+      color: var(--dark);
+      font-weight: 500;
+      font-size: 0.95rem;
+      position: relative;
+      padding: 0.5rem 0;
+      letter-spacing: 0.5px;
+    }
+    
+    nav a::after {
+      content: '';
+      position: absolute;
+      width: 0;
+      height: 2px;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: var(--primary);
+      transition: var(--transition);
+    }
+    
+    nav a:hover {
+      color: var(--primary);
+    }
+    
+    nav a:hover::after {
+      width: 100%;
+    }
+    
+    nav a.active {
+      color: var(--primary);
+    }
+    
+    nav a.active::after {
+      width: 100%;
+    }
+    
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+    }
+    
+    .search-box {
+      padding: 0.65rem 1.2rem;
+      border: 1px solid #E0E0E0;
+      border-radius: 30px;
+      width: 220px;
+      transition: var(--transition);
+      font-family: 'Poppins', sans-serif;
+      font-size: 0.9rem;
+    }
+    
+    .search-box:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(74, 108, 139, 0.1);
+      width: 240px;
+    }
+    
+    .mobile-menu-toggle {
+      display: none;
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 1.5rem;
+      color: var(--dark);
+    }
+
+    /* Add spacing to account for fixed header */
+    main {
+      padding-top: 80px;
+    }
+    
+    @media (max-width: 992px) {
+      nav {
+        display: none;
+      }
+      
+      .mobile-menu-toggle {
+        display: block;
+      }
+      
+      .search-box {
+        display: none;
+      }
+    }
+    
+    /* Hero Section */
+    .hero {
+      position: relative;
+      padding: 6rem 0 5rem;
+      overflow: hidden;
+      background-color: var(--light);
+    }
+    
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(45deg, rgba(74, 108, 139, 0.03), rgba(217, 165, 102, 0.03));
+      z-index: -1;
+    }
+    
+    .hero-container {
+      display: flex;
+      align-items: center;
+      gap: 4rem;
+    }
+    
+    .hero-content {
+      flex: 1;
+      max-width: 600px;
+    }
+    
+    .hero-tagline {
+      text-transform: uppercase;
+      font-size: 0.85rem;
+      font-weight: 600;
+      letter-spacing: 2px;
+      color: var(--secondary);
+      margin-bottom: 1.5rem;
+      display: inline-block;
+      position: relative;
+      padding-left: 3rem;
+    }
+    
+    .hero-tagline::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 2.5rem;
+      height: 1px;
+      background-color: var(--secondary);
+    }
+    
+    .hero-content h1 {
+      font-size: 3.5rem;
+      margin-bottom: 1.5rem;
+      line-height: 1.2;
+    }
+    
+    .hero-content p {
+      color: var(--text-light);
+      margin-bottom: 2.5rem;
+      font-size: 1.1rem;
+      max-width: 95%;
+    }
+    
+    .hero-buttons {
+      display: flex;
+      gap: 1.5rem;
+      margin-bottom: 3rem;
+    }
+    
+    .hero-stats {
+      display: flex;
+      gap: 3rem;
+    }
+    
+    .hero-stat {
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .hero-stat-number {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: var(--primary);
+      font-family: 'Playfair Display', serif;
+      margin-bottom: 0.5rem;
+    }
+    
+    .hero-stat-text {
+      font-size: 0.9rem;
+      color: var(--text-light);
+    }
+    
+    .hero-image-container {
+      flex: 1;
+      position: relative;
+    }
+    
+    .hero-image {
+      position: relative;
+      z-index: 1;
+      border-radius: 15px;
+      overflow: hidden;
+      box-shadow: var(--shadow);
+    }
+    
+    .hero-image img {
+      width: 100%;
+      height: auto;
+      display: block;
+      border-radius: 15px;
+      transition: transform 3s ease;
+    }
+    
+    .hero-image:hover img {
+      transform: scale(1.03);
+    }
+    
+    .hero-badge {
+      position: absolute;
+      top: -20px;
+      right: -20px;
+      background-color: var(--secondary);
+      color: white;
+      padding: 1.5rem;
+      border-radius: 50%;
+      width: 90px;
+      height: 90px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      line-height: 1.2;
+      font-size: 0.9rem;
+      z-index: 2;
+      box-shadow: var(--shadow);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      animation: pulse 2s infinite;
+    }
+    
+    @keyframes pulse {
+      0% {
+        transform: scale(1);
+      }
+      50% {
+        transform: scale(1.05);
+      }
+      100% {
+        transform: scale(1);
+      }
+    }
+    
+    .hero-image-accent {
+      position: absolute;
+      bottom: -30px;
+      left: -30px;
+      width: 200px;
+      height: 200px;
+      background-color: var(--primary-light);
+      opacity: 0.1;
+      border-radius: 50%;
+      z-index: 0;
+    }
+    
+    .scroll-arrow {
+      position: absolute;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      text-align: center;
+      cursor: pointer;
+      transition: var(--transition);
+      animation: bounce 2s infinite;
+    }
+    
+    @keyframes bounce {
+      0%, 20%, 50%, 80%, 100% {
+        transform: translateY(0) translateX(-50%);
+      }
+      40% {
+        transform: translateY(-20px) translateX(-50%);
+      }
+      60% {
+        transform: translateY(-10px) translateX(-50%);
+      }
+    }
+    
+    .scroll-arrow i {
+      font-size: 2rem;
+      color: var(--primary);
+    }
+    
+    .scroll-arrow span {
+      display: block;
+      font-size: 0.8rem;
+      color: var(--text-light);
+      margin-top: 0.5rem;
+    }
+    
+    @media (max-width: 992px) {
+      .hero-container {
+        flex-direction: column;
+        text-align: center;
+        gap: 3rem;
+      }
+      
+      .hero-tagline {
+        padding-left: 0;
+      }
+      
+      .hero-tagline::before {
+        display: none;
+      }
+      
+      .hero-content h1 {
+        font-size: 2.5rem;
+      }
+      
+      .hero-content p {
+        margin: 0 auto 2.5rem;
+      }
+      
+      .hero-buttons {
+        justify-content: center;
+      }
+      
+      .hero-stats {
+        justify-content: center;
+      }
+    }
+    
+    @media (max-width: 576px) {
+      .hero-content h1 {
+        font-size: 2rem;
+      }
+      
+      .hero-buttons {
+        flex-direction: column;
+        gap: 1rem;
+      }
+      
+      .hero-stats {
+        flex-direction: column;
+        gap: 1.5rem;
+        align-items: center;
+      }
+    }
+    
+    /* Features */
+    .features {
+      padding: 6rem 0;
+      background-color: white;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .features::before {
+      content: '';
+      position: absolute;
+      width: 500px;
+      height: 500px;
+      border-radius: 50%;
+      background-color: rgba(74, 108, 139, 0.03);
+      top: -250px;
+      right: -250px;
+      z-index: 0;
+    }
+    
+    .section-title {
+      text-align: center;
+      margin-bottom: 4rem;
+      position: relative;
+      z-index: 1;
+    }
+    
+    .section-title h2 {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+      position: relative;
+      display: inline-block;
+    }
+    
+    .section-title h2::after {
+      content: '';
+      position: absolute;
+      width: 80px;
+      height: 3px;
+      background-color: var(--secondary);
+      left: 50%;
+      transform: translateX(-50%);
+      bottom: -15px;
+    }
+    
+    .section-title p {
+      color: var(--text-light);
+      max-width: 700px;
+      margin: 1.5rem auto 0;
+      font-size: 1.1rem;
+    }
+    
+    .feature-cards {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2.5rem;
+      position: relative;
+      z-index: 1;
+    }
+    
+    .feature-card {
+      background-color: white;
+      border-radius: 15px;
+      padding: 3rem 2rem;
+      box-shadow: var(--shadow);
+      transition: var(--transition);
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      z-index: 1;
+    }
+    
+    .feature-card::before {
+      content: '';
+      position: absolute;
+      width: 100%;
+      height: 5px;
+      background-color: var(--primary);
+      top: 0;
+      left: 0;
+      transition: var(--transition);
+    }
+    
+    .feature-card:nth-child(2)::before {
+      background-color: var(--secondary);
+    }
+    
+    .feature-card:nth-child(3)::before {
+      background-color: var(--accent);
+    }
+    
+    .feature-card:hover {
+      transform: translateY(-15px);
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+    }
+    
+    .feature-icon {
+      width: 80px;
+      height: 80px;
+      background-color: var(--light);
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      margin: 0 auto 2rem;
+      font-size: 2rem;
+      transition: var(--transition);
+    }
+    
+    .feature-card:nth-child(2) .feature-icon {
+      color: var(--secondary);
+    }
+    
+    .feature-card:nth-child(3) .feature-icon {
+      color: var(--accent);
+    }
+    
+    .feature-card:hover .feature-icon {
+      background-color: var(--primary);
+      color: white;
+      transform: scale(1.1);
+    }
+    
+    .feature-card:nth-child(2):hover .feature-icon {
+      background-color: var(--secondary);
+    }
+    
+    .feature-card:nth-child(3):hover .feature-icon {
+      background-color: var(--accent);
+    }
+    
+    .feature-card h3 {
+      margin-bottom: 1rem;
+      font-size: 1.5rem;
+      transition: var(--transition);
+    }
+    
+    .feature-card p {
+      color: var(--text-light);
+      margin-bottom: 1.5rem;
+      transition: var(--transition);
+    }
+    
+    .feature-card .btn-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    .feature-card .btn-link i {
+      transition: var(--transition);
+    }
+    
+    .feature-card:hover .btn-link i {
+      transform: translateX(5px);
+    }
+    
+    @media (max-width: 992px) {
+      .feature-cards {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+    
+    @media (max-width: 768px) {
+      .feature-cards {
+        grid-template-columns: 1fr;
+        max-width: 500px;
+        margin: 0 auto;
+      }
+      
+      .section-title h2 {
+        font-size: 2rem;
+      }
+    }
+    
+    /* Collections */
+    .collections {
+      padding: 6rem 0;
+      background-color: var(--light);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .collections::before {
+      content: '';
+      position: absolute;
+      width: 500px;
+      height: 500px;
+      border-radius: 50%;
+      background-color: rgba(217, 165, 102, 0.05);
+      bottom: -250px;
+      left: -250px;
+      z-index: 0;
+    }
+    
+    .collection-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2.5rem;
+      position: relative;
+      z-index: 1;
+    }
+    
+    .collection-tabs {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 3rem;
+      flex-wrap: wrap;
+      position: relative;
+      z-index: 1;
+      justify-content: center;
+    }
+    
+    .collection-tab {
+      padding: 0.75rem 1.5rem;
+      border-radius: 30px;
+      cursor: pointer;
+      font-weight: 500;
+      transition: var(--transition);
+      background-color: white;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+      font-size: 0.9rem;
+    }
+    
+    .collection-tab.active {
+      background-color: var(--primary);
+      color: white;
+    }
+    
+    .collection-tab:hover:not(.active) {
+      background-color: rgba(74, 108, 139, 0.1);
+      transform: translateY(-3px);
+    }
+    
+    .collection-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 2.5rem;
+      position: relative;
+      z-index: 1;
+    }
+    
+    .collection-card {
+      background-color: white;
+      border-radius: 15px;
+      overflow: hidden;
+      box-shadow: var(--shadow);
+      transition: var(--transition);
+      position: relative;
+    }
+    
+    .collection-card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+    }
+    
+    .collection-card-img {
+      position: relative;
+      overflow: hidden;
+      height: 250px;
+    }
+    
+    .collection-card img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: var(--transition);
+    }
+    
+    .collection-card:hover img {
+      transform: scale(1.05);
+    }
+    
+    .collection-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(to bottom, rgba(0,0,0,0) 50%, rgba(0,0,0,0.5) 100%);
+    }
+    
+    .collection-badge {
+      position: absolute;
+      top: 1rem;
+      left: 1rem;
+      background-color: var(--secondary);
+      color: white;
+      font-size: 0.8rem;
+      padding: 0.4rem 1rem;
+      border-radius: 20px;
+      font-weight: 500;
+      z-index: 2;
+    }
+    
+    .collection-card-content {
+      padding: 2rem;
+    }
+    
+    .collection-card-content h3 {
+      margin-bottom: 0.5rem;
+      font-size: 1.4rem;
+      transition: var(--transition);
+    }
+    
+    .collection-card:hover h3 {
+      color: var(--primary);
+    }
+    
+    .collection-card-content p {
+      color: var(--text-light);
+      margin-bottom: 1.5rem;
+      font-size: 0.95rem;
+    }
+    
+    .collection-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .collection-price {
+      font-weight: 600;
+      font-size: 1.3rem;
+      color: var(--dark);
+    }
+    
+    .collection-price span {
+      font-size: 0.9rem;
+      color: var(--text-light);
+      font-weight: 400;
+    }
+    
+    .collection-actions {
+      display: flex;
+      gap: 0.8rem;
+    }
+    
+    .action-icon {
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: var(--light);
+      border-radius: 50%;
+      cursor: pointer;
+      transition: var(--transition);
+      font-size: 0.9rem;
+    }
+    
+    .action-icon:hover {
+      background-color: var(--primary);
+      color: white;
+      transform: translateY(-3px);
+    }
+    
+    .view-all-btn {
+      text-align: center;
+      margin-top: 3.5rem;
+    }
+    
+    @media (max-width: 576px) {
+      .collection-header {
+        flex-direction: column;
+        gap: 1.5rem;
+        text-align: center;
+      }
+      
+      .collection-tabs {
+        justify-content: center;
+      }
+    }
+    
+    /* Customization */
+    .customization {
+      padding: 7rem 0;
+      background-color: white;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .customization::before {
+      content: '';
+      position: absolute;
+      width: 600px;
+      height: 600px;
+      border-radius: 50%;
+      background-color: rgba(74, 108, 139, 0.03);
+      top: -300px;
+      right: -200px;
+      z-index: 0;
+    }
+    
+    .customization-container {
+      display: flex;
+      gap: 5rem;
+      align-items: center;
+      position: relative;
+      z-index: 1;
+    }
+    
+    .customization-image {
+      flex: 1;
+      position: relative;
+    }
+    
+    .customization-img-main {
+      border-radius: 15px;
+      overflow: hidden;
+      box-shadow: var(--shadow);
+      position: relative;
+      z-index: 2;
+    }
+    
+    .customization-img-main img {
+      width: 100%;
+      border-radius: 15px;
+      display: block;
+    }
+    
+    .customization-tools {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      z-index: 3;
+    }
+    
+    .tool-icon {
+      width: 50px;
+      height: 50px;
+      background-color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      cursor: pointer;
+      transition: var(--transition);
+      color: var(--dark);
+    }
+    
+    .tool-icon:hover {
+      background-color: var(--primary);
+      color: white;
+      transform: scale(1.1);
+    }
+    
+    .customization-img-accent {
+      position: absolute;
+      width: 200px;
+      height: 200px;
+      background-color: var(--secondary);
+      opacity: 0.1;
+      z-index: 1;
+      border-radius: 15px;
+      bottom: -40px;
+      left: -40px;
+    }
+    
+    .customization-content {
+      flex: 1;
+    }
+    
+    .customization-content h2 {
+      font-size: 2.5rem;
+      margin-bottom: 1.5rem;
+      position: relative;
+    }
+    
+    .customization-content h2::after {
+      content: '';
+      position: absolute;
+      width: 80px;
+      height: 3px;
+      background-color: var(--secondary);
+      left: 0;
+      bottom: -15px;
+    }
+    
+    .customization-content p {
+      margin-bottom: 2.5rem;
+      color: var(--text-light);
+      margin-top: 1.5rem;
+    }
+    
+    .

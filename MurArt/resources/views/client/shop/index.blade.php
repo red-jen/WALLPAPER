@@ -5,6 +5,8 @@
 @section('content')
 <div class="container py-5">
     <!-- Alerts -->
+<!-- In show.blade.php, near the top of the content section -->
+<div class="container py-5">
     @if(session('success'))
         <div class="alert alert-success">
             {{ session('success') }}
@@ -16,6 +18,9 @@
             {{ session('error') }}
         </div>
     @endif
+    
+    <div class="row">
+        <!-- rest of your code -->
 
     <!-- Breadcrumb -->
     <nav aria-label="breadcrumb">
@@ -52,45 +57,46 @@
     </div>
 
     <!-- Wallpapers Grid -->
-    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
-        @forelse($wallpapers as $wallpaper)
-            <div class="col">
-                <div class="card h-100 wallpaper-card">
-                    <a href="{{ route('shop.show', $wallpaper) }}" class="text-decoration-none">
-                        <div class="wallpaper-thumbnail">
-                            <img src="{{ $wallpaper->getImageUrlAttribute() }}" 
-                                class="card-img-top" 
-                                alt="{{ $wallpaper->title }}">
-                        </div>
-                    </a>
-                    <div class="card-body">
-                        <h5 class="card-title">
-                            <a href="{{ route('shop.show', $wallpaper) }}" class="text-decoration-none text-dark">
-                                {{ $wallpaper->title }}
-                            </a>
-                        </h5>
-                        <p class="card-text text-muted mb-1">{{ $wallpaper->category->name }}</p>
-                        <p class="card-text fs-5 fw-bold">${{ number_format($wallpaper->price, 2) }}</p>
+
+<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
+    @forelse($wallpapers as $wallpaper)
+        <div class="col">
+            <div class="card h-100 wallpaper-card">
+                <a href="{{ route('shop.show', $wallpaper) }}" class="text-decoration-none">
+                    <div class="wallpaper-thumbnail">
+                        <img src="{{ $wallpaper->getImageUrlAttribute() }}" 
+                             class="card-img-top" 
+                             alt="{{ $wallpaper->title }}">
                     </div>
-                    <div class="card-footer">
-                        <form action="{{ route('shop.cart.add', $wallpaper) }}" method="POST">
-                            @csrf
-                            <input type="hidden" name="quantity" value="1">
-                            <button type="submit" class="btn btn-primary w-100" {{ $wallpaper->stock <= 0 ? 'disabled' : '' }}>
-                                {{ $wallpaper->stock > 0 ? 'Add to Cart' : 'Out of Stock' }}
-                            </button>
-                        </form>
-                    </div>
+                </a>
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <a href="{{ route('shop.show', $wallpaper) }}" class="text-decoration-none text-dark">
+                            {{ $wallpaper->title }}
+                        </a>
+                    </h5>
+                    <p class="card-text text-muted mb-1">{{ $wallpaper->category->name ?? 'Uncategorized' }}</p>
+                    <p class="card-text fs-5 fw-bold">${{ number_format($wallpaper->price, 2) }}</p>
+                </div>
+                <div class="card-footer">
+                    <form action="{{ route('shop.wallpaper.cart.add', $wallpaper) }}" method="POST">
+                        @csrf
+                        <input type="hidden" name="quantity" value="1">
+                        <button type="submit" class="btn btn-primary w-100" {{ $wallpaper->stock <= 0 ? 'disabled' : '' }}>
+                            {{ $wallpaper->stock > 0 ? 'Add to Cart' : 'Out of Stock' }}
+                        </button>
+                    </form>
                 </div>
             </div>
-        @empty
-            <div class="col-12">
-                <div class="alert alert-info">
-                    No wallpapers found matching your criteria.
-                </div>
+        </div>
+    @empty
+        <div class="col-12">
+            <div class="alert alert-info">
+                No wallpapers found matching your criteria.
             </div>
-        @endforelse
-    </div>
+        </div>
+    @endforelse
+</div>
 
     <!-- Pagination -->
     <div class="d-flex justify-content-center mt-4">

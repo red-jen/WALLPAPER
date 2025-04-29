@@ -20,18 +20,51 @@ use App\Http\Controllers\Client\ArtworkController as ClientArtworkController;
 use App\Http\Controllers\admin\WallpaperController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\CartController;
+use App\Http\Controllers\Client\ShopController;
 
 use App\Http\Controllers\Client\DesignController as ClientDesignController;
 
 
 use App\Http\Controllers\Admin\ArtworkController;
 // Home route
-Route::get('/', [HomeController::class, 'index'])->name('home');
+Route::get('/order', [ShopController::class, 'index'])->name('orders.index');
 
+Route::get('/contact/submit', [ShopController::class, 'index'])->name('contact.submit');
+Route::get('/admin/dashboard', [ShopController::class, 'index'])->name('admin.dashboard');
+// Basic pages
+Route::get('/', [HomeController::class, 'index'])->name('home');
+Route::get('/about', [PageController::class, 'about'])->name('about');
+// Route::get('/contact', [PageController::class, 'contact'])->name('contact');
+Route::get('/faq', [PageController::class, 'faq'])->name('faq');
+Route::get('/returns', [PageController::class, 'returns'])->name('returns');
+
+Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
+Route::post('/artworks/{artwork}/cart', [CartController::class, 'addArtwork'])->name('artworks.addToCart');
+Route::delete('/cart/{item}', [CartController::class, 'removeItem'])->name('cart.removeItem');
+Route::put('/cart/{item}', [CartController::class, 'updateItem'])->name('cart.updateItem');
+Route::get('/checkout', [CartController::class, 'checkout'])->name('cart.checkout');
+Route::get('/shop', [CartController::class, 'check'])->name('shop.index');
+// Don't forget to import the controller at the top of the file
+
+
+
+
+// Purchase routes
+Route::post('/checkout/process', [CartController::class, 'processCheckout'])->name('checkout.process');
+Route::get('/checkout/success', [CartController::class, 'checkoutSuccess'])->name('checkout.success');
+Route::get('/checkout/cancel', [CartController::class, 'checkoutCancel'])->name('checkout.cancel');
+
+
+// Newsletter subscription
+Route::post('/newsletter/subscribe', [NewsletterController::class, 'subscribe'])->name('newsletter.subscribe');
+
+Route::get('/n', [HomeController::class, 'iondex'])->name('client.home');
+
+Route::get('/aabout', [HomeController::class, 'abaout'])->name('profile.show');
 
 Route::get('/about', [HomeController::class, 'about'])->name('about');
 Route::get('/contact', [HomeController::class, 'contact'])->name('contact');
-Route::get('/contact', [HomeController::class, 'contact'])->name('dashboard');
+// Route::get('/contact', [HomeController::class, 'contact'])->name('dashboard');
 
 Route::post('/contact', [HomeController::class, 'contact'])->name('dashboard');
 Route::get('/nav', function (){
@@ -67,24 +100,7 @@ Route::get('admin.category.create', function (){
             Route::delete('/designer/designs/{design}', [DesignController::class, 'destroy'])->name('designer.designs.destroy');
 
             
-            // Categories routes - expanded from Route::resource
-            Route::get('/categories', [CategoryController::class, 'index'])->name('admin.categories.index');
-            Route::get('/categories/create', [CategoryController::class, 'create'])->name('admin.categories.create');
-            Route::post('/categories', [CategoryController::class, 'store'])->name('admin.categories.store');
-            Route::get('/categories/{category}', [CategoryController::class, 'show'])->name('admin.categories.show');
-            Route::get('/categories/{category}/edit', [CategoryController::class, 'edit'])->name('admin.categories.edit');
-            Route::put('/categories/{category}', [CategoryController::class, 'update'])->name('admin.categories.update');
-            Route::delete('/categories/{category}', [CategoryController::class, 'destroy'])->name('admin.categories.destroy');
-
-
-            Route::get('/tags', [TagController::class, 'index'])->name('admin.tags.index');
-            Route::get('/tags/create', [TagController::class, 'create'])->name('admin.tags.create');
-            Route::post('/tags', [TagController::class, 'store'])->name('admin.tags.store');
-            Route::get('/tags/{tag}', [TagController::class, 'show'])->name('admin.tags.show');
-            Route::get('/tags/{tag}/edit', [TagController::class, 'edit'])->name('admin.tags.edit');
-            Route::put('/tags/{tag}', [TagController::class, 'update'])->name('admin.tags.update');
-            Route::delete('/tags/{tag}', [TagController::class, 'destroy'])->name('admin.tags.destroy');
-
+   
 
 
 
@@ -111,6 +127,18 @@ Route::delete('/reviews/{review}', [ReviewController::class, 'destroy'])->name('
 
 
 
+
+
+
+                      //admin
+
+
+
+
+
+
+
+
 Route::get('/artworks', [ClientArtworkController::class, 'index'])->name('artworks.index');
 Route::get('/artworks/create', [ClientArtworkController::class, 'create'])->name('artworks.create');
 Route::post('/artworks', [ClientArtworkController::class, 'store'])->name('artworks.store');
@@ -130,13 +158,13 @@ Route::post('/artworks/{artwork}/preview/reject', [ClientArtworkController::clas
 
 
 
-Route::get('/wallpapers', [WallpaperController::class, 'index'])->name('admin.wallpapers.index');
-Route::get('/wallpapers/create', [WallpaperController::class, 'create'])->name('admin.wallpapers.create');
-Route::post('/wallpapers', [WallpaperController::class, 'store'])->name('admin.wallpapers.store');
-Route::get('/wallpapers/{wallpaper}', [WallpaperController::class, 'show'])->name('admin.wallpapers.show');
-Route::get('/wallpapers/{wallpaper}/edit', [WallpaperController::class, 'edit'])->name('admin.wallpapers.edit');
-Route::put('/wallpapers/{wallpaper}', [WallpaperController::class, 'update'])->name('admin.wallpapers.update');
-Route::delete('/wallpapers/{wallpaper}', [WallpaperController::class, 'destroy'])->name('admin.wallpapers.destroy');
+Route::get('admin/wallpapers', [WallpaperController::class, 'index'])->name('admin.wallpapers.index');
+Route::get('admin/wallpapers/create', [WallpaperController::class, 'create'])->name('admin.wallpapers.create');
+Route::post('admin/wallpapers', [WallpaperController::class, 'store'])->name('admin.wallpapers.store');
+Route::get('admin/wallpapers/{wallpaper}', [WallpaperController::class, 'show'])->name('admin.wallpapers.show');
+Route::get('admin/wallpapers/{wallpaper}/edit', [WallpaperController::class, 'edit'])->name('admin.wallpapers.edit');
+Route::put('admin/wallpapers/{wallpaper}', [WallpaperController::class, 'update'])->name('admin.wallpapers.update');
+Route::delete('admin/wallpapers/{wallpaper}', [WallpaperController::class, 'destroy'])->name('admin.wallpapers.destroy');
 
 // Add these lines after your existing wallpaper routes
 Route::put('/wallpapers/{wallpaper}/stock', [WallpaperController::class, 'updateStock'])
@@ -160,6 +188,23 @@ Route::post('/wallpapers/{wallpaper}/reorder', [WallpaperController::class, 'reo
     Route::patch('artworks/{artwork}/production-status', [ArtworkController::class, 'updateProductionStatus'])->name('admin.artworks.production-status.update');
 
 
+         // Categories routes - expanded from Route::resource
+         Route::get('/categories', [CategoryController::class, 'index'])->name('admin.categories.index');
+         Route::get('/categories/create', [CategoryController::class, 'create'])->name('admin.categories.create');
+         Route::post('/categories', [CategoryController::class, 'store'])->name('admin.categories.store');
+         Route::get('/categories/{category}', [CategoryController::class, 'show'])->name('admin.categories.show');
+         Route::get('/categories/{category}/edit', [CategoryController::class, 'edit'])->name('admin.categories.edit');
+         Route::put('/categories/{category}', [CategoryController::class, 'update'])->name('admin.categories.update');
+         Route::delete('/categories/{category}', [CategoryController::class, 'destroy'])->name('admin.categories.destroy');
+
+
+         Route::get('/tags', [TagController::class, 'index'])->name('admin.tags.index');
+         Route::get('/tags/create', [TagController::class, 'create'])->name('admin.tags.create');
+         Route::post('/tags', [TagController::class, 'store'])->name('admin.tags.store');
+         Route::get('/tags/{tag}', [TagController::class, 'show'])->name('admin.tags.show');
+         Route::get('/tags/{tag}/edit', [TagController::class, 'edit'])->name('admin.tags.edit');
+         Route::put('/tags/{tag}', [TagController::class, 'update'])->name('admin.tags.update');
+         Route::delete('/tags/{tag}', [TagController::class, 'destroy'])->name('admin.tags.destroy');
 
 
 
@@ -167,21 +212,8 @@ Route::post('/wallpapers/{wallpaper}/reorder', [WallpaperController::class, 'reo
 
 
     // Add to cart routes
-    Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
-    Route::post('/artworks/{artwork}/cart', [CartController::class, 'addArtwork'])->name('artworks.addToCart');
-    Route::delete('/cart/{item}', [CartController::class, 'removeItem'])->name('cart.removeItem');
-    Route::put('/cart/{item}', [CartController::class, 'updateItem'])->name('cart.updateItem');
-    Route::get('/checkout', [CartController::class, 'checkout'])->name('cart.checkout');
-    Route::get('/shop', [CartController::class, 'check'])->name('shop.index');
-    // Don't forget to import the controller at the top of the file
 
-
-
-
-    // Purchase routes
-    Route::post('/checkout/process', [CartController::class, 'processCheckout'])->name('checkout.process')->middleware('auth');
-    Route::get('/checkout/success', [CartController::class, 'checkoutSuccess'])->name('checkout.success');
-    Route::get('/checkout/cancel', [CartController::class, 'checkoutCancel'])->name('checkout.cancel');
+                                        //client 
 
 
     Route::get('/designs', [ClientDesignController::class, 'index'])
@@ -191,53 +223,31 @@ Route::get('/designs/{design}', [ClientDesignController::class, 'show'])
 Route::get('/designs/{design}/create-artwork', [ClientDesignController::class, 'createWithDesign'])
     ->name('designs.create-artwork');
 
-Route::get('/papers', function () {
-    $papers = \App\Models\Paper::all();
-    return view('papers.index', compact('papers'));
-})->name('papers.index');
+// Route::get('/papers', function () {
+//     $papers = \App\Models\Paper::all();
+//     return view('papers.index', compact('papers'));
+// })->name('papers.index');
     
-            // Instead of:
-            // Route::resource('categories', CategoryController::class);
-    // Route::resource('designs', DesignController::class)->names([
-    //                 'index' => 'designer.designs.index',
-    //                 'create' => 'designer.designs.create',
-    //                 'store' => 'designer.designs.store',
-    //                 'show' => 'designer.designs.show',
-    //                 'edit' => 'designer.designs.edit',
-    //                 'update' => 'designer.designs.update',
-    //                 'destroy' => 'designer.designs.destroy',
-    //             ]);
-// return redirect()->route('designer.designs.create');
-// Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
-// Route::get('/register', [RegisterController::class, 'showRegistrationForm'])->name('register');
-// Route::post('/register', [RegisterController::class, 'register']);
 
-// Dashboard Routes for Different User Roles
-// Route::middleware(['auth'])->group(function () {
-//     // Admin routes
-//     // Route::middleware(['role:admin'])->prefix('admin')->group(function () {
-//     //     Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('admin.dashboard');
-//     // });
-    
-//     // Designer routes
-//     // Route::middleware(['role:designer'])->prefix('designer')->group(function () {
-//     //     Route::get('/dashboard', [DesignerDashboardController::class, 'index'])->name('designer.dashboard');
-        
-//     //     // Design management routes
-//     //     Route::resource('designs', DesignController::class)->names([
-//     //         'index' => 'designer.designs.index',
-//     //         'create' => 'designer.designs.create',
-//     //         'store' => 'designer.designs.store',
-//     //         'show' => 'designer.designs.show',
-//     //         'edit' => 'designer.designs.edit',
-//     //         'update' => 'designer.designs.update',
-//     //         'destroy' => 'designer.designs.destroy',
-//     //     ]);
-//     // });
-    
-//     // Client routes
-//     // Route::middleware(['role:client'])->prefix('client')->group(function () {
-//     //     Route::get('/dashboard', [ClientDashboardController::class, 'index'])->name('client.dashboard');
-//     // });
-// });
+Route::get('/shop', [ShopController::class, 'index'])->name('shop.index');
+Route::get('/shop/{artwork}', [ShopController::class, 'show'])->name('shop.show');
+Route::post('/shop/{artwork}/review', [ShopController::class, 'storeReview'])->middleware('auth')->name('shop.review.store');
+// Route::post('/shop/{artwork}/cart', [ShopController::class, 'addToCart'])->name('shop.cart.add');
+
+// Shop routes
+Route::post('/shop/{wallpaper}/cart', [ShopController::class, 'addToCart'])->name('shop.wallpaper.cart.add');
+
+// Wallpaper reviews route
+Route::post('/wallpapers/{wallpaper}/review', [ReviewController::class, 'storeWallpaperReview'])->middleware('auth')->name('wallpapers.review.store');
+
+
+
+Route::get('/designs', [ClientDesignController::class, 'index'])
+    ->name('designs.index');
+Route::get('/designs/{design}', [ClientDesignController::class, 'show'])
+    ->name('designs.show');
+Route::get('/designs/{design}/create-artwork', [ClientDesignController::class, 'createWithDesign'])
+    ->name('designs.create-artwork');
+
+       

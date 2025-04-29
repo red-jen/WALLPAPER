@@ -9,7 +9,7 @@
     </div>
     
     <!-- Hero Content -->
-    <div class="relative container mx-auto px-6 h-full flex flex-col justify-center">
+    <div class="relative container mx-auto px-6 h-full flex flex-col justify-center" style="background-image: url(./images/hero-pattern.svg);">
         <div class="max-w-3xl">
             <h1 class="font-serif text-5xl md:text-7xl text-ivory mb-4 leading-tight">
                 <span class="block">Exquisite Wallpaper</span>

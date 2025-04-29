@@ -1,151 +1,137 @@
-@extends('layouts.public')
+@extends('layouts.client')
 
 @section('title', 'About Us')
 
-@push('styles')
-<link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
-<style>
-    .bg-navy { background-color: #0F3057; }
-    .bg-sage { background-color: #8DAA9D; }
-    .bg-gold { background-color: #D4B483; }
-</style>
-@endpush
-
 @section('content')
-    <!-- Hero Section -->
-    <section class="bg-navy py-16 text-white">
-        <div class="container mx-auto px-4">
-            <div class="flex flex-col items-center text-center">
-                <h1 class="text-5xl font-bold mb-6 font-heading">About MurArt</h1>
-                <p class="text-xl mb-10 max-w-3xl">Learn more about our passion for quality wallpapers and interior design</p>
-            </div>
-        </div>
-    </section>
-
-    <!-- About Section -->
-    <section class="py-16">
-        <div class="container mx-auto px-4">
-            <div class="max-w-4xl mx-auto">
-                <div class="mb-12">
-                    <h2 class="text-3xl font-bold font-heading mb-6 text-center">Our Story</h2>
-                    <p class="text-lg mb-6">MurArt was founded in 2020 with a simple mission: to transform living spaces with exceptional wallpapers and design elements that inspire and delight.</p>
-                    <p class="text-lg mb-6">What began as a small studio with a handful of designs has grown into a curated marketplace of premium wallpapers and custom designs created by talented artists from around the world.</p>
-                    <p class="text-lg">We believe that walls should never be boring. Every space deserves character, personality, and artistic expression that reflects the people who live or work within it.</p>
+<div class="container py-5">
+    <div class="row">
+        <div class="col-12">
+            <h1 class="mb-4">About MurArt</h1>
+            
+            <div class="card mb-5">
+                <div class="card-body">
+                    <h2 class="card-title">Our Story</h2>
+                    <p class="lead">Transforming spaces with artistic wallpapers since 2020</p>
+                    <p>MurArt was founded with a simple mission: to bring high-quality, artistic wallpapers to homes and businesses around the world. We believe that walls are more than just boundaries—they're canvases waiting to be transformed into expressions of your unique style and personality.</p>
+                    <p>Our team of designers and artists work tirelessly to create stunning, durable wallpapers that not only look beautiful but are also easy to install and maintain. We source the finest materials and use cutting-edge printing technology to ensure that every wallpaper meets our exacting standards.</p>
                 </div>
-                
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
-                    <div>
-                        <h3 class="text-2xl font-bold font-heading mb-4 text-navy">Our Values</h3>
-                        <ul class="space-y-3">
-                            <li class="flex">
-                                <svg class="h-6 w-6 text-gold flex-shrink-0 mr-3" fill="currentColor" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
-                                </svg>
-                                <span class="text-lg">Quality craftsmanship in every product</span>
-                            </li>
-                            <li class="flex">
-                                <svg class="h-6 w-6 text-gold flex-shrink-0 mr-3" fill="currentColor" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
-                                </svg>
-                                <span class="text-lg">Sustainable materials and practices</span>
-                            </li>
-                            <li class="flex">
-                                <svg class="h-6 w-6 text-gold flex-shrink-0 mr-3" fill="currentColor" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
-                                </svg>
-                                <span class="text-lg">Supporting independent artists</span>
-                            </li>
-                            <li class="flex">
-                                <svg class="h-6 w-6 text-gold flex-shrink-0 mr-3" fill="currentColor" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
-                                </svg>
-                                <span class="text-lg">Exceptional customer service</span>
-                            </li>
-                        </ul>
-                    </div>
-                    <div>
-                        <h3 class="text-2xl font-bold font-heading mb-4 text-navy">Our Process</h3>
-                        <ol class="space-y-3">
-                            <li class="flex">
-                                <span class="bg-gold text-navy rounded-full h-6 w-6 flex items-center justify-center font-bold flex-shrink-0 mr-3">1</span>
-                                <span class="text-lg">We carefully select designs from talented artists</span>
-                            </li>
-                            <li class="flex">
-                                <span class="bg-gold text-navy rounded-full h-6 w-6 flex items-center justify-center font-bold flex-shrink-0 mr-3">2</span>
-                                <span class="text-lg">Materials are sourced with quality and sustainability in mind</span>
-                            </li>
-                            <li class="flex">
-                                <span class="bg-gold text-navy rounded-full h-6 w-6 flex items-center justify-center font-bold flex-shrink-0 mr-3">3</span>
-                                <span class="text-lg">Each item is printed with state-of-the-art technology</span>
-                            </li>
-                            <li class="flex">
-                                <span class="bg-gold text-navy rounded-full h-6 w-6 flex items-center justify-center font-bold flex-shrink-0 mr-3">4</span>
-                                <span class="text-lg">Products undergo rigorous quality control</span>
-                            </li>
-                        </ol>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Team Section -->
-    <section class="py-16 bg-sage bg-opacity-10">
-        <div class="container mx-auto px-4">
-            <div class="mb-12 text-center">
-                <h2 class="text-3xl font-bold font-heading mb-2">Our Team</h2>
-                <p class="text-gray-600">Meet the passionate people behind MurArt</p>
             </div>
             
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-5xl mx-auto">
-                <div class="bg-white rounded-lg shadow-lg overflow-hidden">
-                    <div class="p-6 text-center">
-                        <div class="w-32 h-32 rounded-full bg-gray-200 mx-auto mb-4 overflow-hidden">
-                            <!-- Replace with actual image -->
-                            <div class="w-full h-full bg-navy text-white flex items-center justify-center text-2xl font-bold">JD</div>
+            <div class="row mb-5">
+                <div class="col-md-6">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h2 class="card-title">Our Mission</h2>
+                            <p>To provide premium quality wallpapers that inspire creativity and transform living spaces into beautiful, personalized environments. We aim to make artistic wallpapers accessible to everyone, offering a wide range of designs at competitive prices.</p>
                         </div>
-                        <h3 class="text-xl font-bold mb-2">Jane Doe</h3>
-                        <p class="text-navy font-semibold mb-2">Founder & Creative Director</p>
-                        <p class="text-gray-600 mb-4">Jane brings over 15 years of experience in interior design and a passion for transforming spaces.</p>
                     </div>
                 </div>
-                
-                <div class="bg-white rounded-lg shadow-lg overflow-hidden">
-                    <div class="p-6 text-center">
-                        <div class="w-32 h-32 rounded-full bg-gray-200 mx-auto mb-4 overflow-hidden">
-                            <!-- Replace with actual image -->
-                            <div class="w-full h-full bg-sage text-white flex items-center justify-center text-2xl font-bold">JS</div>
+                <div class="col-md-6">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h2 class="card-title">Our Values</h2>
+                            <ul class="list-unstyled">
+                                <li class="mb-3"><i class="fas fa-check-circle text-primary me-2"></i> <strong>Quality:</strong> We never compromise on the materials or printing process.</li>
+                                <li class="mb-3"><i class="fas fa-check-circle text-primary me-2"></i> <strong>Sustainability:</strong> Our products are eco-friendly and responsibly sourced.</li>
+                                <li class="mb-3"><i class="fas fa-check-circle text-primary me-2"></i> <strong>Innovation:</strong> We continuously explore new designs and technologies.</li>
+                                <li class="mb-3"><i class="fas fa-check-circle text-primary me-2"></i> <strong>Customer Satisfaction:</strong> Your happiness is our top priority.</li>
+                            </ul>
                         </div>
-                        <h3 class="text-xl font-bold mb-2">John Smith</h3>
-                        <p class="text-navy font-semibold mb-2">Head of Design</p>
-                        <p class="text-gray-600 mb-4">John curates our collection and works directly with our talented designers to create exclusive patterns.</p>
                     </div>
                 </div>
-                
-                <div class="bg-white rounded-lg shadow-lg overflow-hidden">
-                    <div class="p-6 text-center">
-                        <div class="w-32 h-32 rounded-full bg-gray-200 mx-auto mb-4 overflow-hidden">
-                            <!-- Replace with actual image -->
-                            <div class="w-full h-full bg-gold text-navy flex items-center justify-center text-2xl font-bold">EJ</div>
+            </div>
+            
+            <div class="card mb-5">
+                <div class="card-body">
+                    <h2 class="card-title">Our Products</h2>
+                    <p>At MurArt, we offer a diverse collection of wallpapers to suit every style and space:</p>
+                    
+                    <div class="row mt-4">
+                        <div class="col-md-4 mb-4">
+                            <div class="card h-100">
+                                <div class="card-body text-center">
+                                    <i class="fas fa-paint-brush fa-3x text-primary mb-3"></i>
+                                    <h3 class="card-title">Artistic Designs</h3>
+                                    <p class="card-text">Unique patterns and illustrations created by our talented artists.</p>
+                                </div>
+                            </div>
                         </div>
-                        <h3 class="text-xl font-bold mb-2">Emily Johnson</h3>
-                        <p class="text-navy font-semibold mb-2">Customer Experience</p>
-                        <p class="text-gray-600 mb-4">Emily ensures every customer has an exceptional experience from browsing to installation.</p>
+                        <div class="col-md-4 mb-4">
+                            <div class="card h-100">
+                                <div class="card-body text-center">
+                                    <i class="fas fa-leaf fa-3x text-primary mb-3"></i>
+                                    <h3 class="card-title">Nature-Inspired</h3>
+                                    <p class="card-text">Bring the beauty of nature into your space with our botanical and landscape designs.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-4">
+                            <div class="card h-100">
+                                <div class="card-body text-center">
+                                    <i class="fas fa-building fa-3x text-primary mb-3"></i>
+                                    <h3 class="card-title">Modern & Minimalist</h3>
+                                    <p class="card-text">Clean lines and contemporary patterns for a sophisticated look.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-body">
+                    <h2 class="card-title">Our Team</h2>
+                    <p>Behind every beautiful wallpaper is a team of passionate individuals dedicated to bringing art to your walls. Our designers, artists, and customer service representatives work together to ensure that you get the perfect wallpaper for your space.</p>
+                    
+                    <div class="row mt-4">
+                        <div class="col-md-3 mb-4">
+                            <div class="card h-100">
+                                <div class="card-body text-center">
+                                    <div class="rounded-circle bg-light mx-auto mb-3" style="width: 120px; height: 120px; display: flex; align-items: center; justify-content: center;">
+                                        <i class="fas fa-user fa-3x text-primary"></i>
+                                    </div>
+                                    <h4>Sarah Johnson</h4>
+                                    <p class="text-muted">Founder & Creative Director</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 mb-4">
+                            <div class="card h-100">
+                                <div class="card-body text-center">
+                                    <div class="rounded-circle bg-light mx-auto mb-3" style="width: 120px; height: 120px; display: flex; align-items: center; justify-content: center;">
+                                        <i class="fas fa-user fa-3x text-primary"></i>
+                                    </div>
+                                    <h4>Michael Chen</h4>
+                                    <p class="text-muted">Lead Designer</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 mb-4">
+                            <div class="card h-100">
+                                <div class="card-body text-center">
+                                    <div class="rounded-circle bg-light mx-auto mb-3" style="width: 120px; height: 120px; display: flex; align-items: center; justify-content: center;">
+                                        <i class="fas fa-user fa-3x text-primary"></i>
+                                    </div>
+                                    <h4>Emma Rodriguez</h4>
+                                    <p class="text-muted">Customer Experience Manager</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 mb-4">
+                            <div class="card h-100">
+                                <div class="card-body text-center">
+                                    <div class="rounded-circle bg-light mx-auto mb-3" style="width: 120px; height: 120px; display: flex; align-items: center; justify-content: center;">
+                                        <i class="fas fa-user fa-3x text-primary"></i>
+                                    </div>
+                                    <h4>David Kim</h4>
+                                    <p class="text-muted">Production Manager</p>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </section>
-
-    <!-- CTA Section -->
-    <section class="py-16 bg-navy text-white">
-        <div class="container mx-auto px-4 text-center">
-            <h2 class="text-3xl font-bold font-heading mb-6">Ready to transform your space?</h2>
-            <p class="text-xl mb-8 max-w-3xl mx-auto">Explore our collection of premium wallpapers and designs, or contact us for custom solutions.</p>
-            <div class="flex flex-col sm:flex-row justify-center gap-4">
-                <a href="{{ route('home') }}" class="bg-gold hover:bg-opacity-90 text-navy font-bold py-3 px-8 rounded-full transition duration-300">Browse Collection</a>
-                {{-- <a href="{{ route('contact') }}" class="bg-transparent border-2 border-white hover:bg-white hover:text-navy text-white font-bold py-3 px-8 rounded-full transition duration-300">Contact Us</a> --}}
-            </div>
-        </div>
-    </section>
-@endsection 
+    </div>
+</div>
+@endsection

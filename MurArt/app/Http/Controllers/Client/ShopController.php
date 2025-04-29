@@ -7,6 +7,7 @@ use App\Models\Wallpaper;
 use App\Models\Review;
 use Illuminate\Http\Request;
 use App\Models\Category;
+use App\Models\CartItem;
 
 class ShopController extends Controller
 {
@@ -93,39 +94,55 @@ class ShopController extends Controller
             ->with('success', 'Your review has been submitted and will be visible after approval. Thank you for your feedback!');
     }
     
-    /**
-     * Add a wallpaper to cart.
-     */
-    public function addToCart(Wallpaper $wallpaper, Request $request)
-    {
-        // Check if wallpaper is in stock - use direct property access for consistency
-        if ($wallpaper->stock <= 0) {
-            return redirect()->route('shop.index')
-                ->with('error', 'This wallpaper is currently out of stock.');
-        }
-        
-        // Get current cart from session or initialize empty array
-        $cart = session()->get('cart', []);
-        
-        // Check if item already exists in cart
-        if (isset($cart[$wallpaper->id])) {
-            // Increment quantity if it exists
-            $cart[$wallpaper->id]['quantity']++;
-        } else {
-            // Add new item to cart
-            $cart[$wallpaper->id] = [
-                'id' => $wallpaper->id,
-                'title' => $wallpaper->title,
-                'price' => $wallpaper->price,
-                'image' => $wallpaper->getImageUrlAttribute(),
-                'quantity' => 1
-            ];
-        }
-        
-        // Save cart in session
-        session()->put('cart', $cart);
-        
-        return redirect()->back()
-            ->with('success', 'Wallpaper added to cart successfully!');
-    }
+  
+     public function addToCart(Wallpaper $wallpaper, Request $request)
+     {
+         // Validate quantity
+         $request->validate([
+             'quantity' => 'required|integer|min:1',
+         ]);
+         
+         // Get quantity from request
+         $quantity = $request->quantity;
+         
+         // Check if wallpaper is in stock
+         if ($wallpaper->stock <= 0) {
+             return redirect()->back()
+                 ->with('error', 'This wallpaper is currently out of stock.');
+         }
+         
+         // Get user ID if logged in, otherwise use session ID
+         $userId = auth()->id();
+         $sessionId = $userId ? null : session()->getId();
+         
+         // Check if item already exists in cart
+         $cartItem = CartItem::where('wallpaper_id', $wallpaper->id)
+             ->where(function($query) use ($userId, $sessionId) {
+                 if ($userId) {
+                     $query->where('user_id', $userId);
+                 } else {
+                     $query->where('session_id', $sessionId);
+                 }
+             })
+             ->first();
+         
+         if ($cartItem) {
+             // Update existing cart item
+             $cartItem->quantity += $quantity;
+             $cartItem->save();
+         } else {
+             // Create new cart item
+             CartItem::create([
+                 'user_id' => $userId,
+                 'session_id' => $sessionId,
+                 'wallpaper_id' => $wallpaper->id,
+                 'quantity' => $quantity,
+                 'price' => $wallpaper->price,
+                 'options' => []
+             ]);
+         }
+         
+         return redirect()->back()
+             ->with('success', 'Wallpaper added to cart successfully!');
+     }
 } 
