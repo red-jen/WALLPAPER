@@ -15,11 +15,16 @@ class Category extends Model
      *
      * @var array<int, string>
      */
-    protected $fillable = [
-        'name',
-        'description',
-    ];
+  
+     protected $fillable = ['name', 'slug', 'description'];
 
+     /**
+      * Get the wallpapers for this category.
+      */
+     public function wallpapers()
+     {
+         return $this->hasMany(Wallpaper::class);
+     }
     /**
      * Get all designs belonging to this category.
      */

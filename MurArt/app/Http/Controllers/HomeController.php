@@ -7,6 +7,7 @@ use App\Models\Design;
 use App\Models\Paper;
 use App\Models\Artwork;
 use Illuminate\Http\Request;
+use App\Models\Category;
 
 class HomeController extends Controller
 {
@@ -16,31 +17,26 @@ class HomeController extends Controller
      */
     public function index()
     {
-        // Get featured wallpapers
-        $wallpapers = Wallpaper::with(['primaryImage', 'category'])
-            ->where('status', 'published')
-            ->take(6)
+        // Get latest wallpapers
+        $wallpapers = Wallpaper::with('category')
             ->latest()
+            ->take(8)
             ->get();
             
-        // Get designs
-        $designs = Design::with(['category', 'designer'])
-            ->latest()
-            ->take(6)
-            ->get();
-            
-        // Get papers
-        $papers = Paper::where('is_active', true)
-            ->take(4)
-            ->get();
-        
-        // Get featured artworks for the home page
-        $featuredArtworks = Artwork::with(['paper', 'design'])
-            ->latest()
+        // Get categories with at least one wallpaper
+        $categories = Category::has('wallpapers')
+            ->withCount('wallpapers')
+            ->orderByDesc('wallpapers_count')
             ->take(4)
             ->get();
             
-        return view('home', compact('wallpapers', 'designs', 'papers', 'featuredArtworks'));
+        // Get featured designs
+        $designs = Design::with('designer')
+            ->latest()
+            ->take(6)
+            ->get();
+            
+        return view('home', compact('wallpapers', 'categories', 'designs'));
     }
     
     /**

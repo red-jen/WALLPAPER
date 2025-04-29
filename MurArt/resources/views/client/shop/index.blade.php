@@ -1,6 +1,6 @@
 @extends('layouts.client')
 
-@section('title', 'Shop Wallpapers')
+@section('title', 'Shop')
 
 @section('content')
 <div class="container py-5">
@@ -27,36 +27,26 @@
 
     <h1 class="mb-4">Shop Wallpapers</h1>
     
-    <!-- Filters (optional) -->
-    <div class="card mb-4">
-        <div class="card-body">
-            <form action="{{ route('shop.index') }}" method="GET" class="row g-3">
-                <div class="col-md-3">
-                    <label for="design" class="form-label">Design</label>
-                    <select name="design" id="design" class="form-select">
-                        <option value="">All Designs</option>
-                        <!-- Loop through designs -->
-                    </select>
-                </div>
-                <div class="col-md-3">
-                    <label for="artist" class="form-label">Artist</label>
-                    <select name="artist" id="artist" class="form-select">
-                        <option value="">All Artists</option>
-                        <!-- Loop through artists -->
-                    </select>
-                </div>
-                <div class="col-md-3">
-                    <label for="sort" class="form-label">Sort By</label>
-                    <select name="sort" id="sort" class="form-select">
-                        <option value="newest">Newest First</option>
-                        <option value="price_low">Price: Low to High</option>
-                        <option value="price_high">Price: High to Low</option>
-                        <option value="popular">Most Popular</option>
-                    </select>
-                </div>
-                <div class="col-md-3 d-flex align-items-end">
-                    <button type="submit" class="btn btn-primary w-100">Apply Filters</button>
-                </div>
+    <!-- Filters -->
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <form action="{{ route('shop.index') }}" method="GET" class="d-flex gap-2">
+                <select name="category" class="form-select" onchange="this.form.submit()">
+                    <option value="">All Categories</option>
+                    @foreach($categories as $category)
+                        <option value="{{ $category->id }}" {{ request('category') == $category->id ? 'selected' : '' }}>
+                            {{ $category->name }}
+                        </option>
+                    @endforeach
+                </select>
+                
+                <select name="sort" class="form-select" onchange="this.form.submit()">
+                    <option value="">Sort By</option>
+                    <option value="latest" {{ request('sort') == 'latest' ? 'selected' : '' }}>Latest</option>
+                    <option value="price_low" {{ request('sort') == 'price_low' ? 'selected' : '' }}>Price: Low to High</option>
+                    <option value="price_high" {{ request('sort') == 'price_high' ? 'selected' : '' }}>Price: High to Low</option>
+                    <option value="popular" {{ request('sort') == 'popular' ? 'selected' : '' }}>Most Popular</option>
+                </select>
             </form>
         </div>
     </div>
@@ -68,7 +58,7 @@
                 <div class="card h-100 wallpaper-card">
                     <a href="{{ route('shop.show', $wallpaper) }}" class="text-decoration-none">
                         <div class="wallpaper-thumbnail">
-                            <img src="{{ asset('storage/'.$wallpaper->preview_image) }}" 
+                            <img src="{{ $wallpaper->getImageUrlAttribute() }}" 
                                 class="card-img-top" 
                                 alt="{{ $wallpaper->title }}">
                         </div>
@@ -79,43 +69,15 @@
                                 {{ $wallpaper->title }}
                             </a>
                         </h5>
-                        <p class="card-text text-muted mb-1">{{ $wallpaper->user->name }}</p>
-                        <p class="card-text mb-1">
-                            <span class="badge bg-secondary">{{ $wallpaper->design->name }}</span>
-                        </p>
-                        
-                        <!-- Rating display -->
-                        <div class="mb-2">
-                            @php
-                                $rating = $wallpaper->reviews->avg('rating') ?? 0;
-                                $fullStars = floor($rating);
-                                $halfStar = $rating - $fullStars >= 0.5;
-                                $emptyStars = 5 - $fullStars - ($halfStar ? 1 : 0);
-                            @endphp
-                            
-                            @for($i = 0; $i < $fullStars; $i++)
-                                <i class="fas fa-star text-warning"></i>
-                            @endfor
-                            
-                            @if($halfStar)
-                                <i class="fas fa-star-half-alt text-warning"></i>
-                            @endif
-                            
-                            @for($i = 0; $i < $emptyStars; $i++)
-                                <i class="far fa-star text-warning"></i>
-                            @endfor
-                            
-                            <small class="text-muted">({{ $wallpaper->reviews->count() }})</small>
-                        </div>
-                        
+                        <p class="card-text text-muted mb-1">{{ $wallpaper->category->name }}</p>
                         <p class="card-text fs-5 fw-bold">${{ number_format($wallpaper->price, 2) }}</p>
                     </div>
                     <div class="card-footer">
-                        <form action="{{ route('cart.add', $wallpaper) }}" method="POST">
+                        <form action="{{ route('shop.cart.add', $wallpaper) }}" method="POST">
                             @csrf
                             <input type="hidden" name="quantity" value="1">
-                            <button type="submit" class="btn btn-primary w-100">
-                                Add to Cart
+                            <button type="submit" class="btn btn-primary w-100" {{ $wallpaper->stock <= 0 ? 'disabled' : '' }}>
+                                {{ $wallpaper->stock > 0 ? 'Add to Cart' : 'Out of Stock' }}
                             </button>
                         </form>
                     </div>
@@ -124,19 +86,19 @@
         @empty
             <div class="col-12">
                 <div class="alert alert-info">
-                    No wallpapers available at the moment. Please check back later.
+                    No wallpapers found matching your criteria.
                 </div>
             </div>
         @endforelse
     </div>
 
     <!-- Pagination -->
-    <div class="mt-4 d-flex justify-content-center">
+    <div class="d-flex justify-content-center mt-4">
         {{ $wallpapers->links() }}
     </div>
 </div>
 
-<!-- Custom styles for wallpaper cards -->
+<!-- Custom styles -->
 <style>
     .wallpaper-card {
         transition: transform 0.3s ease, box-shadow 0.3s ease;
@@ -150,7 +112,7 @@
     .wallpaper-thumbnail {
         position: relative;
         overflow: hidden;
-        height: 250px;
+        height: 200px;
     }
     
     .wallpaper-thumbnail img {

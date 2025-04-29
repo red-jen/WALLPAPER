@@ -18,6 +18,7 @@ class Review extends Model
     protected $fillable = [
         'user_id',
         'design_id',
+        'wallpaper_id',
         'rating',
         'comment',
         'is_approved',
@@ -47,5 +48,19 @@ class Review extends Model
     public function design(): BelongsTo
     {
         return $this->belongsTo(Design::class);
+    }
+
+    /**
+     * Get the wallpaper that was reviewed.
+     */
+    public function wallpaper()
+    {
+        return $this->belongsTo(Wallpaper::class);
+    }
+
+    // If you're using Artwork model instead:
+    public function artwork()
+    {
+        return $this->belongsTo(Artwork::class, 'wallpaper_id'); // Using wallpaper_id as foreign key
     }
 }

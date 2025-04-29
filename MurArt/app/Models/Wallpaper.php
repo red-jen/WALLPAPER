@@ -41,6 +41,12 @@ class Wallpaper extends Model
         'downloads' => 'integer',
     ];
 
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
     /**
      * Get the category of the wallpaper.
      */
@@ -68,24 +74,22 @@ class Wallpaper extends Model
     /**
      * Get the primary image URL or a placeholder if none exists.
      */
-    public function getImageUrlAttribute(): string
-    {
-        $primaryImage = $this->primaryImage;
-        
-        if ($primaryImage) {
-            return asset('storage/' . $primaryImage->image_path);
-        }
-        
-        // Get the first image if no primary image is set
-        $firstImage = $this->images()->first();
-        
-        if ($firstImage) {
-            return asset('storage/' . $firstImage->image_path);
-        }
-        
-        // Return a placeholder image if no images exist
-        return asset('img/placeholder.jpg');
-    }
+  
+   
+   public function getImageUrlAttribute()
+   {
+       if ($this->image_path) {
+           return asset('storage/' . $this->image_path);
+       }
+       
+       // Check if the wallpaper has images relationship
+       if ($this->images && $this->images->count() > 0) {
+           return asset('storage/' . $this->images->first()->path);
+       }
+       
+       // Default image if none exists
+       return asset('images/placeholder.jpg');
+   }
 
     /**
      * Get the paper types recommended for this wallpaper.
@@ -102,7 +106,8 @@ class Wallpaper extends Model
      */
     public function reviews()
     {
-        return $this->morphMany(Review::class, 'reviewable');
+        // Including both morphMany and direct hasMany relationships
+        return $this->hasMany(Review::class);
     }
 
     /**
@@ -130,7 +135,7 @@ class Wallpaper extends Model
      */
     public function getInStockAttribute(): bool
     {
-        return $this->stock > 0;
+        return $this->stock ?? 1;
     }
 
     /**
@@ -166,4 +171,5 @@ class Wallpaper extends Model
         
         return false;
     }
+    
 }
