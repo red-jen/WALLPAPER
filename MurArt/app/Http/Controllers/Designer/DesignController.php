@@ -72,6 +72,8 @@ class DesignController extends Controller
     {
         // Load related papers
         $design->load(['category', 'designer']);
+
+        $usags = $design->getArtworkUsageCountAttribute();
         
         // Get recommended papers for this design
         $recommendedPapers = Paper::where('is_active', true)
@@ -79,7 +81,7 @@ class DesignController extends Controller
             ->limit(4)
             ->get();
         
-        return view('designer.designs.show', compact('design', 'recommendedPapers'));
+        return view('designer.designs.show', compact('design', 'recommendedPapers', 'usags'));
     }
 
     /**

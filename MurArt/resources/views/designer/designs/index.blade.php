@@ -1,235 +1,120 @@
 @extends('layouts.admin')
 
-@section('styles')
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Montserrat:wght@300;400;500&family=Libre+Baskerville:ital@0;1&display=swap" rel="stylesheet">
-<style>
-    :root {
-        --navy: #2C3E50;
-        --gold: #D4AF37;
-        --sage: #7D8E7B;
-        --ivory: #F8F3E6;
-        --charcoal: #2F353B;
-        --terracotta: #C67D5C;
-        --dusty-rose: #C99A9A;
-    }
-    
-    body {
-        background-color: var(--ivory);
-        color: var(--charcoal);
-        font-family: 'Montserrat', sans-serif;
-        line-height: 1.8;
-    }
-    
-    h1, h2, h3, h4, h5, h6 {
-        font-family: 'Cormorant Garamond', serif;
-        letter-spacing: 0.5px;
-        color: var(--navy);
-    }
-    
-    .text-gray-800 {
-        color: var(--navy) !important;
-    }
-    
-    .btn-primary {
-        background-color: var(--navy);
-        border-color: var(--navy);
-        color: var(--ivory);
-    }
-    
-    .btn-primary:hover {
-        background-color: var(--charcoal);
-        border-color: var(--charcoal);
-    }
-    
-    .btn-info {
-        background-color: var(--sage);
-        border-color: var(--sage);
-        color: var(--ivory);
-    }
-    
-    .btn-info:hover {
-        background-color: #6A7B68;
-        border-color: #6A7B68;
-    }
-    
-    .card {
-        border: none;
-        box-shadow: 0 5px 15px rgba(0,0,0,0.05);
-        transition: all 0.3s ease;
-        background-color: white;
-    }
-    
-    .card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-    }
-    
-    .card-title {
-        font-family: 'Cormorant Garamond', serif;
-        font-weight: 600;
-        color: var(--navy);
-        font-size: 1.5rem;
-    }
-    
-    .badge-secondary {
-        background-color: var(--sage);
-        color: white;
-    }
-    
-    .alert-success {
-        background-color: rgba(125, 142, 123, 0.2);
-        color: var(--sage);
-        border-color: var(--sage);
-    }
-    
-    .pagination .page-item.active .page-link {
-        background-color: var(--gold);
-        border-color: var(--gold);
-    }
-    
-    .pagination .page-link {
-        color: var(--navy);
-    }
-    
-    .luxury-header {
-        border-bottom: 2px solid var(--gold);
-        padding-bottom: 10px;
-        margin-bottom: 30px;
-        display: inline-block;
-    }
-    
-    .card-footer {
-        border-top: 1px solid rgba(0,0,0,0.05);
-        background-color: white;
-    }
-    
-    .design-meta {
-        color: var(--charcoal);
-        font-size: 0.9rem;
-    }
-    
-    .design-meta i {
-        color: var(--gold);
-        margin-right: 5px;
-    }
-    
-    .design-card-img {
-        height: 250px;
-        object-fit: cover;
-        border-top-left-radius: calc(0.25rem - 1px);
-        border-top-right-radius: calc(0.25rem - 1px);
-    }
-    
-    .no-designs {
-        padding: 60px 20px;
-        text-align: center;
-        background: linear-gradient(to right, rgba(44, 62, 80, 0.05), rgba(212, 175, 55, 0.05));
-        border-radius: 8px;
-    }
-    
-    .create-btn {
-        background-color: var(--gold);
-        border-color: var(--gold);
-        color: var(--navy);
-        font-weight: 500;
-    }
-    
-    .create-btn:hover {
-        background-color: #C29E30;
-        border-color: #C29E30;
-        color: var(--navy);
-    }
-    
-    .quote {
-        font-family: 'Libre Baskerville', serif;
-        font-style: italic;
-        color: var(--terracotta);
-    }
-</style>
-@endsection
+@section('title', 'My Design Collection')
 
 @section('content')
-<div class="container-fluid py-4">
-    <div class="row mb-5">
-        <div class="col-12">
-            <h1 class="h2 luxury-header">My Design Collection</h1>
-            <p class="quote">Transform spaces with your creative vision</p>
-        </div>
-    </div>
-    
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <div>
-            <p class="text-muted">Showcasing your artistic wall coverings</p>
-        </div>
-        <a href="{{ route('designer.designs.create') }}" class="btn create-btn">
-            <i class="fas fa-plus fa-sm mr-2"></i> Create New Design
-        </a>
-    </div>
-
-    @if(session('success'))
-        <div class="alert alert-success alert-dismissible fade show mb-4" role="alert">
-            {{ session('success') }}
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
-        </div>
-    @endif
-
-    @if(session('error'))
-        <div class="alert alert-danger alert-dismissible fade show mb-4" role="alert">
-            {{ session('error') }}
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
-        </div>
-    @endif
-
-    <div class="row">
-        @if($designs->count() > 0)
-            @foreach($designs as $design)
-                <div class="col-md-4 col-lg-3 mb-4">
-                    <div class="card h-100">
-                        <img src="{{ asset('storage/' . $design->image_path) }}" class="design-card-img" alt="{{ $design->title }}">
-                        <div class="card-body">
-                            <h5 class="card-title">{{ $design->title }}</h5>
-                            <p class="card-text mb-3">
-                                <span class="badge badge-secondary">{{ $design->category->name ?? 'No Category' }}</span>
-                            </p>
-                            <div class="design-meta">
-                                <p class="mb-1"><i class="far fa-calendar-alt"></i> Created {{ $design->created_at->format('M d, Y') }}</p>
-                            </div>
-                        </div>
-                        <div class="card-footer bg-transparent">
-                            <div class="d-flex justify-content-between">
-                                <a href="{{ route('designer.designs.show', $design) }}" class="btn btn-sm btn-primary">
-                                    <i class="fas fa-eye mr-1"></i> View
-                                </a>
-                                <a href="{{ route('designer.designs.edit', $design) }}" class="btn btn-sm btn-info">
-                                    <i class="fas fa-edit mr-1"></i> Edit
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            @endforeach
-        @else
-            <div class="col-12">
-                <div class="no-designs mb-4">
-                    <h5 class="mb-4" style="color: var(--navy);">Your design collection is empty</h5>
-                    <p class="mb-4">Create stunning wall coverings to transform any space into a work of art.</p>
-                    <a href="{{ route('designer.designs.create') }}" class="btn create-btn btn-lg">
-                        <i class="fas fa-plus fa-sm mr-2"></i> Create Your First Design
-                    </a>
-                </div>
-            </div>
-        @endif
-    </div>
-
-    <!-- Pagination -->
-    <div class="row">
-        <div class="col-12 d-flex justify-content-center">
-            {{ $designs->links() }}
-        </div>
+<!-- Breadcrumbs -->
+<div class="mb-6">
+    <div class="flex items-center text-sm text-charcoal/70">
+        <a href="{{ route('admin.dashboard') }}" class="hover:text-navy">Dashboard</a>
+        <span class="mx-2">/</span>
+        <span class="text-charcoal">My Designs</span>
     </div>
 </div>
+
+<!-- Header -->
+<div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">
+    <div>
+        <h1 class="text-3xl font-heading font-bold text-navy mb-2 border-b-2 border-gold pb-2 inline-block">My Design Collection</h1>
+        <p class="italic text-terracotta font-serif">Transform spaces with your creative vision</p>
+    </div>
+    <a href="{{ route('designer.designs.create') }}" 
+        class="mt-4 md:mt-0 px-4 py-2 bg-gold text-navy rounded-md font-medium hover:bg-gold/90 transition-colors flex items-center gap-2">
+        <i class="fas fa-plus fa-sm"></i>
+        Create New Design
+    </a>
+</div>
+
+<!-- Alerts -->
+@if(session('success'))
+    <div class="bg-sage/10 border border-sage text-sage px-4 py-3 rounded-md mb-6 flex justify-between items-center" role="alert">
+        <div>{{ session('success') }}</div>
+        <button type="button" class="text-sage hover:text-sage/80" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+@endif
+
+@if(session('error'))
+    <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-md mb-6 flex justify-between items-center" role="alert">
+        <div>{{ session('error') }}</div>
+        <button type="button" class="text-red-700 hover:text-red-800" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+@endif
+
+<!-- Designs Grid -->
+@if($designs->count() > 0)
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        @foreach($designs as $design)
+            <div class="bg-white rounded-xl shadow-sm overflow-hidden transition duration-300 hover:-translate-y-1 hover:shadow-md flex flex-col h-full">
+                <div class="aspect-[4/3] w-full relative overflow-hidden">
+                    <img src="{{ asset('storage/' . $design->image_path) }}" 
+                        class="w-full h-full object-cover transition duration-500 ease-in-out hover:scale-105"
+                        alt="{{ $design->title }}">
+                    
+                    <!-- Status Badge -->
+                    <div class="absolute top-3 right-3 px-2.5 py-1 rounded-full text-xs font-medium 
+                        {{ $design->is_approved ? 'bg-green-100 text-green-800' : 'bg-amber-100 text-amber-800' }}">
+                        {{ $design->is_approved ? 'Approved' : 'Pending' }}
+                    </div>
+                </div>
+                <div class="p-4 flex-1 flex flex-col">
+                    <h3 class="font-heading font-semibold text-lg text-navy mb-2 truncate">{{ $design->title }}</h3>
+                    <div class="flex flex-wrap gap-2 mb-3">
+                        <span class="inline-flex items-center px-2.5 py-0.5 bg-sage/10 text-sage rounded-full text-xs font-medium">
+                            {{ $design->category->name ?? 'No Category' }}
+                        </span>
+                        @if($design->style)
+                            <span class="inline-flex items-center px-2.5 py-0.5 bg-gold/10 text-gold rounded-full text-xs font-medium">
+                                {{ $design->style }}
+                            </span>
+                        @endif
+                    </div>
+                    <div class="text-gray-600 text-sm">
+                        <p class="flex items-center gap-2 mb-1">
+                            <i class="far fa-calendar-alt text-gold"></i>
+                            <span>{{ $design->created_at->format('M d, Y') }}</span>
+                        </p>
+                        @if(isset($design->reviews_count) && $design->reviews_count)
+                            <p class="flex items-center gap-2 mb-1">
+                                <i class="far fa-star text-gold"></i>
+                                <span>{{ $design->reviews_count }} {{ Str::plural('review', $design->reviews_count) }}</span>
+                            </p>
+                        @endif
+                    </div>
+                    <div class="flex justify-between gap-2 mt-auto pt-4">
+                        <a href="{{ route('designer.designs.show', $design) }}" 
+                            class="flex-1 px-3 py-2 bg-navy text-white rounded-md text-sm font-medium hover:bg-navy/90 transition-colors text-center">
+                            <i class="fas fa-eye mr-1"></i> View
+                        </a>
+                        <a href="{{ route('designer.designs.edit', $design) }}" 
+                            class="flex-1 px-3 py-2 bg-sage text-white rounded-md text-sm font-medium hover:bg-sage/90 transition-colors text-center">
+                            <i class="fas fa-edit mr-1"></i> Edit
+                        </a>
+                    </div>
+                </div>
+            </div>
+        @endforeach
+    </div>
+    
+    <!-- Pagination -->
+    <div class="mt-8 flex justify-center">
+        {{ $designs->links() }}
+    </div>
+@else
+    <div class="text-center py-16 px-4 bg-white rounded-xl shadow-sm">
+        <div class="text-charcoal/40 mb-4">
+            <i class="fas fa-paint-brush text-4xl"></i>
+        </div>
+        <h2 class="text-2xl font-heading font-bold text-navy mb-4">Your design collection is empty</h2>
+        <p class="text-gray-600 mb-6 max-w-md mx-auto">Create stunning wall coverings to transform any space into a work of art.</p>
+        <a href="{{ route('designer.designs.create') }}" 
+            class="inline-block px-6 py-3 bg-gold text-navy rounded-md font-medium hover:bg-gold/90 transition-colors">
+            <i class="fas fa-plus fa-sm mr-2"></i>
+            Create Your First Design
+        </a>
+    </div>
+@endif
 @endsection

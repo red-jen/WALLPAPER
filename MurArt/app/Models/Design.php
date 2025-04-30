@@ -62,4 +62,12 @@ class Design extends Model
     {
         return asset('storage/' . $this->image_path);
     }
+
+    /**
+     * Get the count of artworks using this design.
+     */
+    public function getArtworkUsageCountAttribute(): int
+    {
+        return Artwork::where('design_id', $this->id)->count();
+    }
 }
