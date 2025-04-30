@@ -45,7 +45,7 @@ class HomeController extends Controller
     }
     
     /**
-     * Show the about page.
+     * Show the about page. 
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
