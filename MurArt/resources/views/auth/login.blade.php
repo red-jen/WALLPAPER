@@ -7,7 +7,7 @@
     <div class="flex w-full max-w-[1200px] h-[600px] mx-4">
         <!-- Left Side - Wallpaper Preview -->
         <div class="hidden md:block w-2/3 bg-cover bg-center rounded-l-2xl overflow-hidden">
-            <img src="{{ asset('https://th.bing.com/th/id/OIP.T_FAj4cosoFKilJNRghyhgHaHa?rs=1&pid=ImgDetMain') }}" 
+            <img src="{{ asset('imgs/4cda7b45d1b5c13919ef12f1fc20034f.jpg') }}" 
                  alt="Decorative Wallpaper" 
                  class="w-full h-full object-cover">
         </div>

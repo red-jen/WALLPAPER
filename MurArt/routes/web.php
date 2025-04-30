@@ -122,7 +122,7 @@ Route::get('/nav', function (){
     return view('layouts.navbar');})->name('navbar');
 
 // Authentication Routes
-
+  
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
 Route::get('/logout', [LoginController::class, 'logout'])->name('logout');
 Route::post('/login', [LoginController::class, 'login']);
@@ -132,7 +132,7 @@ Route::get('designer.designs.create', function (){
     // Route::get('designer.designs.store', function (){
     //     return view('designer/designs/store');})->name('designer.designs.store');
 
-Route::get('/register', [RegisterController::class, 'showRegistrationForm'])->name('registerform');
+Route::get('/register', [LoginController::class, 'showLoginForm'])->name('login');
 
 Route::post('/register', [RegisterController::class, 'register'])->name('register');
 Route::get('admin.category.create', function (){
