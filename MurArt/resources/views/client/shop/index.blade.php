@@ -79,7 +79,7 @@
                     <p class="card-text fs-5 fw-bold">${{ number_format($wallpaper->price, 2) }}</p>
                 </div>
                 <div class="card-footer">
-                    <form action="{{ route('shop.wallpaper.cart.add', $wallpaper) }}" method="POST">
+                    <form action="{{ route('shop.cart.add', $wallpaper) }}" method="POST">
                         @csrf
                         <input type="hidden" name="quantity" value="1">
                         <button type="submit" class="btn btn-primary w-100" {{ $wallpaper->stock <= 0 ? 'disabled' : '' }}>

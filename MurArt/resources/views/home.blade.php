@@ -1,280 +1,251 @@
-<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 @extends('layouts.app')
 
+@section('title', 'MurArt - Papiers Peints Artistiques Personnalisables')
+
+@push('styles')
+<style>
+    .diagonal-slice {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        clip-path: polygon(0 0, 100% 20%, 100% 100%, 0 80%);
+    }
+    
+    .pattern-bg {
+        background-image: url('{{ asset('storage/wallpapers/1745908565_cafe-wallpaper_3.jpg') }}');
+        background-size: cover;
+        background-position: center;
+        opacity: 0.1;
+    }
+    
+    .floating-image {
+        animation: float 6s ease-in-out infinite;
+    }
+    
+    @keyframes float {
+        0% { transform: translateY(0px); }
+        50% { transform: translateY(-20px); }
+        100% { transform: translateY(0px); }
+    }
+    
+    .parallax-section {
+        background-attachment: fixed;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: cover;
+    }
+    
+    .grid-pattern {
+        background-image: url('{{ asset('storage/wallpapers/1745908565_cafe-wallpaper_1.jpg') }}');
+        background-size: 400px;
+        opacity: 0.05;
+    }
+    
+    .decorative-corner {
+        position: absolute;
+        width: 200px;
+        height: 200px;
+        background-size: cover;
+        opacity: 0.1;
+        z-index: 0;
+    }
+    
+    .corner-top-right {
+        top: 0;
+        right: 0;
+        transform: rotate(90deg);
+    }
+    
+    .corner-bottom-left {
+        bottom: 0;
+        left: 0;
+        transform: rotate(-90deg);
+    }
+</style>
+@endpush
+
 @section('content')
-    <!-- Hero Section -->
-    <section class="py-16 md:py-24">
-        <div class="container mx-auto px-4">
-            <div class="flex flex-col md:flex-row items-center gap-12">
-                <div class="md:w-1/2">
-                    <h1 class="font-heading text-4xl md:text-5xl font-bold leading-tight mb-6">Créez le Papier Peint de vos Rêves</h1>
-                    <p class="text-gray-600 text-lg mb-8">Découvrez notre plateforme de personnalisation avancée pour concevoir des papiers peints uniques qui reflètent votre style et votre personnalité.</p>
-                    <div class="flex flex-wrap gap-4">
-                        <a href="#" class="px-6 py-3 rounded-full font-semibold bg-primary text-white hover:bg-primary/90 transition-all transform hover:-translate-y-0.5">Explorer le Catalogue</a>
-                        <a href="#" class="px-6 py-3 rounded-full font-semibold border-2 border-primary text-primary hover:bg-primary hover:text-white transition-all transform hover:-translate-y-0.5">Personnaliser</a>
-                    </div>
+<!-- Hero Section with Creative Layout -->
+<section class="relative min-h-screen flex items-center justify-center overflow-hidden">
+    <!-- Decorative Background Pattern -->
+    <div class="absolute inset-0 pattern-bg"></div>
+    
+    <!-- Main Content -->
+    <div class="container mx-auto px-4 relative z-10">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            <!-- Text Content -->
+            <div class="text-center lg:text-left">
+                <h1 class="text-5xl md:text-6xl font-heading font-bold mb-6 tracking-tight text-dark">Transformez vos murs en œuvres d'art</h1>
+                <p class="text-xl md:text-2xl mb-10 text-gray-600">Découvrez notre collection exclusive de papiers peints artistiques qui élèvent l'ambiance de votre intérieur</p>
+                <div class="flex flex-col sm:flex-row justify-center lg:justify-start space-y-4 sm:space-y-0 sm:space-x-6">
+                    <a href="{{ route('artworks.create') }}" class="bg-primary hover:bg-opacity-90 text-white py-4 px-10 rounded-md font-heading font-medium text-center transition duration-300 transform hover:scale-105 shadow-lg">Créer mon papier peint</a>
+                    <a href="{{ route('designs.index') }}" class="bg-secondary hover:bg-opacity-90 text-white py-4 px-10 rounded-md font-heading font-medium text-center transition duration-300 transform hover:scale-105">Explorer les designs</a>
                 </div>
-                <div class="md:w-1/2 relative">
-                    <img src="{{ asset('images/hero-wallpaper.jpg') }}" alt="Intérieur avec papier peint design" class="w-full rounded-lg shadow-custom">
-                    <div class="absolute top-0 right-0 transform translate-x-1/4 -translate-y-1/4 bg-secondary text-white p-4 rounded-full w-20 h-20 flex flex-col items-center justify-center font-bold leading-tight text-sm rotate-12 shadow-custom">
-                        <span>NOUVEAU</span>
-                        <span>Collection</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Features -->
-    <section class="py-16 md:py-24 bg-white">
-        <div class="container mx-auto px-4">
-            <div class="text-center mb-16">
-                <h2 class="font-heading text-3xl md:text-4xl font-bold mb-4">Pourquoi Choisir WallArt</h2>
-                <p class="text-gray-600 max-w-3xl mx-auto">Notre plateforme offre une expérience unique pour créer et acheter des papiers peints personnalisés.</p>
             </div>
             
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <div class="bg-light p-8 rounded-lg shadow-custom transform transition-transform hover:-translate-y-2">
-                    <div class="w-16 h-16 bg-primary text-white rounded-full flex items-center justify-center mb-6 text-2xl">
-                        <i class="fas fa-paint-brush"></i>
-                    </div>
-                    <h3 class="font-heading text-xl font-semibold mb-4">Personnalisation Avancée</h3>
-                    <p class="text-gray-600">Modifiez les couleurs, les motifs et ajoutez votre touche personnelle à n'importe quel design.</p>
+            <!-- Featured Image -->
+            <div class="relative">
+                <div class="aspect-w-4 aspect-h-5 rounded-lg overflow-hidden shadow-2xl floating-image">
+                    <img src="{{ asset('storage/wallpapers/1745904225_chateau-wallpaper_0.jpg') }}" alt="Featured Design" class="object-cover w-full h-full">
                 </div>
-                
-                <div class="bg-light p-8 rounded-lg shadow-custom transform transition-transform hover:-translate-y-2">
-                    <div class="w-16 h-16 bg-primary text-white rounded-full flex items-center justify-center mb-6 text-2xl">
-                        <i class="fas fa-users"></i>
-                    </div>
-                    <h3 class="font-heading text-xl font-semibold mb-4">Communauté Active</h3>
-                    <p class="text-gray-600">Échangez avec des designers et d'autres clients pour trouver l'inspiration parfaite.</p>
-                </div>
-                
-                <div class="bg-light p-8 rounded-lg shadow-custom transform transition-transform hover:-translate-y-2">
-                    <div class="w-16 h-16 bg-primary text-white rounded-full flex items-center justify-center mb-6 text-2xl">
-                        <i class="fas fa-chart-line"></i>
-                    </div>
-                    <h3 class="font-heading text-xl font-semibold mb-4">Suivi Personnalisé</h3>
-                    <p class="text-gray-600">Suivez vos commandes et vos ventes depuis votre tableau de bord interactif.</p>
-                </div>
+                <!-- Decorative Elements -->
+                <div class="absolute -bottom-10 -left-10 w-40 h-40 bg-primary bg-opacity-10 rounded-full"></div>
+                <div class="absolute -top-10 -right-10 w-60 h-60 bg-secondary bg-opacity-10 rounded-full"></div>
             </div>
         </div>
-    </section>
+    </div>
+</section>
 
-    <!-- Collections -->
-    <section class="py-16 md:py-24">
-        <div class="container mx-auto px-4">
-            <div class="flex justify-between items-center mb-8">
-                <h2 class="font-heading text-3xl font-bold">Nos Collections</h2>
-                <a href="#" class="px-6 py-2 rounded-full font-semibold bg-secondary text-white hover:bg-secondary/90 transition-all transform hover:-translate-y-0.5">Voir Tout</a>
+<!-- How It Works with Diagonal Sections -->
+<section class="relative py-24 overflow-hidden">
+    <!-- Diagonal Background -->
+    <div class="diagonal-slice bg-secondary bg-opacity-5"></div>
+    
+    <div class="container mx-auto px-4 relative z-10">
+        <div class="text-center mb-16">
+            <h2 class="text-4xl font-heading font-bold mb-4 text-dark">Comment ça marche</h2>
+            <div class="w-24 h-1 bg-primary mx-auto mb-6"></div>
+            <p class="text-gray-600 max-w-3xl mx-auto text-lg">Notre processus unique vous permet de créer votre papier peint parfait</p>
+        </div>
+        
+        <!-- Steps with Alternating Layout -->
+        <div class="space-y-24">
+            <!-- Step 1 -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                <div class="order-2 lg:order-1">
+                    <div class="relative">
+                        <img src="{{ asset('storage/wallpapers/1745908565_cafe-wallpaper_2.jpg') }}" alt="Choose Design" class="rounded-lg shadow-xl">
+                        <div class="absolute inset-0 bg-gradient-to-r from-primary to-transparent opacity-20"></div>
+                    </div>
+                </div>
+                <div class="order-1 lg:order-2">
+                    <h3 class="text-3xl font-heading font-bold mb-6 text-dark">1. Choisissez votre design</h3>
+                    <p class="text-gray-600 text-lg mb-6">Explorez notre collection exclusive de motifs créés par nos artistes talentueux ou téléchargez votre propre création.</p>
+                    <a href="{{ route('designs.index') }}" class="text-secondary hover:text-primary font-medium transition inline-flex items-center">
+                        Découvrir les designs <i class="fas fa-arrow-right ml-2"></i>
+                    </a>
+                </div>
             </div>
             
-            <div class="flex flex-wrap gap-4 mb-8">
-                <button class="px-6 py-2 rounded-full font-medium bg-primary text-white shadow-custom">Tous</button>
-                <button class="px-6 py-2 rounded-full font-medium bg-white shadow-custom hover:bg-gray-50">Moderne</button>
-                <button class="px-6 py-2 rounded-full font-medium bg-white shadow-custom hover:bg-gray-50">Classique</button>
-                <button class="px-6 py-2 rounded-full font-medium bg-white shadow-custom hover:bg-gray-50">Nature</button>
-                <button class="px-6 py-2 rounded-full font-medium bg-white shadow-custom hover:bg-gray-50">Géométrique</button>
+            <!-- Step 2 -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                <div>
+                    <h3 class="text-3xl font-heading font-bold mb-6 text-dark">2. Personnalisez votre papier peint</h3>
+                    <p class="text-gray-600 text-lg mb-6">Ajustez les couleurs, les dimensions et choisissez parmi nos différentes qualités de papier pour un résultat parfait.</p>
+                    <a href="#" class="text-secondary hover:text-primary font-medium transition inline-flex items-center">
+                        Explorer les options <i class="fas fa-arrow-right ml-2"></i>
+                    </a>
+                </div>
+                <div class="relative">
+                    <img src="{{ asset('storage/wallpapers/1745772684_chateau-wallpaper_0.jpg') }}" alt="Customize" class="rounded-lg shadow-xl">
+                    <div class="absolute inset-0 bg-gradient-to-l from-secondary to-transparent opacity-20"></div>
+                </div>
             </div>
             
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-                @foreach ([
-                    [
-                        'image' => 'vagues-abstraites.jpg',
-                        'title' => 'Vagues Abstraites',
-                        'description' => 'Design moderne avec motif ondulé',
-                        'price' => '39,99 €'
-                    ],
-                    [
-                        'image' => 'floral-vintage.jpg',
-                        'title' => 'Floral Vintage',
-                        'description' => 'Motifs floraux classiques et élégants',
-                        'price' => '45,99 €'
-                    ],
-                    [
-                        'image' => 'jungle-tropicale.jpg',
-                        'title' => 'Jungle Tropicale',
-                        'description' => 'Immersion dans une nature luxuriante',
-                        'price' => '49,99 €'
-                    ],
-                    [
-                        'image' => 'geometrie-urbaine.jpg',
-                        'title' => 'Géométrie Urbaine',
-                        'description' => 'Formes géométriques contemporaines',
-                        'price' => '42,99 €'
-                    ]
-                ] as $collection)
-                <div class="bg-white rounded-lg overflow-hidden shadow-custom transform transition-all hover:-translate-y-1 hover:shadow-lg">
-                    <img src="{{ asset('images/collections/' . $collection['image']) }}" alt="{{ $collection['title'] }}" class="w-full h-56 object-cover">
-                    <div class="p-6">
-                        <h3 class="font-heading text-xl font-semibold mb-2">{{ $collection['title'] }}</h3>
-                        <p class="text-gray-600 mb-4">{{ $collection['description'] }}</p>
-                        <div class="flex justify-between items-center">
-                            <div class="text-primary font-bold text-lg">{{ $collection['price'] }}</div>
-                            <div class="flex gap-2">
-                                <button class="w-10 h-10 bg-light rounded-full flex items-center justify-center hover:bg-primary hover:text-white transition-colors">
-                                    <i class="fas fa-eye"></i>
-                                </button>
-                                <button class="w-10 h-10 bg-light rounded-full flex items-center justify-center hover:bg-primary hover:text-white transition-colors">
-                                    <i class="fas fa-heart"></i>
-                                </button>
-                                <button class="w-10 h-10 bg-light rounded-full flex items-center justify-center hover:bg-primary hover:text-white transition-colors">
-                                    <i class="fas fa-shopping-cart"></i>
-                                </button>
-                            </div>
-                        </div>
+            <!-- Step 3 -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                <div class="order-2 lg:order-1">
+                    <div class="relative">
+                        <img src="{{ asset('storage/wallpapers/1745579806_test-wallroll_2.jpg') }}" alt="Final Product" class="rounded-lg shadow-xl">
+                        <div class="absolute inset-0 bg-gradient-to-r from-primary to-transparent opacity-20"></div>
                     </div>
                 </div>
-                @endforeach
+                <div class="order-1 lg:order-2">
+                    <h3 class="text-3xl font-heading font-bold mb-6 text-dark">3. Recevez votre création</h3>
+                    <p class="text-gray-600 text-lg mb-6">Nous imprimons et livrons votre papier peint personnalisé directement chez vous, prêt à transformer votre intérieur.</p>
+                    <a href="{{ route('artworks.create') }}" class="text-secondary hover:text-primary font-medium transition inline-flex items-center">
+                        Commander maintenant <i class="fas fa-arrow-right ml-2"></i>
+                    </a>
+                </div>
             </div>
         </div>
-    </section>
+    </div>
+</section>
 
-    <!-- Customization -->
-    <section class="py-16 md:py-24 bg-white">
-        <div class="container mx-auto px-4">
-            <div class="flex flex-col md:flex-row items-center gap-12">
-                <div class="md:w-1/2 relative">
-                    <img src="{{ asset('images/customization-tool.jpg') }}" alt="Outil de personnalisation" class="w-full rounded-lg shadow-custom">
-                    <div class="absolute top-5 right-5 flex flex-col gap-4">
-                        <button class="w-12 h-12 bg-white rounded-full flex items-center justify-center shadow-custom hover:bg-primary hover:text-white transform hover:scale-110 transition-all">
-                            <i class="fas fa-palette"></i>
-                        </button>
-                        <button class="w-12 h-12 bg-white rounded-full flex items-center justify-center shadow-custom hover:bg-primary hover:text-white transform hover:scale-110 transition-all">
-                            <i class="fas fa-crop"></i>
-                        </button>
-                        <button class="w-12 h-12 bg-white rounded-full flex items-center justify-center shadow-custom hover:bg-primary hover:text-white transform hover:scale-110 transition-all">
-                            <i class="fas fa-adjust"></i>
-                        </button>
-                        <button class="w-12 h-12 bg-white rounded-full flex items-center justify-center shadow-custom hover:bg-primary hover:text-white transform hover:scale-110 transition-all">
-                            <i class="fas fa-magic"></i>
-                        </button>
+<!-- Featured Designs Section with Creative Grid -->
+<section class="relative py-24">
+    <!-- Background Pattern -->
+    <div class="absolute inset-0 grid-pattern"></div>
+    
+    <div class="container mx-auto px-4 relative z-10">
+        <div class="text-center mb-16">
+            <h2 class="text-4xl font-heading font-bold mb-4 text-dark">Nos créations</h2>
+            <div class="w-24 h-1 bg-primary mx-auto mb-6"></div>
+            <p class="text-gray-600 max-w-3xl mx-auto text-lg">Découvrez notre sélection de designs exclusifs</p>
+        </div>
+        
+        <!-- Creative Grid Layout -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div class="col-span-2 row-span-2">
+                <div class="relative h-full group overflow-hidden rounded-lg">
+                    <img src="{{ asset('storage/wallpapers/1745908565_cafe-wallpaper_1.jpg') }}" alt="Featured Design" class="w-full h-full object-cover transition duration-500 group-hover:scale-110">
+                    <div class="absolute inset-0 bg-gradient-to-t from-dark to-transparent opacity-60 group-hover:opacity-70 transition duration-300"></div>
+                    <div class="absolute bottom-0 left-0 p-6">
+                        <h3 class="text-white font-heading font-bold text-xl mb-2">Collection Signature</h3>
+                        <p class="text-gray-200">Designs exclusifs</p>
                     </div>
-                </div>
-                
-                <div class="md:w-1/2">
-                    <h2 class="font-heading text-3xl md:text-4xl font-bold mb-6">Personnalisez à l'Infini</h2>
-                    <p class="text-gray-600 mb-8">Notre outil de personnalisation avancé vous permet de modifier chaque aspect de votre papier peint pour créer un design qui vous ressemble vraiment.</p>
-                    
-                    <div class="flex flex-col gap-6 mb-8">
-                        <div class="flex gap-4">
-                            <div class="w-9 h-9 bg-primary text-white rounded-full flex items-center justify-center font-bold flex-shrink-0">1</div>
-                            <div>
-                                <h4 class="font-heading text-lg font-semibold mb-2">Choisissez un Design</h4>
-                                <p class="text-gray-600">Parcourez notre catalogue et sélectionnez le design qui vous inspire.</p>
-                            </div>
-                        </div>
-                        
-                        <div class="flex gap-4">
-                            <div class="w-9 h-9 bg-primary text-white rounded-full flex items-center justify-center font-bold flex-shrink-0">2</div>
-                            <div>
-                                <h4 class="font-heading text-lg font-semibold mb-2">Personnalisez-le</h4>
-                                <p class="text-gray-600">Modifiez les couleurs, les motifs et ajoutez des éléments personnels.</p>
-                            </div>
-                        </div>
-                        
-                        <div class="flex gap-4">
-                            <div class="w-9 h-9 bg-primary text-white rounded-full flex items-center justify-center font-bold flex-shrink-0">3</div>
-                            <div>
-                                <h4 class="font-heading text-lg font-semibold mb-2">Visualisez le Résultat</h4>
-                                <p class="text-gray-600">Utilisez notre aperçu en temps réel pour voir votre création dans un intérieur.</p>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <a href="#" class="inline-block px-6 py-3 rounded-full font-semibold bg-secondary text-white hover:bg-secondary/90 transition-all transform hover:-translate-y-0.5">Essayer Maintenant</a>
                 </div>
             </div>
+            @foreach(range(1, 6) as $index)
+            <div class="relative group overflow-hidden rounded-lg">
+                <img src="{{ asset('storage/wallpapers/1745908565_cafe-wallpaper_' . ($index % 3 + 1) . '.jpg') }}" alt="Design {{ $index }}" class="w-full h-64 object-cover transition duration-500 group-hover:scale-110">
+                <div class="absolute inset-0 bg-gradient-to-t from-dark to-transparent opacity-60 group-hover:opacity-70 transition duration-300"></div>
+                <div class="absolute bottom-0 left-0 p-4">
+                    <h4 class="text-white font-heading font-semibold">Design {{ $index }}</h4>
+                </div>
+            </div>
+            @endforeach
         </div>
-    </section>
+    </div>
+</section>
 
-    <!-- Community -->
-    <section class="py-16 md:py-24">
-        <div class="container mx-auto px-4">
-            <div class="text-center mb-16">
-                <h2 class="font-heading text-3xl md:text-4xl font-bold mb-4">Notre Communauté</h2>
-                <p class="text-gray-600 max-w-3xl mx-auto">Rejoignez des milliers de designers et de clients qui partagent leur passion pour les beaux intérieurs.</p>
-            </div>
-            
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <div class="bg-white p-8 rounded-lg shadow-custom">
-                    <p class="text-gray-600 italic mb-6">"J'ai trouvé exactement ce que je cherchais pour ma chambre. La possibilité de personnaliser les couleurs a fait toute la différence !"</p>
-                    <div class="flex items-center gap-4">
-                        <div class="w-12 h-12 rounded-full overflow-hidden">
-                            <img src="{{ asset('images/testimonials/sophie.jpg') }}" alt="Sophie Martin" class="w-full h-full object-cover">
-                        </div>
-                        <div>
-                            <h4 class="font-heading font-semibold">Sophie Martin</h4>
-                            <p class="text-gray-600 text-sm">Cliente</p>
-                            <div class="text-secondary mt-1">
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="bg-white p-8 rounded-lg shadow-custom">
-                    <p class="text-gray-600 italic mb-6">"En tant que designer, cette plateforme m'a permis de toucher un public plus large et de vendre mes créations de manière simple et efficace."</p>
-                    <div class="flex items-center gap-4">
-                        <div class="w-12 h-12 rounded-full overflow-hidden">
-                            <img src="{{ asset('images/testimonials/thomas.jpg') }}" alt="Thomas Durand" class="w-full h-full object-cover">
-                        </div>
-                        <div>
-                            <h4 class="font-heading font-semibold">Thomas Durand</h4>
-                            <p class="text-gray-600 text-sm">Designer</p>
-                            <div class="text-secondary mt-1">
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star-half-alt"></i>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="bg-white p-8 rounded-lg shadow-custom">
-                    <p class="text-gray-600 italic mb-6">"La qualité des papiers peints est impressionnante et le service client est exceptionnel. Je recommande vivement !"</p>
-                    <div class="flex items-center gap-4">
-                        <div class="w-12 h-12 rounded-full overflow-hidden">
-                            <img src="{{ asset('images/testimonials/julie.jpg') }}" alt="Julie Lefevre" class="w-full h-full object-cover">
-                        </div>
-                        <div>
-                            <h4 class="font-heading font-semibold">Julie Lefevre</h4>
-                            <p class="text-gray-600 text-sm">Décoratrice d'intérieur</p>
-                            <div class="text-secondary mt-1">
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+<!-- Testimonials with Artistic Background -->
+<section class="relative py-24 parallax-section" style="background-image: url('{{ asset('storage/wallpapers/1745908565_cafe-wallpaper_2.jpg') }}')">
+    <div class="absolute inset-0 bg-dark bg-opacity-80"></div>
+    
+    <div class="container mx-auto px-4 relative z-10">
+        <div class="text-center mb-16">
+            <h2 class="text-4xl font-heading font-bold mb-4 text-white">Ce que disent nos clients</h2>
+            <div class="w-24 h-1 bg-primary mx-auto mb-6"></div>
         </div>
-    </section>
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            @foreach(range(1, 3) as $index)
+            <div class="bg-white bg-opacity-10 backdrop-blur-lg p-8 rounded-lg">
+                <div class="flex text-yellow-500 mb-6">
+                    @for($i = 0; $i < 5; $i++)
+                        <i class="fas fa-star"></i>
+                    @endfor
+                </div>
+                <p class="text-gray-200 mb-8 italic text-lg">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+                <div class="flex items-center">
+                    <div class="w-12 h-12 rounded-full bg-primary mr-4"></div>
+                    <div>
+                        <h4 class="font-heading font-semibold text-white">Client {{ $index }}</h4>
+                        <p class="text-gray-300 text-sm">Client depuis 2023</p>
+                    </div>
+                </div>
+            </div>
+            @endforeach
+        </div>
+    </div>
+</section>
 
-    <!-- Newsletter -->
-    <section class="py-12 md:py-16 bg-primary text-white">
-        <div class="container mx-auto px-4">
-            <div class="flex flex-col md:flex-row justify-between items-center gap-8">
-                <div class="md:w-1/2">
-                    <h2 class="font-heading text-3xl font-bold mb-4">Restez Informé</h2>
-                    <p class="text-white/90 max-w-lg">Inscrivez-vous à notre newsletter pour recevoir les dernières tendances et offres exclusives.</p>
-                </div>
-                <div class="md:w-1/2">
-                    <form class="flex flex-col sm:flex-row gap-4 w-full max-w-md">
-                        <input type="email" class="flex-1 px-5 py-3 rounded-full border-none focus:outline-none text-dark" placeholder="Votre email">
-                        <button type="submit" class="px-6 py-3 rounded-full font-semibold bg-secondary text-white hover:bg-secondary/90 transition-all">S'inscrire</button>
-                    </form>
-                </div>
+<!-- CTA Section with Artistic Elements -->
+<section class="relative py-24 overflow-hidden">
+    <!-- Decorative Corners -->
+    <div class="decorative-corner corner-top-right" style="background-image: url('{{ asset('storage/wallpapers/1745908565_cafe-wallpaper_3.jpg') }}')"></div>
+    <div class="decorative-corner corner-bottom-left" style="background-image: url('{{ asset('storage/wallpapers/1745908565_cafe-wallpaper_1.jpg') }}')"></div>
+    
+    <div class="container mx-auto px-4 relative z-10">
+        <div class="max-w-4xl mx-auto text-center">
+            <h2 class="text-4xl md:text-5xl font-heading font-bold mb-6 text-dark">Prêt à transformer votre intérieur ?</h2>
+            <p class="text-gray-600 text-xl mb-10">Créez dès maintenant votre papier peint unique qui reflétera parfaitement votre style et votre personnalité.</p>
+            <div class="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-6">
+                <a href="{{ route('artworks.create') }}" class="bg-primary hover:bg-opacity-90 text-white py-4 px-10 rounded-md font-heading font-medium text-center transition duration-300 transform hover:scale-105 shadow-lg">Créer mon papier peint</a>
+                <a href="{{ route('about') }}" class="bg-secondary hover:bg-opacity-90 text-white py-4 px-10 rounded-md font-heading font-medium text-center transition duration-300 transform hover:scale-105">En savoir plus</a>
             </div>
         </div>
-    </section>
+    </div>
+</section>
 @endsection

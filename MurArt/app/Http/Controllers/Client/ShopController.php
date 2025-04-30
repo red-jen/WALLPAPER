@@ -42,31 +42,45 @@ class ShopController extends Controller
         return view('client.shop.index', compact('wallpapers', 'categories'));
     }
 
-    /**
-     * Display the specified wallpaper.
-     */
-    public function show(Wallpaper $wallpaper)
+
+     
+    public function show($id)
     {
-        // Load related data
-        $wallpaper->load(['category', 'images', 'reviews', 'papers']);
+        // Find wallpaper by ID with eager loading of relationships
+        $wallpaper = Wallpaper::with(['category', 'images', 'papers'])
+            ->findOrFail($id);
         
-        // Get reviews for this wallpaper
-        $reviews = Review::where('wallpaper_id', $wallpaper->id)
-            ->where('is_approved', true)
+        // Check if the wallpaper exists and is published
+        if (!$wallpaper || ($wallpaper->status ?? 'published') !== 'published') {
+            return redirect()->route('shop.index')
+                ->with('error', 'The requested wallpaper is not available.');
+        }
+        
+        // Get approved reviews for this wallpaper with efficient eager loading
+        $reviews = Review::where('wallpaper_id', $id)
             ->orderBy('created_at', 'desc')
             ->get();
-            
-        // Get related wallpapers (same category)
+        
+        // Get related wallpapers efficiently
         $relatedWallpapers = Wallpaper::where('category_id', $wallpaper->category_id)
-            ->where('id', '!=', $wallpaper->id)
+            ->where('id', '!=', $id)
             ->where('status', 'published')
-            ->with(['category', 'images'])
+            ->with(['category', 'images' => function($query) {
+                $query->limit(1); // Only load first image for each related wallpaper
+            }])
             ->limit(4)
             ->get();
-            
+        
+        // Log for debugging
+        \Log::info('Viewing wallpaper', [
+            'wallpaper_id' => $id,
+            'title' => $wallpaper->title,
+            'status' => $wallpaper->status ?? 'unknown'
+        ]);
+        
+        // Return view with data
         return view('client.shop.show', compact('wallpaper', 'reviews', 'relatedWallpapers'));
     }
-    
     /**
      * Store a review for a wallpaper.
      */

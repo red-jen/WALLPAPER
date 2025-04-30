@@ -27,7 +27,7 @@
             </div>
         </div>
     </div>
-    
+    MurArt/resources/imgs
     <!-- Mobile menu -->
     <div class="hidden bg-white shadow-md py-4 md:hidden" id="mobile-menu">
         <div class="container mx-auto px-4">

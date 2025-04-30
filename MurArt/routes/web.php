@@ -84,14 +84,14 @@ Route::get('/designs/{design}/create-artwork', [ClientDesignController::class, '
     ->name('designs.create-artwork');
 
 
-
+                         //shops
 Route::get('/shop', [ShopController::class, 'index'])->name('shop.index');
 Route::get('/shop/{artwork}', [ShopController::class, 'show'])->name('shop.show');
 Route::post('/shop/{artwork}/review', [ShopController::class, 'storeReview'])->middleware('auth')->name('shop.review.store');
 // Route::post('/shop/{artwork}/cart', [ShopController::class, 'addToCart'])->name('shop.cart.add');
 
 // Shop routes
-Route::post('/shop/{wallpaper}/cart', [ShopController::class, 'addToCart'])->name('shop.wallpaper.cart.add');
+Route::post('/shop/{wallpaper}/cart', [ShopController::class, 'addToCart'])->name('shop.cart.add');
 
 // Wallpaper reviews route
 Route::post('/wallpapers/{wallpaper}/review', [ReviewController::class, 'storeWallpaperReview'])->middleware('auth')->name('wallpapers.review.store');
