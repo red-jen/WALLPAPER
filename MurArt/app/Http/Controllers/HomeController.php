@@ -32,7 +32,7 @@ class HomeController extends Controller
             ->take(4)
             ->get();
             
-        // Get featured designs
+        // Get featured des
         $designs = Design::with('designer')
             ->latest()
             ->take(6)
