@@ -1,263 +1,7 @@
 @extends('layouts.app')
 
 @section('title', $wallpaper->title)
-
-@push('styles')
-<style>
-    .wallpaper-gallery {
-        position: relative;
-        overflow: hidden;
-        border-radius: 0.75rem;
-        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-    }
-    
-    .wallpaper-gallery img {
-        transition: transform 0.5s ease;
-    }
-    
-    .wallpaper-gallery:hover img {
-        transform: scale(1.05);
-    }
-    
-    .specs-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-        gap: 1rem;
-    }
-    
-    .review-card {
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
-    }
-    
-    .review-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-    }
-
-    .thumbnail-gallery {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
-        gap: 0.5rem;
-        margin-top: 1rem;
-    }
-
-    .thumbnail {
-        position: relative;
-        aspect-ratio: 1;
-        border-radius: 0.5rem;
-        overflow: hidden;
-        cursor: pointer;
-        border: 2px solid transparent;
-        transition: all 0.3s ease;
-    }
-
-    .thumbnail.active {
-        border-color: #D4AF37;
-    }
-
-    .thumbnail:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-    }
-
-    .thumbnail img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-    }
-
-    .rating-stars {
-        display: flex;
-        gap: 0.5rem;
-        font-size: 1.5rem;
-        color: #D4AF37;
-    }
-
-    .rating-stars i {
-        cursor: pointer;
-        transition: transform 0.2s ease;
-    }
-
-    .rating-stars i:hover {
-        transform: scale(1.2);
-    }
-
-    .review-form {
-        background: linear-gradient(to right bottom, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.95));
-        backdrop-filter: blur(10px);
-    }
-
-    .product-section {
-        margin-bottom: 2rem;
-        padding-bottom: 2rem;
-        border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-    }
-    
-    .product-section:last-child {
-        border-bottom: none;
-    }
-    
-    .add-to-cart-container {
-        background: linear-gradient(to right bottom, rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.9));
-        padding: 1.5rem;
-        border-radius: 0.75rem;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-        margin-top: 1.5rem;
-        border: 1px solid rgba(0, 0, 0, 0.08);
-    }
-    
-    .quantity-selector {
-        display: flex;
-        align-items: center;
-        max-width: 150px;
-        margin-bottom: 1rem;
-    }
-    
-    .quantity-selector button {
-        width: 36px;
-        height: 36px;
-        border: 1px solid rgba(0, 0, 0, 0.1);
-        background: white;
-        border-radius: 4px;
-        font-size: 1.25rem;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-        transition: all 0.2s ease;
-    }
-    
-    .quantity-selector input {
-        width: 50px;
-        text-align: center;
-        margin: 0 8px;
-        border: 1px solid rgba(0, 0, 0, 0.1);
-        border-radius: 4px;
-        padding: 0.25rem 0;
-    }
-    
-    .add-to-cart-btn {
-        width: 100%;
-        padding: 0.875rem;
-        font-weight: 600;
-        font-size: 1.1rem;
-        letter-spacing: 0.02em;
-        transition: all 0.3s ease;
-        position: relative;
-        overflow: hidden;
-        box-shadow: 0 4px 10px rgba(28, 55, 90, 0.16);
-    }
-    
-    .add-to-cart-btn:hover:not(:disabled) {
-        transform: translateY(-2px);
-        box-shadow: 0 6px 12px rgba(28, 55, 90, 0.25);
-    }
-
-    .review-form {
-        background: linear-gradient(to right bottom, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.95));
-        backdrop-filter: blur(10px);
-        border-radius: 1rem;
-        padding: 2rem;
-        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
-        border: 1px solid rgba(0, 0, 0, 0.05);
-    }
-    
-    .product-info-pill {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.5rem;
-        padding: 0.5rem 1rem;
-        border-radius: 9999px;
-        font-size: 0.875rem;
-        font-weight: 500;
-        background-color: rgba(212, 175, 55, 0.1);
-        color: rgb(212, 175, 55);
-        margin-right: 0.5rem;
-        margin-bottom: 0.5rem;
-    }
-    
-    .product-info-pill i {
-        font-size: 0.75rem;
-    }
-
-    /* Enhanced Related Products Section */
-    .related-product-card {
-        height: 100%;
-        display: flex;
-        flex-direction: column;
-        transition: all 0.3s ease;
-        background: white;
-        border-radius: 0.75rem;
-        overflow: hidden;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-        border: 1px solid rgba(0, 0, 0, 0.04);
-    }
-    
-    .related-product-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 12px 20px rgba(0, 0, 0, 0.1);
-    }
-    
-    .related-product-image {
-        aspect-ratio: 4/5;
-        width: 100%;
-        position: relative;
-    }
-    
-    .related-product-image img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        transition: transform 0.5s ease-in-out;
-    }
-    
-    .related-product-card:hover .related-product-image img {
-        transform: scale(1.08);
-    }
-    
-    .related-product-info {
-        padding: 1.25rem;
-        flex: 1;
-        display: flex;
-        flex-direction: column;
-    }
-    
-    .related-product-title {
-        font-weight: 600;
-        margin-bottom: 0.5rem;
-        font-size: 1.1rem;
-        line-height: 1.4;
-        color: #333;
-    }
-    
-    .related-product-category {
-        font-size: 0.85rem;
-        color: rgba(0, 0, 0, 0.6);
-        margin-bottom: 0.75rem;
-    }
-    
-    .related-product-price {
-        font-weight: 700;
-        color: #1c375a;
-        font-size: 1.25rem;
-        margin-top: auto;
-    }
-
-    /* Enhanced star rating */
-    .star-rating {
-        display: inline-flex;
-        font-size: 1rem;
-    }
-    
-    .star-filled {
-        color: #D4AF37;
-    }
-    
-    .star-empty {
-        color: rgba(0, 0, 0, 0.2);
-    }
-</style>
-@endpush
+<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 
 @section('content')
 <div class="bg-neutral min-h-screen py-12">
@@ -276,12 +20,12 @@
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
             <!-- Image Gallery -->
             <div class="space-y-4">
-                <div class="wallpaper-gallery">
+                <div class="relative overflow-hidden rounded-3xl shadow-md">
                     <div id="wallpaperGallery" class="carousel slide" data-bs-ride="carousel">
                         <div class="carousel-inner">
                             <div class="carousel-item active">
                                 <img src="{{ $wallpaper->getImageUrlAttribute() }}" 
-                                    class="w-full h-[600px] object-cover" 
+                                    class="w-full h-[600px] object-cover transition-transform duration-500 ease-in-out group-hover:scale-105" 
                                     alt="{{ $wallpaper->title }}"
                                     id="mainImage">
                             </div>
@@ -301,13 +45,15 @@
                 </div>
 
                 <!-- Thumbnail Gallery -->
-                <div class="thumbnail-gallery">
-                    <div class="thumbnail active" onclick="changeImage('{{ $wallpaper->getImageUrlAttribute() }}')">
-                        <img src="{{ $wallpaper->getImageUrlAttribute() }}" alt="Main Image">
+                <div class="grid grid-cols-4 sm:grid-cols-6 gap-2 mt-4">
+                    <div class="relative aspect-square rounded-lg overflow-hidden cursor-pointer border-2 border-[#D4AF37] transition-all duration-300 ease-in-out hover:-translate-y-0.5 hover:shadow-md" 
+                         onclick="changeImage('{{ $wallpaper->getImageUrlAttribute() }}')">
+                        <img src="{{ $wallpaper->getImageUrlAttribute() }}" class="w-full h-full object-cover" alt="Main Image">
                     </div>
                     @foreach($wallpaper->images as $image)
-                        <div class="thumbnail" onclick="changeImage('{{ $image->getImageUrlAttribute() }}')">
-                            <img src="{{ $image->getImageUrlAttribute() }}" alt="Thumbnail">
+                        <div class="relative aspect-square rounded-lg overflow-hidden cursor-pointer border-2 border-transparent transition-all duration-300 ease-in-out hover:-translate-y-0.5 hover:shadow-md" 
+                             onclick="changeImage('{{ $image->getImageUrlAttribute() }}')">
+                            <img src="{{ $image->getImageUrlAttribute() }}" class="w-full h-full object-cover" alt="Thumbnail">
                         </div>
                     @endforeach
                 </div>
@@ -315,20 +61,20 @@
 
             <!-- Product Details -->
             <div class="flex flex-col">
-                <div class="product-section">
+                <div class="mb-8 pb-8 border-b border-gray-200 border-opacity-50">
                     <h1 class="text-4xl font-heading font-bold text-charcoal mb-4">{{ $wallpaper->title }}</h1>
                 
                     <div class="flex flex-wrap mb-6">
-                        <span class="product-info-pill">
-                            <i class="fas fa-tag"></i>
+                        <span class="inline-flex items-center gap-2 px-4 py-2 bg-[#D4AF37]/10 text-[#D4AF37] rounded-full text-sm font-medium mr-2 mb-2">
+                            <i class="fas fa-tag text-xs"></i>
                             {{ $wallpaper->category->name ?? 'Unknown' }}
                         </span>
-                        <span class="product-info-pill">
-                            <i class="fas fa-layer-group"></i>
+                        <span class="inline-flex items-center gap-2 px-4 py-2 bg-[#D4AF37]/10 text-[#D4AF37] rounded-full text-sm font-medium mr-2 mb-2">
+                            <i class="fas fa-layer-group text-xs"></i>
                             {{ $wallpaper->style }}
                         </span>
-                        <span class="product-info-pill">
-                            <i class="fas fa-boxes"></i>
+                        <span class="inline-flex items-center gap-2 px-4 py-2 bg-[#D4AF37]/10 text-[#D4AF37] rounded-full text-sm font-medium mr-2 mb-2">
+                            <i class="fas fa-boxes text-xs"></i>
                             {{ $wallpaper->stock > 0 ? 'In Stock' : 'Out of Stock' }}
                         </span>
                     </div>
@@ -339,35 +85,42 @@
                     </div>
                 </div>
 
-                <div class="product-section">
+                <div class="mb-8 pb-8 border-b border-gray-200 border-opacity-50">
                     <h3 class="text-xl font-heading font-semibold text-charcoal mb-4">Description</h3>
                     <p class="text-charcoal/80 leading-relaxed">{{ $wallpaper->description }}</p>
                 </div>
 
                 <!-- Add to Cart Form -->
-                <div class="product-section">
+                <div class="mb-8 pb-8 border-b border-gray-200 border-opacity-50">
                     <form action="{{ route('shop.cart.add', $wallpaper) }}" method="POST">
                         @csrf
-                        <div class="add-to-cart-container">
+                        <div class="bg-gradient-to-br from-white/80 to-white/90 p-6 rounded-xl shadow-sm border border-gray-100 mt-6">
                             <h3 class="text-lg font-heading font-semibold text-charcoal mb-4">Purchase Options</h3>
                             
                             <div class="mb-4">
                                 <label for="quantity" class="block text-sm font-medium text-charcoal/70 mb-2">Quantity</label>
-                                <div class="quantity-selector">
-                                    <button type="button" onclick="decrementQuantity()" {{ $wallpaper->stock <= 0 ? 'disabled' : '' }}>-</button>
+                                <div class="flex items-center max-w-[150px] mb-4">
+                                    <button type="button" 
+                                        class="w-9 h-9 border border-gray-200 bg-white rounded flex items-center justify-center text-xl transition duration-200 ease-in-out" 
+                                        onclick="decrementQuantity()" 
+                                        {{ $wallpaper->stock <= 0 ? 'disabled' : '' }}>-</button>
                                     <input type="number" 
+                                        class="w-[50px] text-center mx-2 border border-gray-200 rounded p-1"
                                         id="quantity" 
                                         name="quantity" 
                                         value="1" 
                                         min="1" 
                                         max="{{ $wallpaper->stock }}"
                                         {{ $wallpaper->stock <= 0 ? 'disabled' : '' }}>
-                                    <button type="button" onclick="incrementQuantity({{ $wallpaper->stock }})" {{ $wallpaper->stock <= 0 ? 'disabled' : '' }}>+</button>
+                                    <button type="button" 
+                                        class="w-9 h-9 border border-gray-200 bg-white rounded flex items-center justify-center text-xl transition duration-200 ease-in-out" 
+                                        onclick="incrementQuantity({{ $wallpaper->stock }})" 
+                                        {{ $wallpaper->stock <= 0 ? 'disabled' : '' }}>+</button>
                                 </div>
                             </div>
                             
                             <button type="submit" 
-                                class="add-to-cart-btn bg-navy text-ivory rounded-md hover:bg-navy/90 transition-colors flex items-center justify-center gap-2 {{ $wallpaper->stock <= 0 ? 'opacity-50 cursor-not-allowed' : '' }}"
+                                class="w-full py-3.5 font-semibold text-lg tracking-wide bg-navy text-ivory rounded-md transition-all duration-300 ease-in-out flex items-center justify-center gap-2 shadow-md hover:-translate-y-0.5 hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
                                 {{ $wallpaper->stock <= 0 ? 'disabled' : '' }}>
                                 <i class="fas fa-shopping-cart"></i>
                                 {{ $wallpaper->stock > 0 ? 'Add to Cart' : 'Out of Stock' }}
@@ -379,7 +132,7 @@
                 <!-- Specifications -->
                 <div>
                     <h3 class="text-xl font-heading font-semibold text-charcoal mb-6">Specifications</h3>
-                    <div class="specs-grid">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4">
                         <div class="p-4 bg-neutral-100 rounded-lg shadow-sm">
                             <div class="flex items-center gap-3 mb-1">
                                 <i class="fas fa-scroll text-navy"></i>
@@ -427,18 +180,18 @@
             <!-- Reviews List -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
                 @forelse($reviews as $review)
-                    <div class="review-card bg-white rounded-xl shadow-sm p-6">
+                    <div class="bg-white rounded-xl shadow-sm p-6 transition duration-300 ease-in-out hover:-translate-y-1.5 hover:shadow-lg">
                         <div class="flex justify-between items-start mb-4">
                             <div>
                                 <h4 class="font-heading font-semibold text-charcoal">{{ $review->user->name }}</h4>
                                 <p class="text-sm text-charcoal/60">{{ $review->created_at->diffForHumans() }}</p>
                             </div>
-                            <div class="star-rating">
+                            <div class="inline-flex text-base">
                                 @for($i = 1; $i <= 5; $i++)
                                     @if($i <= $review->rating)
-                                        <i class="fas fa-star star-filled"></i>
+                                        <i class="fas fa-star text-[#D4AF37]"></i>
                                     @else
-                                        <i class="fas fa-star star-empty"></i>
+                                        <i class="fas fa-star text-gray-200"></i>
                                     @endif
                                 @endfor
                             </div>
@@ -470,7 +223,7 @@
                 </div>
             @else
                 <!-- Review Form - Fixed Visibility -->
-                <div id="writeReview" class="review-form mb-12 block bg-white rounded-xl shadow-md">
+                <div id="writeReview" class="bg-gradient-to-br from-white/90 to-white/95 backdrop-blur-md rounded-xl p-8 shadow-lg mb-12 border border-white/5">
                     <div class="flex items-center justify-between mb-6">
                         <h3 class="text-xl font-heading font-semibold text-charcoal">Write a Review</h3>
                         <div class="bg-gold/10 px-3 py-1 rounded-full">
@@ -487,9 +240,9 @@
                         <div class="bg-white/60 p-4 rounded-lg border border-charcoal/10">
                             <label class="block text-sm font-medium text-charcoal/70 mb-2">Your Rating</label>
                             <div class="flex flex-col sm:flex-row sm:items-center gap-4">
-                                <div class="rating-stars" id="ratingStars">
+                                <div class="flex gap-2 text-2xl" id="ratingStars">
                                     @for($i = 5; $i >= 1; $i--)
-                                        <i class="fas fa-star text-charcoal/20" data-rating="{{ $i }}"></i>
+                                        <i class="fas fa-star text-gray-200 cursor-pointer hover:scale-110 transition duration-200" data-rating="{{ $i }}"></i>
                                     @endfor
                                 </div>
                                 <span id="ratingText" class="text-sm text-charcoal/70 italic">Select a rating</span>
@@ -544,16 +297,18 @@
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                     @foreach($relatedWallpapers as $related)
                         <a href="{{ route('shop.show', $related) }}" class="block h-full">
-                            <div class="related-product-card h-full">
-                                <div class="related-product-image overflow-hidden">
-                                    <img src="{{ $related->getImageUrlAttribute() }}" alt="{{ $related->title }}">
+                            <div class="h-full bg-white rounded-xl shadow-sm overflow-hidden border border-gray-50 transition duration-300 ease-in-out hover:-translate-y-1 hover:shadow-lg flex flex-col">
+                                <div class="aspect-[4/5] w-full relative overflow-hidden">
+                                    <img src="{{ $related->getImageUrlAttribute() }}" 
+                                        class="w-full h-full object-cover transition duration-500 ease-in-out group-hover:scale-105" 
+                                        alt="{{ $related->title }}">
                                 </div>
-                                <div class="related-product-info">
-                                    <h3 class="related-product-title truncate">{{ $related->title }}</h3>
-                                    <p class="related-product-category">{{ $related->category->name ?? 'Uncategorized' }}</p>
+                                <div class="p-5 flex-1 flex flex-col">
+                                    <h3 class="font-semibold text-base leading-tight text-gray-800 mb-2 truncate">{{ $related->title }}</h3>
+                                    <p class="text-sm text-gray-500 mb-3">{{ $related->category->name ?? 'Uncategorized' }}</p>
                                     
                                     @if($related->reviews->where('is_approved', true)->count() > 0)
-                                        <div class="star-rating mb-2">
+                                        <div class="flex text-sm mb-2">
                                             @php
                                                 $avgRating = $related->reviews->where('is_approved', true)->avg('rating');
                                                 $roundedRating = round($avgRating);
@@ -561,16 +316,16 @@
                                             
                                             @for($i = 1; $i <= 5; $i++)
                                                 @if($i <= $roundedRating)
-                                                    <i class="fas fa-star star-filled"></i>
+                                                    <i class="fas fa-star text-[#D4AF37]"></i>
                                                 @else
-                                                    <i class="fas fa-star star-empty"></i>
+                                                    <i class="fas fa-star text-gray-200"></i>
                                                 @endif
                                             @endfor
-                                            <span class="text-xs text-charcoal/60 ml-1">({{ $related->reviews->where('is_approved', true)->count() }})</span>
+                                            <span class="text-xs text-gray-500 ml-1">({{ $related->reviews->where('is_approved', true)->count() }})</span>
                                         </div>
                                     @endif
                                     
-                                    <p class="related-product-price">${{ number_format($related->price, 2) }}</p>
+                                    <p class="text-lg font-bold text-navy mt-auto">${{ number_format($related->price, 2) }}</p>
                                 </div>
                             </div>
                         </a>
@@ -587,9 +342,11 @@
     function changeImage(src) {
         document.getElementById('mainImage').src = src;
         document.querySelectorAll('.thumbnail').forEach(thumb => {
-            thumb.classList.remove('active');
+            thumb.classList.remove('border-[#D4AF37]');
+            thumb.classList.add('border-transparent');
             if (thumb.querySelector('img').src === src) {
-                thumb.classList.add('active');
+                thumb.classList.remove('border-transparent');
+                thumb.classList.add('border-[#D4AF37]');
             }
         });
     }
@@ -639,11 +396,11 @@
                     
                     // Temporarily highlight stars
                     ratingStars.querySelectorAll('i').forEach(s => {
-                        s.classList.remove('text-gold', 'text-charcoal/20');
+                        s.classList.remove('text-[#D4AF37]', 'text-gray-200');
                         if (s.dataset.rating <= hoverRating) {
-                            s.classList.add('text-gold');
+                            s.classList.add('text-[#D4AF37]');
                         } else {
-                            s.classList.add('text-charcoal/20');
+                            s.classList.add('text-gray-200');
                         }
                     });
                 });
@@ -654,8 +411,8 @@
                         highlightStars(selectedRating.value);
                     } else {
                         ratingStars.querySelectorAll('i').forEach(s => {
-                            s.classList.remove('text-gold');
-                            s.classList.add('text-charcoal/20');
+                            s.classList.remove('text-[#D4AF37]');
+                            s.classList.add('text-gray-200');
                         });
                     }
                 });
@@ -677,11 +434,11 @@
         
         function highlightStars(rating) {
             document.querySelectorAll('#ratingStars i').forEach(star => {
-                star.classList.remove('text-gold', 'text-charcoal/20');
+                star.classList.remove('text-[#D4AF37]', 'text-gray-200');
                 if (star.dataset.rating <= rating) {
-                    star.classList.add('text-gold');
+                    star.classList.add('text-[#D4AF37]');
                 } else {
-                    star.classList.add('text-charcoal/20');
+                    star.classList.add('text-gray-200');
                 }
             });
         }
