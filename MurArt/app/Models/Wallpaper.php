@@ -74,25 +74,25 @@ class Wallpaper extends Model
     /**
      * Get the primary image URL or a placeholder if none exists.
      */
-  
-   
-    
-     public function getImageUrlAttribute()
-     {
-         // First try to get the primary image
-         $primaryImage = $this->primaryImage;
-         if ($primaryImage) {
-             return asset('storage/' . $primaryImage->image_path);
-         }
-         
-         // If no primary image, try to get the first image
-         if ($this->images && $this->images->count() > 0) {
-             return asset('storage/' . $this->images->first()->image_path);
-         }
-         
-         // Default image if none exists
-         return asset('images/placeholder.jpg');
-     }
+
+
+
+    public function getImageUrlAttribute()
+    {
+        // First try to get the primary image
+        $primaryImage = $this->primaryImage;
+        if ($primaryImage) {
+            return asset('storage/' . $primaryImage->image_path);
+        }
+
+        // If no primary image, try to get the first image
+        if ($this->images && $this->images->count() > 0) {
+            return asset('storage/' . $this->images->first()->image_path);
+        }
+
+        // Default image if none exists
+        return asset('images/placeholder.jpg');
+    }
 
     /**
      * Get the paper types recommended for this wallpaper.
@@ -100,8 +100,8 @@ class Wallpaper extends Model
     public function papers(): BelongsToMany
     {
         return $this->belongsToMany(Paper::class, 'paper_wallpaper')
-                    ->withPivot('is_recommended')
-                    ->withTimestamps();
+            ->withPivot('is_recommended')
+            ->withTimestamps();
     }
 
     /**
@@ -121,7 +121,7 @@ class Wallpaper extends Model
         if ($this->width && $this->height) {
             return $this->width . ' x ' . $this->height . ' px';
         }
-        
+
         return 'Dimensions not specified';
     }
 
@@ -148,9 +148,9 @@ class Wallpaper extends Model
     public function scopeRecommended($query, $limit = 4)
     {
         return $query->where('status', 'published')
-                     ->where('stock', '>', 0)
-                     ->inRandomOrder()
-                     ->limit($limit);
+            ->where('stock', '>', 0)
+            ->inRandomOrder()
+            ->limit($limit);
     }
 
     /**
@@ -159,7 +159,7 @@ class Wallpaper extends Model
     public function scopeFeatured($query)
     {
         return $query->where('status', 'featured')
-                     ->where('stock', '>', 0);
+            ->where('stock', '>', 0);
     }
 
     /**
@@ -172,8 +172,15 @@ class Wallpaper extends Model
             $this->decrement('stock');
             return true;
         }
-        
+
         return false;
     }
-    
+
+    /**
+     * Get the order items for the wallpaper.
+     */
+    public function orderItems(): HasMany
+    {
+        return $this->hasMany(OrderItem::class);
+    }
 }

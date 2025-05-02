@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Register')
+@section('title', 'Authentication')
 
 @section('content')
 <div class="min-h-screen flex items-center justify-center bg-pattern">
@@ -12,18 +12,65 @@
                  class="w-full h-full object-cover">
         </div>
 
-        <!-- Right Side - Register Form -->
+        <!-- Right Side - Auth Form -->
         <div class="w-full md:w-1/3 bg-white rounded-2xl md:rounded-l-none md:rounded-r-2xl shadow-xl p-8 flex flex-col justify-between">
             <div class="text-center mb-6">
                 <h1 class="text-2xl font-bold text-gray-800 mb-2">Wall<span class="text-blue-600">Art</span></h1>
             </div>
 
             <div class="flex justify-center gap-8 mb-6">
-                <a href="{{ route('login') }}" class="text-gray-400 hover:text-gray-600 transition-colors">Login</a>
-                <a href="{{ route('register') }}" class="text-blue-600 font-semibold border-b-2 border-blue-600 pb-1">Sign Up</a>
+                <button id="loginTab" class="text-blue-600 font-semibold border-b-2 border-blue-600 pb-1">Login</button>
+                <button id="registerTab" class="text-gray-400 hover:text-gray-600 transition-colors">Sign Up</button>
             </div>
 
-            <form method="POST" action="{{ route('register') }}" class="space-y-6">
+            <!-- Login Form -->
+            <form id="loginForm" method="POST" action="{{ route('login') }}" class="space-y-6">
+                @csrf
+                
+                <div class="space-y-2">
+                    <label for="login_email" class="block text-sm font-medium text-gray-700">Email</label>
+                    <input type="email" 
+                           id="login_email" 
+                           name="email" 
+                           value="{{ old('email') }}" 
+                           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors" 
+                           placeholder="Enter your email"
+                           required>
+                    @error('email')
+                        <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                <div class="space-y-2">
+                    <label for="login_password" class="block text-sm font-medium text-gray-700">Password</label>
+                    <input type="password" 
+                           id="login_password" 
+                           name="password" 
+                           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors" 
+                           placeholder="Enter your password"
+                           required>
+                    @error('password')
+                        <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center">
+                        <input type="checkbox" 
+                               id="remember" 
+                               name="remember" 
+                               class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
+                        <label for="remember" class="ml-2 text-sm text-gray-600">Remember me</label>
+                    </div>
+                </div>
+
+                <button type="submit" class="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition-colors">
+                    Login
+                </button>
+            </form>
+
+            <!-- Register Form -->
+            <form id="registerForm" method="POST" action="{{ route('register') }}" class="space-y-6 hidden">
                 @csrf
                 
                 <div class="space-y-2">
@@ -41,9 +88,9 @@
                 </div>
 
                 <div class="space-y-2">
-                    <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
+                    <label for="register_email" class="block text-sm font-medium text-gray-700">Email</label>
                     <input type="email" 
-                           id="email" 
+                           id="register_email" 
                            name="email" 
                            value="{{ old('email') }}" 
                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors" 
@@ -93,9 +140,9 @@
                 </div>
 
                 <div class="space-y-2">
-                    <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
+                    <label for="register_password" class="block text-sm font-medium text-gray-700">Password</label>
                     <input type="password" 
-                           id="password" 
+                           id="register_password" 
                            name="password" 
                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors" 
                            placeholder="Create a password"
@@ -139,7 +186,7 @@
                         <div class="w-full border-t border-gray-300"></div>
                     </div>
                     <div class="relative flex justify-center text-sm">
-                        <span class="px-2 bg-white text-gray-500">Or sign up with</span>
+                        <span class="px-2 bg-white text-gray-500">Or continue with</span>
                     </div>
                 </div>
 
@@ -177,6 +224,34 @@ input[type="radio"]:checked + span + span {
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+    const loginTab = document.getElementById('loginTab');
+    const registerTab = document.getElementById('registerTab');
+    const loginForm = document.getElementById('loginForm');
+    const registerForm = document.getElementById('registerForm');
+
+    // Function to switch between forms
+    function switchForm(isLogin) {
+        if (isLogin) {
+            loginForm.classList.remove('hidden');
+            registerForm.classList.add('hidden');
+            loginTab.classList.add('text-blue-600', 'border-b-2', 'border-blue-600');
+            loginTab.classList.remove('text-gray-400');
+            registerTab.classList.remove('text-blue-600', 'border-b-2', 'border-blue-600');
+            registerTab.classList.add('text-gray-400');
+        } else {
+            loginForm.classList.add('hidden');
+            registerForm.classList.remove('hidden');
+            registerTab.classList.add('text-blue-600', 'border-b-2', 'border-blue-600');
+            registerTab.classList.remove('text-gray-400');
+            loginTab.classList.remove('text-blue-600', 'border-b-2', 'border-blue-600');
+            loginTab.classList.add('text-gray-400');
+        }
+    }
+
+    // Event listeners for tab switching
+    loginTab.addEventListener('click', () => switchForm(true));
+    registerTab.addEventListener('click', () => switchForm(false));
+
     // Role selection highlight
     const roleInputs = document.querySelectorAll('input[name="role"]');
     roleInputs.forEach(input => {
@@ -195,4 +270,4 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 </script>
-@endsection
+@endsection 

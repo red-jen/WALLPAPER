@@ -24,6 +24,7 @@ class User extends Authenticatable
         'role',
         'profile_image',
         'bio',
+        'status',
     ];
 
     /**
@@ -47,18 +48,38 @@ class User extends Authenticatable
     ];
 
     /**
+     * Get the user's status badge HTML.
+     *
+     * @return string
+     */
+    public function getStatusBadgeAttribute()
+    {
+        $statusClasses = [
+            'active' => 'bg-green-100 text-green-800',
+            'pending' => 'bg-amber-100 text-amber-800',
+            'banned' => 'bg-red-100 text-red-800',
+        ];
+
+        $class = $statusClasses[$this->status] ?? 'bg-gray-100 text-gray-800';
+
+        return '<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ' . $class . '">'
+            . ucfirst($this->status) .
+            '</span>';
+    }
+
+    /**
      * Check if the user is an admin.
      */
 
-     public function hasRole($role)
-     {
-         if (is_array($role)) {
-             return in_array($this->role, $role);
-         }
-         
-         return $this->role === $role;
-     }
-     
+    public function hasRole($role)
+    {
+        if (is_array($role)) {
+            return in_array($this->role, $role);
+        }
+
+        return $this->role === $role;
+    }
+
     public function isAdmin(): bool
     {
         return $this->role === 'admin';

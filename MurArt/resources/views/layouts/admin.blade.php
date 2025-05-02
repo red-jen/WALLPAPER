@@ -166,10 +166,10 @@
                 <div class="mt-6 px-3">
                     <h5 class="text-xs uppercase tracking-wider text-white/50 font-semibold px-3 mb-2">Sales</h5>
                     
-                    <a href="{{ route('admin.orders.index') }}" class="flex items-center gap-3 px-3 py-2 rounded-md mb-1 {{ request()->routeIs('admin.orders.*') ? 'bg-white/10 text-gold' : 'text-white hover:bg-white/10' }}">
+                    {{-- <a href="{{ route('admin.orders.index') }}" class="flex items-center gap-3 px-3 py-2 rounded-md mb-1 {{ request()->routeIs('admin.orders.*') ? 'bg-white/10 text-gold' : 'text-white hover:bg-white/10' }}">
                         <i class="fas fa-shopping-cart w-5 text-center"></i>
                         <span>Orders</span>
-                    </a>
+                    </a> --}}
                     
                     <a href="{{ route('admin.reviews.index') }}" class="flex items-center gap-3 px-3 py-2 rounded-md mb-1 {{ request()->routeIs('admin.reviews.*') ? 'bg-white/10 text-gold' : 'text-white hover:bg-white/10' }}">
                         <i class="fas fa-star w-5 text-center"></i>
