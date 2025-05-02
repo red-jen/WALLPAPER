@@ -151,33 +151,40 @@ class UserController extends Controller
     }
 
     /**
-     * Update the user status.
+     * Update user status.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\User  $user
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\RedirectResponse
      */
-    public function updateStatus(Request $request, User $user)
+    public function updateStatus(Request $request)
     {
         $request->validate([
-            'status' => ['required', Rule::in(['active', 'pending', 'banned'])],
+            'user_id' => 'required|exists:users,id',
+            'status' => 'required|in:active,inactive,suspended,pending',
         ]);
 
-        $oldStatus = $user->status;
-        $user->status = $request->status;
-        $user->save();
+        try {
+            $user = User::findOrFail($request->user_id);
 
-        // Log this activity
-        if (class_exists(Activity::class)) {
-            Activity::log(
-                'user_status_updated',
-                "User {$user->name}'s status changed from {$oldStatus} to {$request->status}",
-                auth()->user(),
-                $user
-            );
+            // Don't allow changing admin status
+            if ($user->role === 'admin' && $request->status !== 'active') {
+                return back()->with('error', 'Cannot change status of admin user');
+            }
+
+            $user->status = $request->status;
+            $user->save();
+
+            // Log the activity
+            // activity()
+            //     ->performedOn($user)
+            //     ->causedBy(auth()->user())
+            //     ->withProperties(['status' => $request->status])
+            //     ->log('Updated user status');
+
+            return back()->with('success', 'User status updated successfully');
+        } catch (\Exception $e) {
+            return back()->with('error', 'Failed to update user status: ' . $e->getMessage());
         }
-
-        return redirect()->back()->with('success', "User status has been updated to {$request->status}.");
     }
 
     /**

@@ -151,6 +151,25 @@
                         </div>
                     </div>
                     @endif
+
+                    <!-- Designs (For admin) -->
+                    @if(auth()->user()->hasRole('admin'))
+                    <div x-data="{ subMenuOpen: {{ request()->routeIs('admin.designs.*') ? 'true' : 'false' }} }" class="mt-1">
+                        <button @click="subMenuOpen = !subMenuOpen" class="w-full flex items-center justify-between px-3 py-2 rounded-md {{ request()->routeIs('admin.designs.*') ? 'bg-white/10 text-gold' : 'text-white hover:bg-white/10' }}">
+                            <div class="flex items-center gap-3">
+                                <i class="fas fa-palette w-5 text-center"></i>
+                                <span>Designs</span>
+                            </div>
+                            <i :class="subMenuOpen ? 'fa-chevron-down' : 'fa-chevron-right'" class="fas text-xs"></i>
+                        </button>
+                        
+                        <div x-show="subMenuOpen" x-collapse class="pl-8 pr-3 py-2 space-y-1">
+                            <a href="{{ route('admin.designs.index') }}" class="block px-3 py-1.5 rounded-md text-sm {{ request()->routeIs('admin.designs.index') ? 'bg-white/10 text-gold' : 'text-white hover:bg-white/5' }}">
+                                All Designs
+                            </a>
+                        </div>
+                    </div>
+                    @endif
                     
                     <!-- Categories -->
                     @if(auth()->user()->hasRole('admin'))

@@ -272,3 +272,11 @@ Route::patch('/users/{user}/status', [App\Http\Controllers\Admin\UserController:
 Route::patch('/users/{user}/ban', [App\Http\Controllers\Admin\UserController::class, 'ban'])->name('users.ban');
 Route::patch('/users/{user}/activate', [App\Http\Controllers\Admin\UserController::class, 'activate'])->name('users.activate');
 Route::post('/users/bulk-action', [App\Http\Controllers\Admin\UserController::class, 'bulkAction'])->name('users.bulk-action');
+
+// Add this to your web routes
+Route::post('/admin/users/update-status', [App\Http\Controllers\Admin\UserController::class, 'updateStatus'])->name('admin.users.update-status');
+
+// Admin Design Management Routes
+Route::get('/admin/designs', [App\Http\Controllers\Admin\DesignController::class, 'index'])->name('admin.designs.index');
+Route::get('/admin/designs/{design}', [App\Http\Controllers\Admin\DesignController::class, 'show'])->name('admin.designs.show');
+Route::post('/admin/designs/update-status', [App\Http\Controllers\Admin\DesignController::class, 'updateStatus'])->name('admin.designs.update-status');
