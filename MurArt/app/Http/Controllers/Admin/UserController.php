@@ -305,4 +305,33 @@ class UserController extends Controller
         return redirect()->route('admin.users.index')
             ->with('success', 'User deleted successfully');
     }
+
+    /**
+     * Get users as a partial HTML view.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function getUsersPartial(Request $request)
+    {
+        $search = $request->input('search', '');
+        $role = $request->input('role', '');
+
+        $users = User::query();
+
+        if (!empty($search)) {
+            $users->where(function ($query) use ($search) {
+                $query->where('name', 'like', "%{$search}%")
+                    ->orWhere('email', 'like', "%{$search}%");
+            });
+        }
+
+        if (!empty($role)) {
+            $users->where('role', $role);
+        }
+
+        $users = $users->latest()->take(10)->get();
+
+        return view('admin.partials.users-list', ['users' => $users])->render();
+    }
 }

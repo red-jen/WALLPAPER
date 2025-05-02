@@ -99,7 +99,6 @@
                         from last month
                     </p>
                 </div>
-                {{-- <a href="{{ route('admin.orders.index') }}" class="text-sm text-navy hover:underline">View All</a> --}}
             </div>
         </div>
         <div class="bg-sage/5 px-6 py-3">
@@ -138,7 +137,6 @@
                         from last month
                     </p>
                 </div>
-                {{-- <a href="{{ route('admin.reports.sales') }}" class="text-sm text-navy hover:underline">View Reports</a> --}}
             </div>
         </div>
         <div class="bg-green-50 px-6 py-3">
@@ -185,7 +183,6 @@
             <div class="px-6 py-4 border-b border-gray-100">
                 <div class="flex items-center justify-between">
                     <h3 class="text-lg font-heading font-semibold text-navy">Recent Orders</h3>
-                    {{-- <a href="{{ route('admin.orders.index') }}" class="text-sm text-navy hover:underline">View All</a> --}}
                 </div>
             </div>
             <div class="overflow-x-auto">
@@ -218,7 +215,6 @@
                                     </span>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm">
-                                    {{-- <a href="{{ route('admin.orders.show', $order) }}" class="text-navy hover:text-navy/80">View</a> --}}
                                 </td>
                             </tr>
                         @empty
@@ -297,7 +293,7 @@
             <div class="px-6 py-4 border-b border-gray-100">
                 <div class="flex items-center justify-between">
                     <h3 class="text-lg font-heading font-semibold text-navy">User Management</h3>
-                    {{-- <a href="{{ route('admin.users.create') }}" class="text-sm px-3 py-1 bg-navy text-white rounded-md hover:bg-navy/90 transition-colors"> --}}
+                    <a href="#" class="text-sm px-3 py-1 bg-navy text-white rounded-md hover:bg-navy/90 transition-colors">
                         <i class="fas fa-plus mr-1 text-xs"></i> New User
                     </a>
                 </div>
@@ -311,6 +307,7 @@
                         </div>
                     </div>
                     
+                    <!-- User tab filtering buttons -->
                     <div class="flex mb-4">
                         <button id="allUsersBtn" class="flex-1 py-2 text-sm font-medium border-b-2 border-navy text-navy">All Users</button>
                         <button id="designersBtn" class="flex-1 py-2 text-sm font-medium border-b-2 border-transparent text-gray-500 hover:text-navy hover:border-navy/30">Designers</button>
@@ -321,7 +318,7 @@
                         <ul class="divide-y divide-gray-200">
                             @forelse($recentUsers as $user)
                                 <li class="py-3">
-                                    {{-- <a href="{{ route('admin.users.edit', $user) }}" class="flex items-center hover:bg-gray-50 p-2 rounded-md -m-2"> --}}
+                                    <div class="flex items-center hover:bg-gray-50 p-2 rounded-md -m-2">
                                         <div class="w-10 h-10 rounded-full bg-gold/10 flex items-center justify-center text-gold mr-3">
                                             <i class="fas fa-user"></i>
                                         </div>
@@ -329,7 +326,7 @@
                                             <p class="text-sm font-medium text-navy truncate">{{ $user->name }}</p>
                                             <p class="text-xs text-charcoal/60 truncate">{{ $user->email }}</p>
                                         </div>
-                                        <div>
+                                        <div class="flex items-center space-x-2">
                                             <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
                                                 @if($user->role === 'admin') bg-red-100 text-red-800
                                                 @elseif($user->role === 'designer') bg-purple-100 text-purple-800
@@ -337,8 +334,52 @@
                                                 @endif">
                                                 {{ ucfirst($user->role) }}
                                             </span>
+                                            
+                                            <!-- Status Indicator & Dropdown Trigger -->
+                                            <div class="relative" x-data="{ open: false }">
+                                                <button @click="open = !open" type="button" class="inline-flex items-center px-2 py-1 text-xs font-medium rounded-full border focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-navy
+                                                    @if($user->status === 'active') bg-green-100 text-green-800 border-green-200
+                                                    @elseif($user->status === 'inactive') bg-gray-100 text-gray-800 border-gray-200 
+                                                    @elseif($user->status === 'suspended') bg-red-100 text-red-800 border-red-200
+                                                    @else bg-yellow-100 text-yellow-800 border-yellow-200
+                                                    @endif">
+                                                    <span>{{ ucfirst($user->status ?? 'pending') }}</span>
+                                                    <svg class="ml-1 h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                                        <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 011.414 1.414l-4 4a1 1 01-1.414 0l-4-4a1 1 010-1.414z" clip-rule="evenodd" />
+                                                    </svg>
+                                                </button>
+                                                
+                                                <!-- Status Change Dropdown -->
+                                                <div x-show="open" @click.away="open = false" 
+                                                    class="origin-top-right absolute right-0 mt-2 w-40 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-10"
+                                                    x-transition:enter="transition ease-out duration-100"
+                                                    x-transition:enter-start="transform opacity-0 scale-95"
+                                                    x-transition:enter-end="transform opacity-100 scale-100"
+                                                    x-transition:leave="transition ease-in duration-75"
+                                                    x-transition:leave-start="transform opacity-100 scale-100"
+                                                    x-transition:leave-end="transform opacity-0 scale-95">
+                                                    <div class="py-1" role="menu" aria-orientation="vertical">
+                                                        <form id="status-form-{{ $user->id }}" method="POST" class="status-update-form">
+                                                            @csrf
+                                                            <input type="hidden" name="user_id" value="{{ $user->id }}">
+                                                            <button type="button" data-status="active" data-user-id="{{ $user->id }}" 
+                                                                class="status-action block w-full text-left px-4 py-2 text-sm text-green-700 hover:bg-green-100 hover:text-green-900" role="menuitem">
+                                                                <i class="fas fa-check-circle mr-2"></i> Activate
+                                                            </button>
+                                                            <button type="button" data-status="inactive" data-user-id="{{ $user->id }}" 
+                                                                class="status-action block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900" role="menuitem">
+                                                                <i class="fas fa-ban mr-2"></i> Deactivate
+                                                            </button>
+                                                            <button type="button" data-status="suspended" data-user-id="{{ $user->id }}" 
+                                                                class="status-action block w-full text-left px-4 py-2 text-sm text-red-700 hover:bg-red-100 hover:text-red-900" role="menuitem">
+                                                                <i class="fas fa-exclamation-circle mr-2"></i> Suspend
+                                                            </button>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
-                                    </a>
+                                    </div>
                                 </li>
                             @empty
                                 <li class="py-4 text-center text-sm text-gray-500">
@@ -425,6 +466,7 @@
 
 @push('scripts')
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         // Sales data for chart (we'll use the data passed from the controller)
@@ -562,7 +604,7 @@
                     
                     userList.innerHTML = data.map(user => `
                         <li class="py-3">
-                            <a href="/admin/users/${user.id}/edit" class="flex items-center hover:bg-gray-50 p-2 rounded-md -m-2">
+                            <div class="flex items-center hover:bg-gray-50 p-2 rounded-md -m-2">
                                 <div class="w-10 h-10 rounded-full bg-gold/10 flex items-center justify-center text-gold mr-3">
                                     <i class="fas fa-user"></i>
                                 </div>
@@ -570,18 +612,138 @@
                                     <p class="text-sm font-medium text-navy truncate">${user.name}</p>
                                     <p class="text-xs text-charcoal/60 truncate">${user.email}</p>
                                 </div>
-                                <div>
+                                <div class="flex items-center space-x-2">
                                     <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
                                         ${user.role === 'admin' ? 'bg-red-100 text-red-800' : 
                                          user.role === 'designer' ? 'bg-purple-100 text-purple-800' : 
                                          'bg-blue-100 text-blue-800'}">
                                         ${user.role.charAt(0).toUpperCase() + user.role.slice(1)}
                                     </span>
+                                    
+                                    <!-- Status Indicator & Dropdown Trigger -->
+                                    <div class="relative" x-data="{ open: false }">
+                                        <button @click="open = !open" type="button" class="inline-flex items-center px-2 py-1 text-xs font-medium rounded-full border focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-navy
+                                            ${user.status === 'active' ? 'bg-green-100 text-green-800 border-green-200' :
+                                             user.status === 'inactive' ? 'bg-gray-100 text-gray-800 border-gray-200' : 
+                                             user.status === 'suspended' ? 'bg-red-100 text-red-800 border-red-200' :
+                                             'bg-yellow-100 text-yellow-800 border-yellow-200'}">
+                                            <span>${(user.status || 'pending').charAt(0).toUpperCase() + (user.status || 'pending').slice(1)}</span>
+                                            <svg class="ml-1 h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                                <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 011.414 1.414l-4 4a1 1 01-1.414 0l-4-4a1 1 010-1.414z" clip-rule="evenodd" />
+                                            </svg>
+                                        </button>
+                                        
+                                        <!-- Status Change Dropdown -->
+                                        <div x-show="open" @click.away="open = false" 
+                                            class="origin-top-right absolute right-0 mt-2 w-40 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-10">
+                                            <div class="py-1" role="menu" aria-orientation="vertical">
+                                                <form id="status-form-${user.id}" method="POST" class="status-update-form">
+                                                    <input type="hidden" name="user_id" value="${user.id}">
+                                                    <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                                                    <button type="button" data-status="active" data-user-id="${user.id}" 
+                                                        class="status-action block w-full text-left px-4 py-2 text-sm text-green-700 hover:bg-green-100 hover:text-green-900" role="menuitem">
+                                                        <i class="fas fa-check-circle mr-2"></i> Activate
+                                                    </button>
+                                                    <button type="button" data-status="inactive" data-user-id="${user.id}" 
+                                                        class="status-action block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900" role="menuitem">
+                                                        <i class="fas fa-ban mr-2"></i> Deactivate
+                                                    </button>
+                                                    <button type="button" data-status="suspended" data-user-id="${user.id}" 
+                                                        class="status-action block w-full text-left px-4 py-2 text-sm text-red-700 hover:bg-red-100 hover:text-red-900" role="menuitem">
+                                                        <i class="fas fa-exclamation-circle mr-2"></i> Suspend
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
-                            </a>
+                            </div>
                         </li>
                     `).join('');
                 });
+        }
+        
+        // User status update functionality
+        document.querySelectorAll('.status-action').forEach(button => {
+            button.addEventListener('click', function() {
+                const userId = this.getAttribute('data-user-id');
+                const newStatus = this.getAttribute('data-status');
+                const form = document.getElementById(`status-form-${userId}`);
+                
+                // Create status field dynamically
+                const statusInput = document.createElement('input');
+                statusInput.type = 'hidden';
+                statusInput.name = 'status';
+                statusInput.value = newStatus;
+                form.appendChild(statusInput);
+                
+                // Send AJAX request to update status
+                fetch('/admin/users/update-status', {
+                    method: 'POST',
+                    body: new FormData(form),
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Update the UI to reflect the new status
+                        const statusButton = form.closest('.relative').querySelector('button[type="button"]:not(.status-action)');
+                        
+                        // Remove all status-related classes
+                        statusButton.classList.remove(
+                            'bg-green-100', 'text-green-800', 'border-green-200',
+                            'bg-gray-100', 'text-gray-800', 'border-gray-200',
+                            'bg-red-100', 'text-red-800', 'border-red-200',
+                            'bg-yellow-100', 'text-yellow-800', 'border-yellow-200'
+                        );
+                        
+                        // Add appropriate classes for the new status
+                        if (newStatus === 'active') {
+                            statusButton.classList.add('bg-green-100', 'text-green-800', 'border-green-200');
+                        } else if (newStatus === 'inactive') {
+                            statusButton.classList.add('bg-gray-100', 'text-gray-800', 'border-gray-200');
+                        } else if (newStatus === 'suspended') {
+                            statusButton.classList.add('bg-red-100', 'text-red-800', 'border-red-200');
+                        } else {
+                            statusButton.classList.add('bg-yellow-100', 'text-yellow-800', 'border-yellow-200');
+                        }
+                        
+                        // Update the status text
+                        statusButton.querySelector('span').textContent = newStatus.charAt(0).toUpperCase() + newStatus.slice(1);
+                        
+                        // Show a toast notification
+                        showNotification(`User status updated to ${newStatus}`, 'success');
+                    } else {
+                        showNotification('Failed to update user status', 'error');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    showNotification('An error occurred', 'error');
+                });
+                
+                // Close the dropdown
+                const dropdownContainer = form.closest('[x-data]');
+                if (dropdownContainer.__x) {
+                    dropdownContainer.__x.$data.open = false;
+                }
+            });
+        });
+        
+        // Simple notification function
+        function showNotification(message, type = 'success') {
+            const notification = document.createElement('div');
+            notification.className = `fixed top-4 right-4 px-6 py-3 rounded-lg shadow-md z-50 ${
+                type === 'success' ? 'bg-green-500 text-white' : 'bg-red-500 text-white'
+            }`;
+            notification.textContent = message;
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.remove();
+            }, 3000);
         }
     });
 </script>
