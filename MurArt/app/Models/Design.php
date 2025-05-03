@@ -30,7 +30,7 @@ class Design extends Model
     {
         return $this->belongsTo(User::class, 'designer_id');
     }
-
+    
     /**
      * Get the category of the design.
      */
@@ -38,7 +38,7 @@ class Design extends Model
     {
         return $this->belongsTo(Category::class);
     }
-
+    
     /**
      * Get the reviews for this design.
      */
@@ -46,7 +46,7 @@ class Design extends Model
     {
         return $this->hasMany(Review::class);
     }
-
+    
     /**
      * Get paper types recommended for this design.
      */
@@ -54,15 +54,7 @@ class Design extends Model
     {
         return $this->belongsToMany(Paper::class, 'design_paper')->withTimestamps();
     }
-
-    /**
-     * Get the categories for this design.
-     */
-    public function categories()
-    {
-        return $this->belongsToMany(Category::class, 'design_category', 'design_id', 'category_id');
-    }
-
+    
     /**
      * Get the image URL attribute.
      */

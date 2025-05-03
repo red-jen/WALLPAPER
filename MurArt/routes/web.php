@@ -180,7 +180,13 @@ Route::get('/reviews', [ReviewController::class, 'index'])->name('admin.reviews.
 Route::put('/reviews/{review}/approve', [ReviewController::class, 'approve'])->name('admin.reviews.approve');
 Route::delete('/reviews/{review}', [ReviewController::class, 'destroy'])->name('admin.reviews.destroy');
 
+// Admin review management - add this API route for the modal
+Route::get('/api/reviews/{review}', [ReviewController::class, 'getReviewDetails'])->name('api.reviews.show');
 
+// Admin review management - simplified routes
+Route::get('/admin/reviews', [ReviewController::class, 'index'])->name('admin.reviews.index');
+Route::put('/admin/reviews/{review}/approve', [ReviewController::class, 'approve'])->name('admin.reviews.approve');
+Route::delete('/admin/reviews/{review}', [ReviewController::class, 'destroy'])->name('admin.reviews.destroy');
 
 
 
