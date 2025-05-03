@@ -433,6 +433,33 @@
                 </ul>
             </div>
         </div>
+
+        <!-- Quick Links Card -->
+        <div class="bg-white rounded-xl shadow-sm overflow-hidden">
+            <div class="px-6 py-4 border-b border-gray-100">
+                <h3 class="text-lg font-heading font-semibold text-navy">Quick Links</h3>
+            </div>
+            <div class="p-6">
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <a href="{{ route('admin.wallpapers.index') }}" class="p-4 bg-gray-50 rounded-lg text-center hover:bg-navy hover:text-white transition-colors">
+                        <i class="fas fa-images text-2xl mb-2"></i>
+                        <div class="text-sm font-medium">Wallpapers</div>
+                    </a>
+                    <a href="{{ route('admin.designs.index') }}" class="p-4 bg-gray-50 rounded-lg text-center hover:bg-navy hover:text-white transition-colors">
+                        <i class="fas fa-paint-brush text-2xl mb-2"></i>
+                        <div class="text-sm font-medium">Designs</div>
+                    </a>
+                    <a href="{{ route('admin.orders.index') }}" class="p-4 bg-gray-50 rounded-lg text-center hover:bg-navy hover:text-white transition-colors">
+                        <i class="fas fa-shopping-cart text-2xl mb-2"></i>
+                        <div class="text-sm font-medium">Orders</div>
+                    </a>
+                    <a href="{{ route('admin.reviews.index') }}" class="p-4 bg-gray-50 rounded-lg text-center hover:bg-navy hover:text-white transition-colors">
+                        <i class="fas fa-star text-2xl mb-2"></i>
+                        <div class="text-sm font-medium">Reviews</div>
+                    </a>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 @endsection
