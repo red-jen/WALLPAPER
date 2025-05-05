@@ -146,7 +146,6 @@
                 >
                     <option value="">Bulk Actions</option>
                     <option value="activate">Activate Selected</option>
-                    <option value="ban">Ban Selected</option>
                     <option value="delete">Delete Selected</option>
                 </select>
                 
@@ -223,29 +222,11 @@
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                 <div class="flex items-center justify-end space-x-2">
-                                    <a href="{{ route('admin.users.edit', $user) }}" class="text-navy hover:text-navy/80">
+                                    <a href="{{ route('admin.users.edit', $user) }}" class="text-navy hover:text-navy/80" title="Edit User">
                                         <i class="fas fa-edit"></i>
                                     </a>
                                     
                                     @if($user->id !== auth()->id())
-                                        @if($user->status !== 'banned')
-                                            <form action="{{ route('admin.users.ban', $user) }}" method="POST" class="inline-block">
-                                                @csrf
-                                                @method('PATCH')
-                                                <button type="submit" class="text-red-600 hover:text-red-800" title="Ban User">
-                                                    <i class="fas fa-ban"></i>
-                                                </button>
-                                            </form>
-                                        @else
-                                            <form action="{{ route('admin.users.activate', $user) }}" method="POST" class="inline-block">
-                                                @csrf
-                                                @method('PATCH')
-                                                <button type="submit" class="text-green-600 hover:text-green-800" title="Activate User">
-                                                    <i class="fas fa-check-circle"></i>
-                                                </button>
-                                            </form>
-                                        @endif
-                                        
                                         <form action="{{ route('admin.users.destroy', $user) }}" method="POST" class="inline-block" onsubmit="return confirm('Are you sure you want to delete this user?');">
                                             @csrf
                                             @method('DELETE')
@@ -255,6 +236,22 @@
                                         </form>
                                     @endif
                                 </div>
+                                <form action="{{ route('admin.users.update-status', ['user' => $user->id]) }}" method="POST" class="inline mt-2">
+                                    @csrf
+                                    @method('PATCH')
+                                    <input type="hidden" name="user_id" value="{{ $user->id }}">
+                                    <select name="status" onchange="this.form.submit()" class="text-xs rounded-full border px-2 py-1 cursor-pointer focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-navy font-medium
+                                        @if($user->status === 'active') bg-green-100 text-green-800 border-green-200
+                                        @elseif($user->status === 'inactive') bg-gray-100 text-gray-800 border-gray-200
+                                        @elseif($user->status === 'suspended') bg-red-100 text-red-800 border-red-200
+                                        @else bg-yellow-100 text-yellow-800 border-yellow-200
+                                        @endif">
+                                        <option value="active" @if($user->status === 'active') selected @endif>Active</option>
+                                        <option value="inactive" @if($user->status === 'inactive') selected @endif>Inactive</option>
+                                        <option value="suspended" @if($user->status === 'suspended') selected @endif>Suspended</option>
+                                        <option value="pending" @if(!$user->status || $user->status === 'pending') selected @endif>Pending</option>
+                                    </select>
+                                </form>
                             </td>
                         </tr>
                     @empty
@@ -365,9 +362,6 @@
                 if (action === 'delete') {
                     modalTitle.textContent = 'Confirm Deletion';
                     modalMessage.textContent = `Are you sure you want to delete ${checkedCount} selected users? This cannot be undone.`;
-                } else if (action === 'ban') {
-                    modalTitle.textContent = 'Confirm Ban';
-                    modalMessage.textContent = `Are you sure you want to ban ${checkedCount} selected users?`;
                 } else if (action === 'activate') {
                     modalTitle.textContent = 'Confirm Activation';
                     modalMessage.textContent = `Are you sure you want to activate ${checkedCount} selected users?`;
