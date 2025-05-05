@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Client;
 
 use App\Http\Controllers\Controller;
 use App\Models\Artwork;
+use App\Models\ArtworkPreview;
 use App\Models\Design;
 use App\Models\Paper;
 use Illuminate\Http\Request;
@@ -32,13 +33,13 @@ class ArtworkController extends Controller
         // Get all papers and designs
         $papers = Paper::all();
         $designs = Design::get();
-        
+
         // Check if there's a pre-selected design from session
         $selectedDesignId = session('selected_design_id');
-        
+
         // Clear the session after use
         session()->forget('selected_design_id');
-        
+
         return view('client.artworks.create', compact('papers', 'designs', 'selectedDesignId'));
     }
 
@@ -78,7 +79,7 @@ class ArtworkController extends Controller
     public function show(Artwork $artwork)
     {
         // Load the necessary relationships
-        $artwork->load(['paper', 'design']);
+        $artwork->load(['paper', 'design', 'latestPreview']);
 
         return view('client.artworks.show', compact('artwork'));
     }
@@ -124,54 +125,65 @@ class ArtworkController extends Controller
             ->with('success', 'Artwork updated successfully!');
     }
 
+    /**
+     * Approve the artwork preview
+     */
+    public function approvePreview(Artwork $artwork)
+    {
+        // Verify the artwork belongs to the current user
+        if ($artwork->user_id !== auth()->id()) {
+            abort(403, 'Unauthorized action.');
+        }
 
+        $preview = $artwork->latestPreview;
 
+        if (!$preview) {
+            return redirect()->route('artworks.show', $artwork)
+                ->with('error', 'No preview available for this artwork.');
+        }
 
+        // Update the preview status
+        $preview->update([
+            'status' => 'approved',
+            'approved_at' => now(),
+            'rejected_at' => null
+        ]);
 
-
-/**
- * Approve the artwork preview
- */
-public function approvePreview(Artwork $artwork)
-{
-    // Verify the artwork belongs to the current user
-    if ($artwork->user_id !== auth()->id()) {
-        abort(403, 'Unauthorized action.');
+        return redirect()->route('artworks.show', $artwork)
+            ->with('success', 'Preview approved successfully! You can now proceed with your order.');
     }
-    
-    // Update the preview status
-    $artwork->update([
-        'preview_status' => 'approved',
-        'preview_approved_at' => now(),
-    ]);
-    
-    return redirect()->route('artworks.show', $artwork)
-        ->with('success', 'Preview approved successfully! You can now proceed with your order.');
-}
 
-/**
- * Reject the artwork preview and provide feedback
- */
-public function rejectPreview(Request $request, Artwork $artwork)
-{
-    // Validate input
-    $request->validate([
-        'feedback' => 'required|string|min:10',
-    ]);
-    
-    // Verify the artwork belongs to the current user
-    if ($artwork->user_id !== auth()->id()) {
-        abort(403, 'Unauthorized action.');
+    /**
+     * Reject the artwork preview and provide feedback
+     */
+    public function rejectPreview(Request $request, Artwork $artwork)
+    {
+        // Validate input
+        $request->validate([
+            'feedback' => 'required|string|min:10',
+        ]);
+
+        // Verify the artwork belongs to the current user
+        if ($artwork->user_id !== auth()->id()) {
+            abort(403, 'Unauthorized action.');
+        }
+
+        $preview = $artwork->latestPreview;
+
+        if (!$preview) {
+            return redirect()->route('artworks.show', $artwork)
+                ->with('error', 'No preview available for this artwork.');
+        }
+
+        // Update the preview status with feedback
+        $preview->update([
+            'status' => 'rejected',
+            'client_feedback' => $request->feedback,
+            'rejected_at' => now(),
+            'approved_at' => null
+        ]);
+
+        return redirect()->route('artworks.show', $artwork)
+            ->with('success', 'Feedback submitted successfully! Our design team will review your comments and update the preview.');
     }
-    
-    // Update the preview status with feedback
-    $artwork->update([
-        'preview_status' => 'rejected',
-        'feedback' => $request->feedback,
-        'preview_updated_at' => now(),
-    ]);
-    
-    return redirect()->route('artworks.show', $artwork)
-        ->with('success', 'Feedback submitted successfully! Our design team will review your comments and update the preview.');
-}
 }

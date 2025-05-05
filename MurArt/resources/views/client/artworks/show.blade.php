@@ -29,6 +29,21 @@
                 </div>
             </div>
             @endif
+
+            @if(session('error'))
+            <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-6 rounded">
+                <div class="flex">
+                    <div class="flex-shrink-0">
+                        <svg class="h-5 w-5 text-red-500" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/>
+                        </svg>
+                    </div>
+                    <div class="ml-3">
+                        <p>{{ session('error') }}</p>
+                    </div>
+                </div>
+            </div>
+            @endif
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -57,19 +72,24 @@
                             <div>
                                 <h4 class="text-sm font-medium text-charcoal/80 mb-2">Current Status</h4>
                                 <div>
-                                    @if($artwork->preview_status == 'pending')
+                                    @php
+                                        $preview = $artwork->latestPreview;
+                                        $previewStatus = $preview ? $preview->status : 'pending';
+                                    @endphp
+                                    
+                                    @if($previewStatus == 'pending')
                                         <span class="px-3 py-1 bg-yellow-100 text-yellow-800 rounded-full text-sm">
                                             Preview In Progress
                                         </span>
-                                    @elseif($artwork->preview_status == 'uploaded')
+                                    @elseif($previewStatus == 'uploaded')
                                         <span class="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm">
                                             Preview Ready for Approval
                                         </span>
-                                    @elseif($artwork->preview_status == 'approved')
+                                    @elseif($previewStatus == 'approved')
                                         <span class="px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm">
                                             Preview Approved
                                         </span>
-                                    @elseif($artwork->preview_status == 'rejected')
+                                    @elseif($previewStatus == 'rejected')
                                         <span class="px-3 py-1 bg-red-100 text-red-800 rounded-full text-sm">
                                             Preview Rejected
                                         </span>
@@ -132,7 +152,12 @@
                     <div class="p-6 md:p-8">
                         <h2 class="font-serif text-2xl text-navy mb-6 pb-3 border-b border-neutral">Preview</h2>
                         
-                        @if($artwork->preview_status == 'pending')
+                        @php
+                            $preview = $artwork->latestPreview;
+                            $previewStatus = $preview ? $preview->status : 'pending';
+                        @endphp
+                        
+                        @if($previewStatus == 'pending')
                             <div class="bg-neutral/20 rounded-lg p-8 mb-6 text-center">
                                 <div class="w-20 h-20 rounded-full bg-yellow-100 flex items-center justify-center mx-auto mb-4">
                                     <svg class="w-10 h-10 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -152,20 +177,20 @@
                                     <li>Once approved, you can proceed to place your order</li>
                                 </ol>
                             </div>
-                        @elseif($artwork->preview_image_path)
+                        @elseif($preview && $preview->image_path)
                             <div class="mb-6">
                                 <div class="aspect-[4/3] bg-neutral/30 rounded-lg mb-4 overflow-hidden">
-                                    <img src="{{ asset('storage/' . $artwork->preview_image_path) }}" alt="Preview of your wallpaper" class="w-full h-full object-contain">
+                                    <img src="{{ asset('storage/' . $preview->image_path) }}" alt="Preview of your wallpaper" class="w-full h-full object-contain">
                                 </div>
                                 
-                                @if($artwork->preview_notes)
+                                @if($preview->admin_notes)
                                     <div class="bg-neutral/10 rounded-lg p-4 mb-6">
                                         <h4 class="font-medium text-charcoal mb-2">Notes from our design team:</h4>
-                                        <p class="text-charcoal/80">{{ $artwork->preview_notes }}</p>
+                                        <p class="text-charcoal/80">{{ $preview->admin_notes }}</p>
                                     </div>
                                 @endif
                                 
-                                @if($artwork->preview_status == 'uploaded')
+                                @if($preview->status == 'uploaded')
                                     <div class="flex flex-col sm:flex-row gap-4 justify-center">
                                         <form action="{{ route('artworks.preview.approve', $artwork->id) }}" method="POST">
                                             @csrf
@@ -184,9 +209,6 @@
                                             Request Changes
                                         </button>
                                     </div>
-                                    {{-- resources/views/client/artworks/show.blade.php (partial) --}}
-{{-- Add this in the appropriate section --}}
-
                                     
                                     <!-- Request Changes Form (Hidden initially) -->
                                     <div id="requestChangesForm" class="hidden mt-6 p-6 bg-neutral/10 rounded-lg">
@@ -207,7 +229,7 @@
                                             </div>
                                         </form>
                                     </div>
-                                @elseif($artwork->preview_status == 'approved')
+                                @elseif($preview->status == 'approved')
                                     <div class="bg-green-100 border-l-4 border-green-500 p-4 mb-6 rounded-lg">
                                         <div class="flex">
                                             <div class="flex-shrink-0">
@@ -217,12 +239,11 @@
                                             </div>
                                             <div class="ml-3">
                                                 <p class="text-green-700 font-medium">Preview Approved</p>
-                                                <p class="text-green-600 text-sm mt-1">You've approved this preview on {{ $artwork->preview_approved_at ? $artwork->preview_approved_at->format('M d, Y') : 'N/A' }}.</p>
+                                                <p class="text-green-600 text-sm mt-1">You've approved this preview on {{ $preview->approved_at ? $preview->approved_at->format('M d, Y') : 'N/A' }}.</p>
                                             </div>
                                         </div>
                                     </div>
                                     
-                                
                                     <form action="{{ route('artworks.addToCart', $artwork) }}" method="POST" class="mt-4">
                                         @csrf
                                         <button type="submit" class="w-full bg-indigo-600 text-white py-3 px-4 rounded-md hover:bg-indigo-700 flex items-center justify-center">
@@ -232,8 +253,7 @@
                                             Add to Cart
                                         </button>
                                     </form>
-                                    
-                                @elseif($artwork->preview_status == 'rejected')
+                                @elseif($preview->status == 'rejected')
                                     <div class="bg-red-100 border-l-4 border-red-500 p-4 mb-6 rounded-lg">
                                         <div class="flex">
                                             <div class="flex-shrink-0">
@@ -248,10 +268,10 @@
                                         </div>
                                     </div>
                                     
-                                    @if($artwork->feedback)
+                                    @if($preview->client_feedback)
                                         <div class="bg-neutral/10 rounded-lg p-4 mb-6">
                                             <h4 class="font-medium text-charcoal mb-2">Your Feedback:</h4>
-                                            <p class="text-charcoal/80">{{ $artwork->feedback }}</p>
+                                            <p class="text-charcoal/80">{{ $preview->client_feedback }}</p>
                                         </div>
                                     @endif
                                 @endif
@@ -295,4 +315,4 @@
     });
 </script>
 @endpush
-@endsection 
+@endsection
