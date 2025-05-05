@@ -126,15 +126,31 @@
                             @endif
                         </h3>
 
+                        <!-- Client Feedback Section for Rejected Previews -->
+                        @if($artwork->latestPreview && $artwork->latestPreview->status == 'rejected' && $artwork->latestPreview->client_feedback)
+                        <div class="mb-6 bg-red-50 border-l-4 border-red-500 p-4 rounded-md">
+                            <div class="flex items-center mb-2">
+                                <svg class="h-5 w-5 text-red-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+                                </svg>
+                                <h4 class="text-base font-medium text-red-800">Client Feedback on Rejected Preview</h4>
+                            </div>
+                            <div class="pl-7">
+                                <p class="text-red-700 whitespace-pre-line">{{ $artwork->latestPreview->client_feedback }}</p>
+                                <p class="text-sm text-red-600 mt-2">Rejected on: {{ $artwork->latestPreview->rejected_at ? $artwork->latestPreview->rejected_at->format('M d, Y H:i') : 'N/A' }}</p>
+                            </div>
+                        </div>
+                        @endif
+
                         <!-- Current Preview Image -->
-                        @if($artwork->preview_image_path)
+                        @if($artwork->latestPreview && $artwork->latestPreview->image_path)
                             <div class="mb-6">
                                 <h4 class="text-sm font-medium text-gray-700 mb-2">Current Preview Image</h4>
                                 <div class="rounded-md overflow-hidden border border-gray-200 mb-3">
-                                    <img src="{{ asset('storage/' . $artwork->preview_image_path) }}" alt="Preview image" class="w-full h-auto">
+                                    <img src="{{ asset('storage/' . $artwork->latestPreview->image_path) }}" alt="Preview image" class="w-full h-auto">
                                 </div>
                                 <div class="flex justify-between items-center">
-                                    <span class="text-sm text-gray-500">Uploaded: {{ $artwork->preview_updated_at ? $artwork->preview_updated_at->format('M d, Y H:i') : 'N/A' }}</span>
+                                    <span class="text-sm text-gray-500">Uploaded: {{ $artwork->latestPreview->created_at ? $artwork->latestPreview->created_at->format('M d, Y H:i') : 'N/A' }}</span>
                                     <form action="{{ route('admin.artworks.preview.delete', $artwork->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this preview image?');">
                                         @csrf
                                         @method('DELETE')
@@ -525,4 +541,4 @@
     });
 </script>
 @endpush
-@endsection 
+@endsection
