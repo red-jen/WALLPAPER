@@ -14,6 +14,7 @@ use App\Http\Controllers\Admin\TagController;
 use App\Http\Controllers\Admin\PaperController;
 // use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\ReviewController;
+use App\Http\Controllers\Admin\ReviewController as AdminReviewController;
 // use App\Http\Controllers\Client\DashboardController as ClientDashboardController;
 use App\Http\Controllers\Client\DashboardController as ClientDashboardController;
 use App\Http\Controllers\Client\ArtworkController as ClientArtworkController;
@@ -30,7 +31,9 @@ use App\Http\Controllers\Admin\ArtworkController;
 Route::get('/order', [ShopController::class, 'index'])->name('orders.index');
 
 Route::get('/contact/submit', [ShopController::class, 'index'])->name('contact.submit');
-Route::get('/admin/dashboard', [ShopController::class, 'index'])->name('admin.dashboard');
+// Route::get('/admin/dashboard', [App\Http\Controllers\Admin\DashboardController::class, 'index'])
+//     ->name('admin.dashboard')
+//     ->middleware(['auth', 'admin']);
 // Basic pages
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/about', [PageController::class, 'about'])->name('about');
@@ -72,7 +75,35 @@ Route::get('admin.category.create', function () {
 })->name('admin.category.create');
 
 
+// Client routes with middleware protection
+Route::prefix('client')->name('client.')->middleware(['auth', 'client'])->group(function () {
+    // Dashboard
+    Route::get('/dashboard', [App\Http\Controllers\Client\DashboardController::class, 'index'])
+        ->name('dashboard');
 
+        // Cart
+        Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
+Route::post('/artworks/{artwork}/cart', [CartController::class, 'addArtwork'])->name('artworks.addToCart');
+Route::delete('/cart/{item}', [CartController::class, 'removeItem'])->name('cart.removeItem');
+Route::put('/cart/{item}', [CartController::class, 'updateItem'])->name('cart.updateItem');
+Route::get('/checkout', [CartController::class, 'checkout'])->name('cart.checkout');
+// Route::get('/shop', [CartController::class, 'check'])->name('shop.index');
+
+    // Orders
+    Route::prefix('orders')->name('orders.')->group(function () {
+        Route::get('/', [App\Http\Controllers\Client\OrderController::class, 'index'])->name('index');
+        Route::get('/{order}', [App\Http\Controllers\Client\OrderController::class, 'show'])->name('show');
+    });
+
+    Route::get('/designs/{design}/create-artwork', [ClientDesignController::class, 'createWithDesign'])
+    ->name('designs.create-artwork');
+
+
+
+    // Profile
+    Route::get('/profile', [App\Http\Controllers\Client\ProfileController::class, 'edit'])->name('profile.edit');
+    Route::put('/profile', [App\Http\Controllers\Client\ProfileController::class, 'update'])->name('profile.update');
+});
 
 
 
@@ -82,13 +113,8 @@ Route::get('admin.category.create', function () {
 Route::get('/faq', [PageController::class, 'faq'])->name('faq');
 Route::get('/returns', [PageController::class, 'returns'])->name('returns');
 
-Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
-Route::post('/artworks/{artwork}/cart', [CartController::class, 'addArtwork'])->name('artworks.addToCart');
-Route::delete('/cart/{item}', [CartController::class, 'removeItem'])->name('cart.removeItem');
-Route::put('/cart/{item}', [CartController::class, 'updateItem'])->name('cart.updateItem');
-Route::get('/checkout', [CartController::class, 'checkout'])->name('cart.checkout');
-Route::get('/shop', [CartController::class, 'check'])->name('shop.index');
-Route::get('/dasshop', [CartController::class, 'check'])->name('client.dashboard');
+
+// Route::get('/dasshop', [CartController::class, 'check'])->name('client.dashboard');
 // Don't forget to import the controller at the top of the file
 
 
@@ -124,9 +150,6 @@ Route::get('/designs', [ClientDesignController::class, 'index'])
     ->name('designs.index');
 Route::get('/designs/{design}', [ClientDesignController::class, 'show'])
     ->name('designs.show');
-Route::get('/designs/{design}/create-artwork', [ClientDesignController::class, 'createWithDesign'])
-    ->name('designs.create-artwork');
-
 
 //shops
 Route::get('/shop', [ShopController::class, 'index'])->name('shop.index');
@@ -157,132 +180,144 @@ Route::get('/designs/{design}/create-artwork', [ClientDesignController::class, '
 
 //     Route::post('/designer/store', [DesignController::class, 'store'])->name('designer.designs.store');
 
-Route::get('/designer/designs/create', [DesignController::class, 'create'])->name('designer.designs.create');
-Route::post('/designer/designs', [DesignController::class, 'store'])->name('designer.designs.store');
-Route::get('/designer/designs', [DesignController::class, 'index'])->name('designer.designs.index');
-Route::get('/designer/designs/{design}', [DesignController::class, 'show'])->name('designer.designs.show');
-Route::get('/designer/designs/{design}/edit', [DesignController::class, 'edit'])->name('designer.designs.edit');
-Route::put('/designer/designs/{design}', [DesignController::class, 'update'])->name('designer.designs.update');
-Route::delete('/designer/designs/{design}', [DesignController::class, 'destroy'])->name('designer.designs.destroy');
+// Designer routes with middleware protection
+Route::get('/papers', [App\Http\Controllers\PaperController::class, 'index'])->name('papers.index');
+Route::get('/papers/{paper}', [App\Http\Controllers\PaperController::class, 'show'])->name('papers.show');
+Route::prefix('designer')->name('designer.')->middleware(['auth', 'designer'])->group(function () {
+    // Designs Management
+    Route::prefix('designs')->name('designs.')->group(function () {
+        Route::get('/', [DesignController::class, 'index'])->name('index');
+        Route::get('/create', [DesignController::class, 'create'])->name('create');
+        Route::post('/', [DesignController::class, 'store'])->name('store');
+        Route::get('/{design}', [DesignController::class, 'show'])->name('show');
+        Route::get('/{design}/edit', [DesignController::class, 'edit'])->name('edit');
+        Route::put('/{design}', [DesignController::class, 'update'])->name('update');
+        Route::delete('/{design}', [DesignController::class, 'destroy'])->name('destroy');
+    });
 
-
-
-
-
-// Route::get('/gallery', [App\Http\Controllers\Client\DesignGalleryController::class, 'index'])->name('designs.gallery');
-// Route::get('/gallery/{design}', [App\Http\Controllers\Client\DesignGalleryController::class, 'show'])->name('designs.gallery.show');
+    // Dashboard - assuming we'll need one for designers too
+    Route::get('/dashboard', [App\Http\Controllers\Designer\DashboardController::class, 'index'])
+        ->name('dashboard');
+});
 
 // Review routes - require authentication
 Route::post('/designs/{design}/review', [ReviewController::class, 'store'])->name('reviews.store');
 Route::delete('/reviews/{review}', [ReviewController::class, 'destroy'])->name('reviews.destroy');
 // Admin review management
-Route::get('/reviews', [ReviewController::class, 'index'])->name('admin.reviews.index');
-Route::put('/reviews/{review}/approve', [ReviewController::class, 'approve'])->name('admin.reviews.approve');
-Route::delete('/reviews/{review}', [ReviewController::class, 'destroy'])->name('admin.reviews.destroy');
-
-// Admin review management - add this API route for the modal
-Route::get('/api/reviews/{review}', [ReviewController::class, 'getReviewDetails'])->name('api.reviews.show');
-
-// Admin review management - simplified routes
-Route::get('/admin/reviews', [ReviewController::class, 'index'])->name('admin.reviews.index');
-Route::put('/admin/reviews/{review}/approve', [ReviewController::class, 'approve'])->name('admin.reviews.approve');
-Route::delete('/admin/reviews/{review}', [ReviewController::class, 'destroy'])->name('admin.reviews.destroy');
 
 
 
 
-//admin
+// Admin routes with middleware protection
+Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(function () {
+    // Dashboard
+
+    Route::get('/dashboard', [App\Http\Controllers\Admin\DashboardController::class, 'index'])
+    ->name('dashboard');
+    // ->middleware(['auth', 'admin']);
+    // Remove the duplicate dashboard route from here if it exists
+    // Other admin routes remain the same
+
+    // Settings Management
+    Route::prefix('settings')->name('settings.')->group(function () {
+        Route::get('/', [App\Http\Controllers\Admin\SettingsController::class, 'index'])->name('index');
+        Route::post('/update', [App\Http\Controllers\Admin\SettingsController::class, 'update'])->name('update');
+    });
+
+    // Reviews Management
+    Route::get('/reviews', [AdminReviewController::class, 'index'])->name('reviews.index');
+    Route::put('/reviews/{review}/approve', [AdminReviewController::class, 'approve'])->name('reviews.approve');
+    Route::delete('/reviews/{review}', [AdminReviewController::class, 'destroy'])->name('reviews.destroy');
+
+    // Wallpapers Management
+    Route::prefix('wallpapers')->name('wallpapers.')->group(function () {
+        Route::get('/', [WallpaperController::class, 'index'])->name('index');
+        Route::get('/create', [WallpaperController::class, 'create'])->name('create');
+        Route::post('/', [WallpaperController::class, 'store'])->name('store');
+        Route::get('/{wallpaper}', [WallpaperController::class, 'show'])->name('show');
+        Route::get('/{wallpaper}/edit', [WallpaperController::class, 'edit'])->name('edit');
+        Route::put('/{wallpaper}', [WallpaperController::class, 'update'])->name('update');
+        Route::delete('/{wallpaper}', [WallpaperController::class, 'destroy'])->name('destroy');
+        Route::put('/{wallpaper}/stock', [WallpaperController::class, 'updateStock'])->name('updateStock');
+        Route::post('/{wallpaper}/reorder', [WallpaperController::class, 'reorderImages'])->name('reorderImages');
+    });
+
+    // Artworks Management
+    Route::prefix('artworks')->name('artworks.')->group(function () {
+        Route::get('/', [ArtworkController::class, 'index'])->name('index');
+        Route::get('/{artwork}/edit', [ArtworkController::class, 'edit'])->name('edit');
+        Route::post('/{artwork}/preview', [ArtworkController::class, 'storePreview'])->name('preview.store');
+        Route::delete('/{artwork}/preview', [ArtworkController::class, 'deletePreview'])->name('preview.delete');
+        Route::patch('/{artwork}/status', [ArtworkController::class, 'updateStatus'])->name('status.update');
+        Route::post('/{artwork}/production-image', [ArtworkController::class, 'storeProductionImage'])->name('production-image.store');
+        Route::delete('/{artwork}/production-image/{index}', [ArtworkController::class, 'deleteProductionImage'])->name('production-image.delete');
+        Route::patch('/{artwork}/production-status', [ArtworkController::class, 'updateProductionStatus'])->name('production-status.update');
+    });
+
+    // Categories Management
+    Route::prefix('categories')->name('categories.')->group(function () {
+        Route::get('/', [CategoryController::class, 'index'])->name('index');
+        Route::get('/create', [CategoryController::class, 'create'])->name('create');
+        Route::post('/', [CategoryController::class, 'store'])->name('store');
+        Route::get('/{category}', [CategoryController::class, 'show'])->name('show');
+        Route::get('/{category}/edit', [CategoryController::class, 'edit'])->name('edit');
+        Route::put('/{category}', [CategoryController::class, 'update'])->name('update');
+        Route::delete('/{category}', [CategoryController::class, 'destroy'])->name('destroy');
+    });
+
+    // Tags Management
+    Route::prefix('tags')->name('tags.')->group(function () {
+        Route::get('/', [TagController::class, 'index'])->name('index');
+        Route::get('/create', [TagController::class, 'create'])->name('create');
+        Route::post('/', [TagController::class, 'store'])->name('store');
+        Route::get('/{tag}', [TagController::class, 'show'])->name('show');
+        Route::get('/{tag}/edit', [TagController::class, 'edit'])->name('edit');
+        Route::put('/{tag}', [TagController::class, 'update'])->name('update');
+        Route::delete('/{tag}', [TagController::class, 'destroy'])->name('destroy');
+    });
+
+    // Papers Management
+    Route::prefix('papers')->name('papers.')->group(function () {
+        Route::get('/', [PaperController::class, 'index'])->name('index');
+        Route::get('/create', [PaperController::class, 'create'])->name('create');
+        Route::post('/', [PaperController::class, 'store'])->name('store');
+        Route::get('/{paper}', [PaperController::class, 'show'])->name('show');
+        Route::get('/{paper}/edit', [PaperController::class, 'edit'])->name('edit');
+        Route::put('/{paper}', [PaperController::class, 'update'])->name('update');
+        Route::delete('/{paper}', [PaperController::class, 'destroy'])->name('destroy');
+    });
+
+    // Users Management
+    Route::prefix('users')->name('users.')->group(function () {
+        Route::get('/', [App\Http\Controllers\Admin\UserController::class, 'index'])->name('index');
+        Route::get('/create', [App\Http\Controllers\Admin\UserController::class, 'create'])->name('create');
+        Route::post('/', [App\Http\Controllers\Admin\UserController::class, 'store'])->name('store');
+        Route::get('/{user}', [App\Http\Controllers\Admin\UserController::class, 'show'])->name('show');
+        Route::get('/{user}/edit', [App\Http\Controllers\Admin\UserController::class, 'edit'])->name('edit');
+        Route::put('/{user}', [App\Http\Controllers\Admin\UserController::class, 'update'])->name('update');
+        Route::delete('/{user}', [App\Http\Controllers\Admin\UserController::class, 'destroy'])->name('destroy');
+        Route::patch('/{user}/status', [App\Http\Controllers\Admin\UserController::class, 'updateStatus'])->name('update-status');
+        Route::post('/bulk-action', [App\Http\Controllers\Admin\UserController::class, 'bulkAction'])->name('bulk-action');
+    });
+
+    // Orders Management
+    Route::prefix('orders')->name('orders.')->group(function () {
+        Route::get('/', [App\Http\Controllers\Admin\OrderController::class, 'index'])->name('index');
+        Route::get('/{order}', [App\Http\Controllers\Admin\OrderController::class, 'show'])->name('show');
+        Route::put('/{order}/status', [App\Http\Controllers\Admin\OrderController::class, 'updateStatus'])->name('update-status');
+        Route::get('/filter', [App\Http\Controllers\Admin\OrderController::class, 'filter']);
+    });
+
+    // Designs Management
+    Route::prefix('designs')->name('designs.')->group(function () {
+        Route::get('/', [App\Http\Controllers\Admin\DesignController::class, 'index'])->name('index');
+        Route::get('/{design}', [App\Http\Controllers\Admin\DesignController::class, 'show'])->name('show');
+        Route::post('/update-status', [App\Http\Controllers\Admin\DesignController::class, 'updateStatus'])->name('update-status');
+    });
+
+    // Chart data
+    Route::get('/sales-chart-data', [AdminDashboardController::class, 'getSalesChartData']);
+    Route::get('/filter-users', [AdminDashboardController::class, 'filterUsers']);
+});
 
 
-
-Route::get('admin/wallpapers', [WallpaperController::class, 'index'])->name('admin.wallpapers.index');
-Route::get('admin/wallpapers/create', [WallpaperController::class, 'create'])->name('admin.wallpapers.create');
-Route::post('admin/wallpapers', [WallpaperController::class, 'store'])->name('admin.wallpapers.store');
-Route::get('admin/wallpapers/{wallpaper}', [WallpaperController::class, 'show'])->name('admin.wallpapers.show');
-Route::get('admin/wallpapers/{wallpaper}/edit', [WallpaperController::class, 'edit'])->name('admin.wallpapers.edit');
-Route::put('admin/wallpapers/{wallpaper}', [WallpaperController::class, 'update'])->name('admin.wallpapers.update');
-Route::delete('admin/wallpapers/{wallpaper}', [WallpaperController::class, 'destroy'])->name('admin.wallpapers.destroy');
-
-// Add these lines after your existing wallpaper routes
-Route::put('/wallpapers/{wallpaper}/stock', [WallpaperController::class, 'updateStock'])
-    ->name('admin.wallpapers.updateStock');
-Route::post('/wallpapers/{wallpaper}/reorder', [WallpaperController::class, 'reorderImages'])
-    ->name('admin.wallpapers.reorderImages');
-
-
-
-
-
-
-// Replace the incorrect line with these:
-Route::get('/admin/artworks', [ArtworkController::class, 'index'])->name('admin.artworks.index');
-Route::get('/admin/artworks/{artwork}/edit', [ArtworkController::class, 'edit'])->name('admin.artworks.edit');
-Route::post('artworks/{artwork}/preview', [ArtworkController::class, 'storePreview'])->name('admin.artworks.preview.store');
-Route::delete('artworks/{artwork}/preview', [ArtworkController::class, 'deletePreview'])->name('admin.artworks.preview.delete');
-Route::patch('artworks/{artwork}/status', [ArtworkController::class, 'updateStatus'])->name('admin.artworks.status.update');
-Route::post('artworks/{artwork}/production-image', [ArtworkController::class, 'storeProductionImage'])->name('admin.artworks.production-image.store');
-Route::delete('artworks/{artwork}/production-image/{index}', [ArtworkController::class, 'deleteProductionImage'])->name('admin.artworks.production-image.delete');
-Route::patch('artworks/{artwork}/production-status', [ArtworkController::class, 'updateProductionStatus'])->name('admin.artworks.production-status.update');
-
-
-// Categories routes - expanded from Route::resource
-Route::get('/categories', [CategoryController::class, 'index'])->name('admin.categories.index');
-Route::get('/categories/create', [CategoryController::class, 'create'])->name('admin.categories.create');
-Route::post('/categories', [CategoryController::class, 'store'])->name('admin.categories.store');
-Route::get('/categories/{category}', [CategoryController::class, 'show'])->name('admin.categories.show');
-Route::get('/categories/{category}/edit', [CategoryController::class, 'edit'])->name('admin.categories.edit');
-Route::put('/categories/{category}', [CategoryController::class, 'update'])->name('admin.categories.update');
-Route::delete('/categories/{category}', [CategoryController::class, 'destroy'])->name('admin.categories.destroy');
-
-
-Route::get('/tags', [TagController::class, 'index'])->name('admin.tags.index');
-Route::get('/tags/create', [TagController::class, 'create'])->name('admin.tags.create');
-Route::post('/tags', [TagController::class, 'store'])->name('admin.tags.store');
-Route::get('/tags/{tag}', [TagController::class, 'show'])->name('admin.tags.show');
-Route::get('/tags/{tag}/edit', [TagController::class, 'edit'])->name('admin.tags.edit');
-Route::put('/tags/{tag}', [TagController::class, 'update'])->name('admin.tags.update');
-Route::delete('/tags/{tag}', [TagController::class, 'destroy'])->name('admin.tags.destroy');
-
-
-
-
-Route::get('/papers', [PaperController::class, 'index'])->name('admin.papers.index');
-Route::get('/papers/create', [PaperController::class, 'create'])->name('admin.papers.create');
-Route::post('/papers', [PaperController::class, 'store'])->name('admin.papers.store');
-Route::get('/papers/{paper}', [PaperController::class, 'show'])->name('admin.papers.show');
-Route::get('/papers/{paper}/edit', [PaperController::class, 'edit'])->name('admin.papers.edit');
-Route::put('/papers/{paper}', [PaperController::class, 'update'])->name('admin.papers.update');
-Route::delete('/papers/{paper}', [PaperController::class, 'destroy'])->name('admin.papers.destroy');
-
-
-Route::get('/dashboard', [App\Http\Controllers\Admin\DashboardController::class, 'index'])->name('dashboard');
-Route::get('/api/sales-chart-data', [App\Http\Controllers\Admin\DashboardController::class, 'getSalesChartDataApi']);
-Route::get('/api/filter-users', [App\Http\Controllers\Admin\DashboardController::class, 'filterUsers']);
-
-
-
-Route::resource('users', App\Http\Controllers\Admin\UserController::class);
-
-Route::get('/orders', [App\Http\Controllers\Admin\OrderController::class, 'index'])->name('admin.orders.index');
-Route::get('/orders/{order}', [App\Http\Controllers\Admin\OrderController::class, 'show'])->name('admin.orders.show');
-Route::put('/orders/{order}/status', [App\Http\Controllers\Admin\OrderController::class, 'updateStatus'])->name('admin.orders.update-status');
-Route::get('/api/orders/filter', [App\Http\Controllers\Admin\OrderController::class, 'filter']);
-
-Route::get('/dashboard/users', [App\Http\Controllers\Admin\DashboardController::class, 'index'])->name('admin.users.index');
-
-
-Route::get('/orders', [App\Http\Controllers\Admin\OrderController::class, 'index'])->name('admin.settings.index');
-
-// Admin User Management Routes
-Route::patch('/users/{user}/status', [App\Http\Controllers\Admin\UserController::class, 'updateStatus'])->name('users.update-status');
-Route::patch('/users/{user}/ban', [App\Http\Controllers\Admin\UserController::class, 'ban'])->name('users.ban');
-Route::patch('/users/{user}/activate', [App\Http\Controllers\Admin\UserController::class, 'activate'])->name('users.activate');
-Route::post('/users/bulk-action', [App\Http\Controllers\Admin\UserController::class, 'bulkAction'])->name('users.bulk-action');
-
-// Add this to your web routes
-Route::post('/admin/users/update-status', [App\Http\Controllers\Admin\UserController::class, 'updateStatus'])->name('admin.users.update-status');
-
-// Admin Design Management Routes
-Route::get('/admin/designs', [App\Http\Controllers\Admin\DesignController::class, 'index'])->name('admin.designs.index');
-Route::get('/admin/designs/{design}', [App\Http\Controllers\Admin\DesignController::class, 'show'])->name('admin.designs.show');
-Route::post('/admin/designs/update-status', [App\Http\Controllers\Admin\DesignController::class, 'updateStatus'])->name('admin.designs.update-status');
