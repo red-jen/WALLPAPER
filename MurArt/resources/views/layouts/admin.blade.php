@@ -178,6 +178,34 @@
                         <span>Categories</span>
                     </a>
                     @endif
+
+                    <!-- Artworks Management (For admin) -->
+                    @if(auth()->user()->hasRole('admin'))
+                    <div x-data="{ subMenuOpen: {{ request()->routeIs('admin.artworks.*') ? 'true' : 'false' }} }" class="mt-1">
+                        <button @click="subMenuOpen = !subMenuOpen" class="w-full flex items-center justify-between px-3 py-2 rounded-md {{ request()->routeIs('admin.artworks.*') ? 'bg-white/10 text-gold' : 'text-white hover:bg-white/10' }}">
+                            <div class="flex items-center gap-3">
+                                <i class="fas fa-image w-5 text-center"></i>
+                                <span>Artworks</span>
+                            </div>
+                            <i :class="subMenuOpen ? 'fa-chevron-down' : 'fa-chevron-right'" class="fas text-xs"></i>
+                        </button>
+                        
+                        <div x-show="subMenuOpen" x-collapse class="pl-8 pr-3 py-2 space-y-1">
+                            <a href="{{ route('admin.artworks.index') }}" class="block px-3 py-1.5 rounded-md text-sm {{ request()->is('admin/artworks') ? 'bg-white/10 text-gold' : 'text-white hover:bg-white/5' }}">
+                                All Artworks
+                            </a>
+                            <a href="{{ route('admin.artworks.index') }}?status=pending" class="block px-3 py-1.5 rounded-md text-sm {{ request()->is('admin/artworks') && request()->query('status') == 'pending' ? 'bg-white/10 text-gold' : 'text-white hover:bg-white/5' }}">
+                                Pending Approval
+                            </a>
+                            <a href="{{ route('admin.artworks.index') }}?preview=pending" class="block px-3 py-1.5 rounded-md text-sm {{ request()->is('admin/artworks') && request()->query('preview') == 'pending' ? 'bg-white/10 text-gold' : 'text-white hover:bg-white/5' }}">
+                                Preview Requests
+                            </a>
+                            <a href="{{ route('admin.artworks.index') }}?production=pending" class="block px-3 py-1.5 rounded-md text-sm {{ request()->is('admin/artworks') && request()->query('production') == 'pending' ? 'bg-white/10 text-gold' : 'text-white hover:bg-white/5' }}">
+                                Production Images
+                            </a>
+                        </div>
+                    </div>
+                    @endif
                 </div>
                 
                 <!-- Orders & Reviews (For admin) -->

@@ -69,9 +69,9 @@
                                     x-transition:leave-end="opacity-0 transform scale-95"
                                     class="absolute right-0 mt-2 w-48 py-2 bg-white rounded-md shadow-xl z-20" x-cloak>
                                     
-                                    <a href="{{ route('profile.edit') }}" class="block px-4 py-2 text-sm text-navy hover:bg-ivory transition">
+                                    {{-- <a href="{{ route('profile.edit') }}" class="block px-4 py-2 text-sm text-navy hover:bg-ivory transition">
                                         Profile
-                                    </a>
+                                    </a> --}}
                                     
                                     <form method="POST" action="{{ route('logout') }}">
                                         @csrf
@@ -104,9 +104,9 @@
                     <a href="{{ route('papers.index') }}" class="block py-2 text-navy hover:text-gold transition-colors font-medium">Papers</a>
                     
                     @auth
-                        <a href="{{ route('profile.edit') }}" class="block py-2 text-navy hover:text-gold transition-colors font-medium">
+                        {{-- <a href="{{ route('profile.edit') }}" class="block py-2 text-navy hover:text-gold transition-colors font-medium">
                             Profile
-                        </a>
+                        </a> --}}
                         
                         <form method="POST" action="{{ route('logout') }}">
                             @csrf
