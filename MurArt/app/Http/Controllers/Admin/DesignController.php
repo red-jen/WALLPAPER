@@ -16,7 +16,7 @@ class DesignController extends Controller
      */
     public function index(Request $request)
     {
-        $query = Design::with(['designer', 'categories']);
+        $query = Design::with(['designer', 'category']);
 
         // Search
         if ($request->filled('search')) {
@@ -33,12 +33,29 @@ class DesignController extends Controller
         // Filter by status
         if ($request->filled('status')) {
             $query->where('status', $request->status);
+        } else {
+            // By default, only show approved or pending designs
+            $query->whereIn('status', ['approved', 'pending']);
         }
 
         // Sort by most recent by default
         $designs = $query->latest()->paginate(15)->withQueryString();
 
-        return view('admin.designs.index', compact('designs'));
+        // Count designs by status for stats
+        $allDesignsCount = Design::count();
+        $approvedCount = Design::where('status', 'approved')->count();
+        $pendingCount = Design::where('status', 'pending')->count();
+        $rejectedCount = Design::where('status', 'rejected')->count();
+        $archivedCount = Design::where('status', 'archived')->count();
+
+        return view('admin.designs.index', compact(
+            'designs', 
+            'allDesignsCount', 
+            'approvedCount', 
+            'pendingCount', 
+            'rejectedCount', 
+            'archivedCount'
+        ));
     }
 
     /**
@@ -61,7 +78,7 @@ class DesignController extends Controller
             $design->status = $request->status;
             $design->save();
 
- 
+
 
             return back()->with('success', 'Design status updated successfully');
         } catch (\Exception $e) {
@@ -77,7 +94,7 @@ class DesignController extends Controller
      */
     public function show(Design $design)
     {
-        $design->load(['designer', 'categories', 'reviews.user']);
+        $design->load(['designer', 'category', 'reviews.user']);
 
         return view('admin.designs.show', compact('design'));
     }
