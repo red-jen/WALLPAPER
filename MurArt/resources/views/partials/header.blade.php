@@ -58,7 +58,7 @@
                 </div>
                 
                 <!-- Cart -->
-                <a href="{{ route('cart.index') }}" class="text-dark hover:text-primary transition relative">
+                <a href="{{ route('client.cart.index') }}" class="text-dark hover:text-primary transition relative">
                     <i class="fas fa-shopping-cart"></i>
                     @if(session()->has('cart') && count(session('cart')) > 0)
                     <span class="absolute -top-2 -right-2 w-5 h-5 rounded-full bg-primary text-white text-xs flex items-center justify-center">
