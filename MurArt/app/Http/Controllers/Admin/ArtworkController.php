@@ -12,9 +12,37 @@ class ArtworkController extends Controller
     /**
      * Display a listing of the artworks.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $artworks = Artwork::latest()->paginate(10);
+        $query = Artwork::query()->with(['user', 'paper', 'design']);
+        
+        // Filter by status if provided
+        if ($request->has('status')) {
+            $query->where('status', $request->status);
+        }
+        
+        // Filter by preview status
+        if ($request->has('preview')) {
+            if ($request->preview === 'pending') {
+                $query->whereNull('preview_image')->orWhere('preview_status', 'pending');
+            } elseif ($request->preview === 'approved') {
+                $query->where('preview_status', 'approved');
+            } elseif ($request->preview === 'rejected') {
+                $query->where('preview_status', 'rejected');
+            }
+        }
+        
+        // Filter by production status
+        if ($request->has('production')) {
+            if ($request->production === 'pending') {
+                $query->where('production_status', 'pending');
+            } elseif ($request->production === 'completed') {
+                $query->where('production_status', 'completed');
+            }
+        }
+        
+        $artworks = $query->latest()->paginate(10);
+        
         return view('admin.artworks.index', compact('artworks'));
     }
 
@@ -181,4 +209,4 @@ class ArtworkController extends Controller
         return redirect()->route('admin.artworks.edit', $artwork)
             ->with('success', 'Production status updated successfully.');
     }
-} 
+}
