@@ -336,7 +336,7 @@
                                             </span>
                                             
                                             <!-- Simple Status Change Form -->
-                                            <form action="{{ route('admin.users.update-status') }}" method="POST" class="inline">
+                                            <form action="{{ route('admin.users.update-status', ['user' => $user->id])  }}" method="POST" class="inline">
                                                 @csrf
                                                 <input type="hidden" name="user_id" value="{{ $user->id }}">
                                                 <select name="status" onchange="this.form.submit()" class="text-xs rounded-full border px-2 py-1 cursor-pointer focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-navy font-medium
@@ -449,7 +449,7 @@
                         <i class="fas fa-paint-brush text-2xl mb-2"></i>
                         <div class="text-sm font-medium">Designs</div>
                     </a>
-                    <a href="{{ route('admin.orders.index') }}" class="p-4 bg-gray-50 rounded-lg text-center hover:bg-navy hover:text-white transition-colors">
+                    {{-- <a href="{{ route('admin.orders.index') }}" class="p-4 bg-gray-50 rounded-lg text-center hover:bg-navy hover:text-white transition-colors"> --}}
                         <i class="fas fa-shopping-cart text-2xl mb-2"></i>
                         <div class="text-sm font-medium">Orders</div>
                     </a>
