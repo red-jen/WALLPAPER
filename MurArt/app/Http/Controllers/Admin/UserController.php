@@ -156,7 +156,7 @@ class UserController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function updateStatus(Request $request)
+    public function updateStatus(Request $request, User $user)
     {
         $request->validate([
             'user_id' => 'required|exists:users,id',
@@ -185,36 +185,6 @@ class UserController extends Controller
         } catch (\Exception $e) {
             return back()->with('error', 'Failed to update user status: ' . $e->getMessage());
         }
-    }
-
-    /**
-     * Ban a user.
-     *
-     * @param  \App\Models\User  $user
-     * @return \Illuminate\Http\Response
-     */
-    public function ban(User $user)
-    {
-        // Prevent self-banning
-        if ($user->id === auth()->id()) {
-            return redirect()->route('admin.users.index')
-                ->with('error', 'You cannot ban your own account.');
-        }
-
-        $user->status = 'banned';
-        $user->save();
-
-        // Log activity
-        if (class_exists(Activity::class)) {
-            Activity::log(
-                'user_banned',
-                "User {$user->name} was banned",
-                auth()->user(),
-                $user
-            );
-        }
-
-        return redirect()->back()->with('success', 'User has been banned.');
     }
 
     /**
@@ -250,7 +220,7 @@ class UserController extends Controller
     public function bulkAction(Request $request)
     {
         $request->validate([
-            'action' => 'required|in:delete,activate,ban',
+            'action' => 'required|in:delete,activate',
             'user_ids' => 'required|array',
             'user_ids.*' => 'exists:users,id',
         ]);
@@ -273,11 +243,6 @@ class UserController extends Controller
             case 'activate':
                 $count = User::whereIn('id', $userIds)->update(['status' => 'active']);
                 $message = "{$count} users have been activated.";
-                break;
-
-            case 'ban':
-                $count = User::whereIn('id', $userIds)->update(['status' => 'banned']);
-                $message = "{$count} users have been banned.";
                 break;
         }
 
