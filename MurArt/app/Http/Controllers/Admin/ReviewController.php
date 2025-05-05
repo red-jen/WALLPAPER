@@ -17,13 +17,19 @@ class ReviewController extends Controller
             ->with(['user', 'design'])
             ->latest()
             ->paginate(10);
-            
+
         $approvedReviews = Review::where('is_approved', true)
             ->with(['user', 'design'])
             ->latest()
             ->paginate(10);
-            
-        return view('admin.reviews.index', compact('pendingReviews', 'approvedReviews'));
+
+        // Add this line to fix the undefined variable
+        $totalReviews = Review::count();
+
+        // Add this line to fix the undefined variable $reviews
+        $reviews = Review::with(['user', 'design'])->latest()->paginate(10);
+
+        return view('admin.reviews.index', compact('pendingReviews', 'approvedReviews', 'totalReviews', 'reviews'));
     }
 
     /**
@@ -33,17 +39,17 @@ class ReviewController extends Controller
     {
         $review->is_approved = true;
         $review->save();
-        
+
         return redirect()->back()->with('success', 'Review approved successfully.');
     }
-    
+
     /**
      * Delete a review.
      */
     public function destroy(Review $review)
     {
         $review->delete();
-        
+
         return redirect()->back()->with('success', 'Review deleted successfully.');
     }
 }
