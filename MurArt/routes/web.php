@@ -81,13 +81,13 @@ Route::prefix('client')->name('client.')->middleware(['auth', 'client'])->group(
     Route::get('/dashboard', [App\Http\Controllers\Client\DashboardController::class, 'index'])
         ->name('dashboard');
 
-        // Cart
-        Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
-Route::post('/artworks/{artwork}/cart', [CartController::class, 'addArtwork'])->name('artworks.addToCart');
-Route::delete('/cart/{item}', [CartController::class, 'removeItem'])->name('cart.removeItem');
-Route::put('/cart/{item}', [CartController::class, 'updateItem'])->name('cart.updateItem');
-Route::get('/checkout', [CartController::class, 'checkout'])->name('cart.checkout');
-// Route::get('/shop', [CartController::class, 'check'])->name('shop.index');
+    // Cart
+    Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
+    Route::post('/artworks/{artwork}/cart', [CartController::class, 'addArtwork'])->name('artworks.addToCart');
+    Route::delete('/cart/{item}', [CartController::class, 'removeItem'])->name('cart.removeItem');
+    Route::put('/cart/{item}', [CartController::class, 'updateItem'])->name('cart.updateItem');
+    Route::get('/checkout', [CartController::class, 'checkout'])->name('cart.checkout');
+    // Route::get('/shop', [CartController::class, 'check'])->name('shop.index');
 
     // Orders
     Route::prefix('orders')->name('orders.')->group(function () {
@@ -96,7 +96,7 @@ Route::get('/checkout', [CartController::class, 'checkout'])->name('cart.checkou
     });
 
     Route::get('/designs/{design}/create-artwork', [ClientDesignController::class, 'createWithDesign'])
-    ->name('designs.create-artwork');
+        ->name('designs.create-artwork');
 
 
 
@@ -213,7 +213,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
     // Dashboard
 
     Route::get('/dashboard', [App\Http\Controllers\Admin\DashboardController::class, 'index'])
-    ->name('dashboard');
+        ->name('dashboard');
     // ->middleware(['auth', 'admin']);
     // Remove the duplicate dashboard route from here if it exists
     // Other admin routes remain the same
@@ -305,7 +305,12 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
         Route::get('/', [App\Http\Controllers\Admin\OrderController::class, 'index'])->name('index');
         Route::get('/{order}', [App\Http\Controllers\Admin\OrderController::class, 'show'])->name('show');
         Route::put('/{order}/status', [App\Http\Controllers\Admin\OrderController::class, 'updateStatus'])->name('update-status');
-        Route::get('/filter', [App\Http\Controllers\Admin\OrderController::class, 'filter']);
+        Route::put('/{order}/shipping', [App\Http\Controllers\Admin\OrderController::class, 'updateShipping'])->name('update-shipping');
+        Route::put('/{order}/notes', [App\Http\Controllers\Admin\OrderController::class, 'updateNotes'])->name('update-notes');
+        Route::post('/{order}/upload-image', [App\Http\Controllers\Admin\OrderController::class, 'uploadImage'])->name('upload-image');
+        Route::delete('/{order}/delete-image/{index}', [App\Http\Controllers\Admin\OrderController::class, 'deleteImage'])->name('delete-image');
+        Route::get('/{order}/invoice', [App\Http\Controllers\Admin\OrderController::class, 'generateInvoice'])->name('invoice');
+        Route::get('/filter', [App\Http\Controllers\Admin\OrderController::class, 'filter'])->name('filter');
     });
 
     // Designs Management
@@ -319,5 +324,3 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
     Route::get('/sales-chart-data', [AdminDashboardController::class, 'getSalesChartData']);
     Route::get('/filter-users', [AdminDashboardController::class, 'filterUsers']);
 });
-
-

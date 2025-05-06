@@ -6,14 +6,17 @@
     <div class="flex justify-between items-center mb-6">
         <h1 class="text-2xl font-bold text-gray-800">Manage Artwork Preview</h1>
         <div>
-            <a href="{{ route('admin.artworks.index') }}" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300">
+            <a href="{{ route('admin.artworks.index') }}" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors duration-200 flex items-center">
+                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                </svg>
                 Back to Artworks
             </a>
         </div>
     </div>
 
     @if(session('success'))
-    <div class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 mb-6 rounded">
+    <div class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 mb-6 rounded shadow-sm animate__animated animate__fadeIn">
         <div class="flex">
             <div class="flex-shrink-0">
                 <svg class="h-5 w-5 text-green-500" fill="currentColor" viewBox="0 0 20 20">
@@ -30,14 +33,14 @@
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <!-- Artwork Details -->
         <div class="lg:col-span-1">
-            <div class="bg-white rounded-lg shadow-md overflow-hidden">
-                <div class="p-4 border-b border-gray-200 bg-gray-50">
-                    <h2 class="font-medium">Artwork Request Details</h2>
+            <div class="bg-white rounded-lg shadow-md overflow-hidden border border-gray-100">
+                <div class="p-4 border-b border-gray-200 bg-gradient-to-r from-gray-50 to-white">
+                    <h2 class="font-medium text-lg text-gray-800">Artwork Request Details</h2>
                 </div>
                 <div class="p-6">
                     <div class="mb-6">
                         <h3 class="text-lg font-semibold text-gray-800">{{ $artwork->title }}</h3>
-                        <p class="text-sm text-gray-600">ID: {{ $artwork->id }}</p>
+                        <p class="text-sm text-gray-600">ID: <span class="font-mono bg-gray-100 px-1 py-0.5 rounded">{{ $artwork->id }}</span></p>
                         <p class="text-sm text-gray-600">Submitted: {{ $artwork->created_at->format('M d, Y') }}</p>
                     </div>
 
@@ -108,36 +111,62 @@
 
         <!-- Preview Management -->
         <div class="lg:col-span-2">
-            <div class="bg-white rounded-lg shadow-md overflow-hidden mb-8">
-                <div class="p-4 border-b border-gray-200 bg-gray-50">
-                    <h2 class="font-medium">Preview Management</h2>
+            <div class="bg-white rounded-lg shadow-md overflow-hidden mb-8 border border-gray-100">
+                <div class="p-4 border-b border-gray-200 bg-gradient-to-r from-gray-50 to-white">
+                    <h2 class="font-medium text-lg text-gray-800">Preview Management</h2>
                 </div>
                 <div class="p-6">
                     <div class="mb-6">
-                        <h3 class="text-lg font-semibold text-gray-800 mb-4">Current Status: 
+                        <div class="flex items-center mb-4">
+                            <h3 class="text-lg font-semibold text-gray-800 mr-3">Current Status:</h3> 
                             @if($artwork->preview_status == 'pending')
-                                <span class="text-yellow-600">Pending Preview</span>
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-sm font-medium bg-yellow-100 text-yellow-800">
+                                    <svg class="-ml-1 mr-1.5 h-2 w-2 text-yellow-400" fill="currentColor" viewBox="0 0 8 8">
+                                        <circle cx="4" cy="4" r="3" />
+                                    </svg>
+                                    Pending Preview
+                                </span>
                             @elseif($artwork->preview_status == 'uploaded')
-                                <span class="text-blue-600">Awaiting Customer Approval</span>
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-sm font-medium bg-blue-100 text-blue-800">
+                                    <svg class="-ml-1 mr-1.5 h-2 w-2 text-blue-400" fill="currentColor" viewBox="0 0 8 8">
+                                        <circle cx="4" cy="4" r="3" />
+                                    </svg>
+                                    Awaiting Customer Approval
+                                </span>
                             @elseif($artwork->preview_status == 'approved')
-                                <span class="text-green-600">Approved</span>
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-sm font-medium bg-green-100 text-green-800">
+                                    <svg class="-ml-1 mr-1.5 h-2 w-2 text-green-400" fill="currentColor" viewBox="0 0 8 8">
+                                        <circle cx="4" cy="4" r="3" />
+                                    </svg>
+                                    Approved
+                                </span>
                             @elseif($artwork->preview_status == 'rejected')
-                                <span class="text-red-600">Rejected</span>
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-sm font-medium bg-red-100 text-red-800">
+                                    <svg class="-ml-1 mr-1.5 h-2 w-2 text-red-400" fill="currentColor" viewBox="0 0 8 8">
+                                        <circle cx="4" cy="4" r="3" />
+                                    </svg>
+                                    Rejected
+                                </span>
                             @endif
-                        </h3>
+                        </div>
 
                         <!-- Client Feedback Section for Rejected Previews -->
                         @if($artwork->latestPreview && $artwork->latestPreview->status == 'rejected' && $artwork->latestPreview->client_feedback)
-                        <div class="mb-6 bg-red-50 border-l-4 border-red-500 p-4 rounded-md">
-                            <div class="flex items-center mb-2">
-                                <svg class="h-5 w-5 text-red-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                        <div class="mb-6 bg-red-50 border-l-4 border-red-500 p-5 rounded-md">
+                            <div class="flex items-center mb-3">
+                                <svg class="h-6 w-6 text-red-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
                                     <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
                                 </svg>
                                 <h4 class="text-base font-medium text-red-800">Client Feedback on Rejected Preview</h4>
                             </div>
-                            <div class="pl-7">
+                            <div class="ml-8 p-4 bg-white rounded-md shadow-sm border border-red-100">
                                 <p class="text-red-700 whitespace-pre-line">{{ $artwork->latestPreview->client_feedback }}</p>
-                                <p class="text-sm text-red-600 mt-2">Rejected on: {{ $artwork->latestPreview->rejected_at ? $artwork->latestPreview->rejected_at->format('M d, Y H:i') : 'N/A' }}</p>
+                                <div class="flex items-center mt-3 pt-2 border-t border-red-100">
+                                    <svg class="w-4 h-4 text-red-400 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                    </svg>
+                                    <p class="text-sm text-red-600">Rejected on: {{ $artwork->latestPreview->rejected_at ? $artwork->latestPreview->rejected_at->format('M d, Y H:i') : 'N/A' }}</p>
+                                </div>
                             </div>
                         </div>
                         @endif

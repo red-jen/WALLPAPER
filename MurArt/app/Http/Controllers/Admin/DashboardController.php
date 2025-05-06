@@ -3,218 +3,205 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\User;
-use App\Models\Design;
-use App\Models\Wallpaper;
+use App\Models\Artwork;
+use App\Models\ArtworkPreview;
 use App\Models\Order;
-use App\Models\Activity;
+use App\Models\User;
 use Illuminate\Http\Request;
-use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
 class DashboardController extends Controller
 {
+    /**
+     * Display the admin dashboard.
+     */
     public function index()
     {
-        // Users statistics
-        $totalUsers = User::count();
-        $newUsers = User::where('created_at', '>=', now()->subMonth())->count();
-        $newUsersPercent = $totalUsers > 0 ? round(($newUsers / $totalUsers) * 100) : 0;
-        $designerCount = User::where('role', 'designer')->count();
-        $customerCount = User::where('role', 'customer')->count();
-        $activeUsersPercent = 75; // This would be calculated based on your activity criteria
+        // Get counts for dashboard stats
+        $pendingPreviews = Artwork::whereDoesntHave('previews')
+            ->orWhereHas('previews', function ($q) {
+                $q->where('status', 'pending');
+            })
+            ->count();
 
-        // Products statistics
-        $totalWallpapers = Wallpaper::count();
-        $newWallpapers = Wallpaper::where('created_at', '>=', now()->subMonth())->count();
-        $newWallpapersPercent = $totalWallpapers > 0 ? round(($newWallpapers / $totalWallpapers) * 100) : 0;
-        $lowStockCount = Wallpaper::where('stock', '<=', 5)->where('stock', '>', 0)->count();
-        $outOfStockCount = Wallpaper::where('stock', 0)->count();
-        $designsCount = Design::count();
+        $rejectedPreviews = Artwork::whereHas('previews', function ($q) {
+            $q->where('status', 'rejected');
+        })->count();
 
-        // Orders statistics
-        $totalOrders = Order::count();
-        $newOrders = Order::where('created_at', '>=', now()->subMonth())->count();
-        $newOrdersPercent = $totalOrders > 0 ? round(($newOrders / $totalOrders) * 100) : 0;
-        $pendingOrdersCount = Order::where('status', 'pending')->count();
-        $completedOrdersCount = Order::where('status', 'completed')->count();
-        $averageOrderValue = Order::avg('total') ? '$' . number_format(Order::avg('total'), 2) : '$0.00';
+        $productionQueue = Artwork::where('production_status', 'queued')
+            ->orWhere('production_status', 'in_progress')
+            ->count();
 
-        // Revenue statistics
-        $totalRevenue = Order::where('status', 'completed')->sum('total');
-        $lastMonthRevenue = Order::where('status', 'completed')
-            ->whereBetween('created_at', [now()->subMonths(2), now()->subMonth()])
-            ->sum('total');
-        $thisMonthRevenue = Order::where('status', 'completed')
-            ->where('created_at', '>=', now()->startOfMonth())
-            ->sum('total');
-        $revenueChangePercent = $lastMonthRevenue > 0
-            ? round((($thisMonthRevenue - $lastMonthRevenue) / $lastMonthRevenue) * 100)
-            : 100;
-        $monthlyRevenue = $thisMonthRevenue;
-        $yearlyRevenue = Order::where('status', 'completed')
-            ->whereYear('created_at', now()->year)
-            ->sum('total');
+        $readyToShip = Artwork::where('production_status', 'ready')->count();
 
-        // Recent orders
-        $recentOrders = Order::with('user')
+        // Get artworks needing attention
+        $artworksNeedingAttention = Artwork::with(['user', 'latestPreview'])
+            ->where(function ($query) {
+                $query->whereDoesntHave('previews')
+                    ->orWhereHas('previews', function ($q) {
+                        $q->where('status', 'pending')
+                            ->orWhere('status', 'rejected');
+                    })
+                    ->orWhere(function ($q) {
+                        $q->whereHas('previews', function ($sq) {
+                            $sq->where('status', 'approved');
+                        })
+                            ->where(function ($sq) {
+                                $sq->whereNull('production_status')
+                                    ->orWhere('production_status', 'queued');
+                            });
+                    });
+            })
             ->latest()
             ->take(5)
             ->get();
 
-        // Recent users
-        $recentUsers = User::latest()
-            ->take(10)
-            ->get();
+        // User statistics
+        $userStats = [
+            'total' => User::count(),
+            'admins' => User::where('role', 'admin')->count(),
+            'designers' => User::where('role', 'designer')->count(),
+            'clients' => User::where('role', 'client')->count(),
+        ];
 
-        // Recent activities
-        $recentActivities = [];
-        try {
-            $recentActivities = Activity::with(['causer' => function ($query) {
-                $query->select('id', 'name');
-            }])
-                ->latest()
-                ->take(8)
-                ->get();
-        } catch (\Exception $e) {
-            // If Activity model or table doesn't exist, continue with empty array
-        }
+        // Get recent users
+        $recentUsers = User::latest()->take(5)->get();
 
-        // Top selling products
-        $topSellingProducts = [];
-        try {
-            $topSellingProducts = Wallpaper::withCount(['orderItems as sales_count'])
-                ->withSum(['orderItems' => function ($query) {
-                    $query->join('orders', 'orders.id', '=', 'order_items.order_id')
-                        ->where('orders.status', 'completed');
-                }], DB::raw('order_items.quantity * order_items.price as total_revenue'))
-                ->orderBy('sales_count', 'desc')
-                ->take(5)
-                ->get();
-        } catch (\Exception $e) {
-            // If the relationship fails, continue with an empty array
-        }
-
-        // Popular designs
-        $popularDesigns = Design::with('designer')
-            ->withAvg('reviews as average_rating', 'rating')
-            ->orderBy('average_rating', 'desc')
+        // Get recent orders and order counts for quick access
+        $recentOrders = Order::with(['user'])
+            ->latest()
             ->take(5)
             ->get();
 
-        // Sales chart data
-        $salesChartData = $this->getSalesChartData('month');
+        $orderCounts = [
+            'pending' => Order::where('status', 'pending')->count(),
+            'processing' => Order::where('status', 'processing')->count(),
+            'shipped' => Order::where('status', 'shipped')->count(),
+            'canceled' => Order::where('status', 'canceled')->count(),
+        ];
+
+        // Recent activity
+        $recentActivities = $this->getRecentActivities();
 
         return view('admin.dashboard', compact(
-            'totalUsers',
-            'newUsersPercent',
-            'designerCount',
-            'customerCount',
-            'activeUsersPercent',
-            'totalWallpapers',
-            'newWallpapersPercent',
-            'lowStockCount',
-            'outOfStockCount',
-            'designsCount',
-            'totalOrders',
-            'newOrdersPercent',
-            'pendingOrdersCount',
-            'completedOrdersCount',
-            'averageOrderValue',
-            'totalRevenue',
-            'revenueChangePercent',
-            'monthlyRevenue',
-            'yearlyRevenue',
-            'recentOrders',
+            'pendingPreviews',
+            'rejectedPreviews',
+            'productionQueue',
+            'readyToShip',
+            'artworksNeedingAttention',
+            'userStats',
             'recentUsers',
-            'recentActivities',
-            'topSellingProducts',
-            'popularDesigns',
-            'salesChartData'
+            'recentOrders',
+            'orderCounts',
+            'recentActivities'
         ));
     }
 
-    public function getSalesChartData($timeframe = 'month')
+    /**
+     * Get the recent activities for the system.
+     */
+    private function getRecentActivities()
     {
-        $labels = [];
-        $revenueData = [];
-        $ordersData = [];
+        // Get preview uploads, approvals and rejections
+        $previewActivities = ArtworkPreview::with('artwork')
+            ->latest()
+            ->take(10)
+            ->get()
+            ->map(function ($preview) {
+                $artwork = $preview->artwork;
+                $title = $artwork ? $artwork->title : 'Unknown Artwork';
 
-        if ($timeframe === 'week') {
-            // Current week data (last 7 days)
-            for ($i = 6; $i >= 0; $i--) {
-                $date = now()->subDays($i);
-                $labels[] = $date->format('D');
+                if ($preview->status === 'uploaded') {
+                    return [
+                        'type' => 'preview_upload',
+                        'message' => "Preview uploaded for \"$title\"",
+                        'time' => $preview->created_at
+                    ];
+                } elseif ($preview->status === 'approved') {
+                    return [
+                        'type' => 'preview_approved',
+                        'message' => "Preview approved for \"$title\"",
+                        'time' => $preview->approved_at ?? $preview->updated_at
+                    ];
+                } elseif ($preview->status === 'rejected') {
+                    return [
+                        'type' => 'preview_rejected',
+                        'message' => "Changes requested for \"$title\"",
+                        'time' => $preview->rejected_at ?? $preview->updated_at
+                    ];
+                }
 
-                $revenueData[] = Order::where('status', 'completed')
-                    ->whereDate('created_at', $date)
-                    ->sum('total');
+                return null;
+            })
+            ->filter()
+            ->take(10);
 
-                $ordersData[] = Order::whereDate('created_at', $date)->count();
-            }
-        } elseif ($timeframe === 'month') {
-            // Current month data (last 30 days)
-            for ($i = 29; $i >= 0; $i--) {
-                $date = now()->subDays($i);
-                $labels[] = $date->format('M d');
+        // Get recent production updates
+        $productionUpdates = Artwork::whereNotNull('production_status')
+            ->latest('updated_at')
+            ->take(5)
+            ->get()
+            ->map(function ($artwork) {
+                $statusMap = [
+                    'queued' => 'queued for production',
+                    'in_progress' => 'in production',
+                    'ready' => 'ready for shipping',
+                    'shipped' => 'shipped',
+                    'delivered' => 'delivered'
+                ];
 
-                $revenueData[] = Order::where('status', 'completed')
-                    ->whereDate('created_at', $date)
-                    ->sum('total');
+                $status = $statusMap[$artwork->production_status] ?? $artwork->production_status;
 
-                $ordersData[] = Order::whereDate('created_at', $date)->count();
-            }
-        } else {
-            // Current year data (by month)
-            for ($i = 11; $i >= 0; $i--) {
-                $date = now()->subMonths($i);
-                $labels[] = $date->format('M');
+                return [
+                    'type' => 'production_update',
+                    'message' => "\"$artwork->title\" is now $status",
+                    'time' => $artwork->updated_at
+                ];
+            });
 
-                $revenueData[] = Order::where('status', 'completed')
-                    ->whereYear('created_at', $date->year)
-                    ->whereMonth('created_at', $date->month)
-                    ->sum('total');
+        // Combine and sort activities
+        $activities = $previewActivities->concat($productionUpdates)
+            ->sortByDesc('time')
+            ->take(10)
+            ->values()
+            ->all();
 
-                $ordersData[] = Order::whereYear('created_at', $date->year)
-                    ->whereMonth('created_at', $date->month)
-                    ->count();
-            }
-        }
-
-        return [
-            'labels' => $labels,
-            'revenue' => $revenueData,
-            'orders' => $ordersData
-        ];
+        return $activities;
     }
 
-    public function getSalesChartDataApi(Request $request)
+    /**
+     * Get sales data for charts
+     */
+    public function getSalesChartData()
     {
-        $timeframe = $request->input('timeframe', 'month');
-        return response()->json($this->getSalesChartData($timeframe));
+        // This would be implemented to return sales data
+        // for the dashboard charts
+        return response()->json([
+            'labels' => ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+            'datasets' => [
+                [
+                    'label' => 'Orders',
+                    'data' => [12, 19, 3, 5, 2, 3],
+                ]
+            ]
+        ]);
     }
 
+    /**
+     * Filter users for admin dashboard
+     */
     public function filterUsers(Request $request)
     {
         $query = User::query();
 
-        // Apply role filter if specified
-        if ($request->filled('role')) {
+        if ($request->has('role')) {
             $query->where('role', $request->role);
         }
 
-        // Apply search filter if specified
-        if ($request->filled('search')) {
-            $search = $request->search;
-            $query->where(function ($q) use ($search) {
-                $q->where('name', 'like', "%{$search}%")
-                    ->orWhere('email', 'like', "%{$search}%");
-            });
-        }
+        $users = $query->latest()->paginate(10);
 
-        // Get the results
-        $users = $query->latest()->take(10)->get();
-
-        return response()->json($users);
+        return response()->json([
+            'users' => $users
+        ]);
     }
 }

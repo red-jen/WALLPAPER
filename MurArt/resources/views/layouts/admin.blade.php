@@ -10,7 +10,7 @@
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Montserrat:wght@300;400;500&family=Libre+Baskerville:ital@0;1&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Montserrat:wght@300;400;500;600&family=Libre+Baskerville:ital@0;1&display=swap" rel="stylesheet">
     
     <!-- FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
@@ -25,7 +25,9 @@
                 extend: {
                     colors: {
                         'navy': '#2C3E50',
+                        'navy-light': '#34495E',
                         'gold': '#D4AF37',
+                        'gold-light': '#E6C65C',
                         'sage': '#7D8E7B',
                         'ivory': '#F8F3E6',
                         'charcoal': '#2F353B',
@@ -35,6 +37,9 @@
                         'heading': ['Cormorant Garamond', 'serif'],
                         'sans': ['Montserrat', 'sans-serif'],
                         'serif': ['Libre Baskerville', 'serif'],
+                    },
+                    boxShadow: {
+                        'inner-lg': 'inset 0 2px 4px 0 rgba(0, 0, 0, 0.06)'
                     }
                 }
             }
@@ -47,7 +52,7 @@
     @yield('styles')
 </head>
 <body class="font-sans antialiased bg-ivory">
-    <div x-data="{ sidebarOpen: window.innerWidth >= 1024 }" class="flex h-screen bg-ivory">
+    <div x-data="{ sidebarOpen: window.innerWidth >= 1024 }" class="flex h-screen overflow-hidden">
         <!-- Mobile Sidebar Backdrop -->
         <div 
             x-show="sidebarOpen" 
@@ -62,258 +67,342 @@
         ></div>
         
         <!-- Sidebar -->
-        <div 
-            x-cloak
-            :class="{'translate-x-0': sidebarOpen, '-translate-x-full': !sidebarOpen, 'lg:translate-x-0': true}"
-            class="fixed top-0 left-0 z-30 h-full w-64 transform bg-navy text-white transition-transform duration-300 ease-in-out lg:relative lg:inset-0"
+        <aside 
+            class="fixed inset-y-0 left-0 z-30 w-64 transform bg-gradient-to-b from-navy to-navy-light text-white transition duration-300 ease-in-out lg:static lg:inset-auto lg:translate-x-0"
+            :class="{'translate-x-0': sidebarOpen, '-translate-x-full': !sidebarOpen}"
+            @keydown.escape.window="sidebarOpen = false"
         >
             <!-- Logo & Toggle -->
             <div class="flex h-16 items-center justify-between px-4 border-b border-white/10">
                 <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-full bg-gold/20 flex items-center justify-center text-gold">
+                    <div class="w-10 h-10 rounded-full bg-gold/20 flex items-center justify-center text-gold animate-pulse">
                         <i class="fas fa-paint-brush"></i>
                     </div>
                     <span class="font-heading text-xl font-bold text-white">MurArt</span>
                 </a>
                 <button 
                     @click="sidebarOpen = false" 
-                    class="text-white hover:text-gold lg:hidden"
+                    class="text-white hover:text-gold lg:hidden transition-colors duration-200"
                 >
                     <i class="fas fa-times"></i>
                 </button>
             </div>
             
             <!-- User Info -->
-            <div class="border-b border-white/10 p-4">
+            <div class="border-b border-white/10 p-4 bg-navy-light/30">
                 <div class="flex items-center gap-3">
                     <div class="w-10 h-10 rounded-full bg-gold/20 flex items-center justify-center text-gold">
                         <i class="fas fa-user"></i>
                     </div>
                     <div>
                         <h4 class="font-medium text-white">{{ auth()->user()->name }}</h4>
-                        <p class="text-xs text-white/70">{{ ucfirst(auth()->user()->role ?? 'User') }}</p>
+                        <div class="flex items-center text-xs text-white/70">
+                            <span class="inline-block w-2 h-2 rounded-full bg-green-400 mr-1.5"></span>
+                            {{ ucfirst(auth()->user()->role ?? 'User') }}
+                        </div>
                     </div>
                 </div>
             </div>
             
             <!-- Navigation -->
-            <div class="py-4 overflow-y-auto">
-                <div class="px-3">
-                    <h5 class="text-xs uppercase tracking-wider text-white/50 font-semibold px-3 mb-2">Dashboard</h5>
-                    <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-3 px-3 py-2 rounded-md mb-1 {{ request()->routeIs('admin.dashboard') ? 'bg-gold text-navy' : 'text-white hover:bg-white/10' }}">
+            <div class="py-2 overflow-y-auto h-full scrollbar-thin scrollbar-thumb-white/20 scrollbar-track-transparent">
+                <!-- Dashboard Link -->
+                <div class="px-3 py-2">
+                    <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-md mb-1 {{ request()->routeIs('admin.dashboard') ? 'bg-gold text-navy font-medium shadow-sm' : 'text-white hover:bg-white/10' }} transition-colors duration-200">
                         <i class="fas fa-tachometer-alt w-5 text-center"></i>
                         <span>Dashboard</span>
                     </a>
                 </div>
                 
-                <!-- Content Management -->
-                <div class="mt-6 px-3">
-                    <h5 class="text-xs uppercase tracking-wider text-white/50 font-semibold px-3 mb-2">Content</h5>
-                    
-                    <!-- Designs -->
-                    <div x-data="{ subMenuOpen: {{ request()->routeIs('designer.designs.*') ? 'true' : 'false' }} }">
-                        <button @click="subMenuOpen = !subMenuOpen" class="w-full flex items-center justify-between px-3 py-2 rounded-md {{ request()->routeIs('designer.designs.*') ? 'bg-white/10 text-gold' : 'text-white hover:bg-white/10' }}">
-                            <div class="flex items-center gap-3">
-                                <i class="fas fa-paint-brush w-5 text-center"></i>
-                                <span>My Designs</span>
-                            </div>
-                            <i :class="subMenuOpen ? 'fa-chevron-down' : 'fa-chevron-right'" class="fas text-xs"></i>
-                        </button>
+                <!-- Main Navigation Groups -->
+                <div class="mt-2 px-3 space-y-6">
+                    <!-- Content Management Group -->
+                    <div>
+                        <h5 class="text-xs uppercase tracking-wider text-gold font-semibold px-3 mb-3">Content</h5>
                         
-                        <div x-show="subMenuOpen" x-collapse class="pl-8 pr-3 py-2 space-y-1">
-                            <a href="{{ route('designer.designs.index') }}" class="block px-3 py-1.5 rounded-md text-sm {{ request()->routeIs('designer.designs.index') ? 'bg-white/10 text-gold' : 'text-white hover:bg-white/5' }}">
-                                All Designs
-                            </a>
-                            <a href="{{ route('designer.designs.create') }}" class="block px-3 py-1.5 rounded-md text-sm {{ request()->routeIs('designer.designs.create') ? 'bg-white/10 text-gold' : 'text-white hover:bg-white/5' }}">
-                                Create Design
-                            </a>
-                        </div>
-                    </div>
-                    
-                    <!-- Wallpapers (For admin) -->
-                    @if(auth()->user()->hasRole('admin'))
-                    <div x-data="{ subMenuOpen: {{ request()->routeIs('admin.wallpapers.*') ? 'true' : 'false' }} }" class="mt-1">
-                        <button @click="subMenuOpen = !subMenuOpen" class="w-full flex items-center justify-between px-3 py-2 rounded-md {{ request()->routeIs('admin.wallpapers.*') ? 'bg-white/10 text-gold' : 'text-white hover:bg-white/10' }}">
-                            <div class="flex items-center gap-3">
-                                <i class="fas fa-images w-5 text-center"></i>
-                                <span>Wallpapers</span>
+                        <!-- Designs -->
+                        <div x-data="{ subMenuOpen: {{ request()->routeIs('designer.designs.*') || request()->routeIs('admin.designs.*') ? 'true' : 'false' }} }" class="mb-1.5">
+                            <button @click="subMenuOpen = !subMenuOpen" class="w-full flex items-center justify-between px-3 py-2 rounded-md {{ request()->routeIs('designer.designs.*') || request()->routeIs('admin.designs.*') ? 'bg-white/10 text-gold' : 'text-white hover:bg-white/10' }} transition-colors duration-200">
+                                <div class="flex items-center gap-3">
+                                    <i class="fas fa-palette w-5 text-center"></i>
+                                    <span>Designs</span>
+                                </div>
+                                <i :class="subMenuOpen ? 'fa-chevron-down' : 'fa-chevron-right'" class="fas text-xs transition-transform duration-200"></i>
+                            </button>
+                            
+                            <div x-show="subMenuOpen" x-collapse x-cloak class="pl-8 pr-3 py-1 space-y-1">
+                                @if(auth()->user()->hasRole('admin'))
+                                    <a href="{{ route('admin.designs.index') }}" class="block px-3 py-1.5 rounded-md text-sm {{ request()->routeIs('admin.designs.index') ? 'bg-white/10 text-gold' : 'text-white hover:bg-white/5' }} transition-colors duration-150">
+                                        All Designs
+                                    </a>
+                                @endif
+                                
+                                @if(auth()->user()->hasRole('designer'))
+                                    <a href="{{ route('designer.designs.index') }}" class="block px-3 py-1.5 rounded-md text-sm {{ request()->routeIs('designer.designs.index') ? 'bg-white/10 text-gold' : 'text-white hover:bg-white/5' }} transition-colors duration-150">
+                                        My Designs
+                                    </a>
+                                    <a href="{{ route('designer.designs.create') }}" class="block px-3 py-1.5 rounded-md text-sm {{ request()->routeIs('designer.designs.create') ? 'bg-white/10 text-gold' : 'text-white hover:bg-white/5' }} transition-colors duration-150">
+                                        Create Design
+                                    </a>
+                                @endif
                             </div>
-                            <i :class="subMenuOpen ? 'fa-chevron-down' : 'fa-chevron-right'" class="fas text-xs"></i>
-                        </button>
-                        
-                        <div x-show="subMenuOpen" x-collapse class="pl-8 pr-3 py-2 space-y-1">
-                            <a href="{{ route('admin.wallpapers.index') }}" class="block px-3 py-1.5 rounded-md text-sm {{ request()->routeIs('admin.wallpapers.index') ? 'bg-white/10 text-gold' : 'text-white hover:bg-white/5' }}">
-                                All Wallpapers
-                            </a>
-                            <a href="{{ route('admin.wallpapers.create') }}" class="block px-3 py-1.5 rounded-md text-sm {{ request()->routeIs('admin.wallpapers.create') ? 'bg-white/10 text-gold' : 'text-white hover:bg-white/5' }}">
-                                Create Wallpaper
-                            </a>
                         </div>
-                    </div>
-                    @endif
+                        
+                        <!-- Wallpapers (Admin only) -->
+                        @if(auth()->user()->hasRole('admin'))
+                        <div x-data="{ subMenuOpen: {{ request()->routeIs('admin.wallpapers.*') ? 'true' : 'false' }} }" class="mb-1.5">
+                            <button @click="subMenuOpen = !subMenuOpen" class="w-full flex items-center justify-between px-3 py-2 rounded-md {{ request()->routeIs('admin.wallpapers.*') ? 'bg-white/10 text-gold' : 'text-white hover:bg-white/10' }} transition-colors duration-200">
+                                <div class="flex items-center gap-3">
+                                    <i class="fas fa-images w-5 text-center"></i>
+                                    <span>Wallpapers</span>
+                                </div>
+                                <i :class="subMenuOpen ? 'fa-chevron-down' : 'fa-chevron-right'" class="fas text-xs transition-transform duration-200"></i>
+                            </button>
+                            
+                            <div x-show="subMenuOpen" x-collapse x-cloak class="pl-8 pr-3 py-1 space-y-1">
+                                <a href="{{ route('admin.wallpapers.index') }}" class="block px-3 py-1.5 rounded-md text-sm {{ request()->routeIs('admin.wallpapers.index') ? 'bg-white/10 text-gold' : 'text-white hover:bg-white/5' }} transition-colors duration-150">
+                                    All Wallpapers
+                                </a>
+                                <a href="{{ route('admin.wallpapers.create') }}" class="block px-3 py-1.5 rounded-md text-sm {{ request()->routeIs('admin.wallpapers.create') ? 'bg-white/10 text-gold' : 'text-white hover:bg-white/5' }} transition-colors duration-150">
+                                    Create Wallpaper
+                                </a>
+                            </div>
+                        </div>
+                        @endif
 
-                    <!-- Designs (For admin) -->
-                    @if(auth()->user()->hasRole('admin'))
-                    <div x-data="{ subMenuOpen: {{ request()->routeIs('admin.designs.*') ? 'true' : 'false' }} }" class="mt-1">
-                        <button @click="subMenuOpen = !subMenuOpen" class="w-full flex items-center justify-between px-3 py-2 rounded-md {{ request()->routeIs('admin.designs.*') ? 'bg-white/10 text-gold' : 'text-white hover:bg-white/10' }}">
-                            <div class="flex items-center gap-3">
-                                <i class="fas fa-palette w-5 text-center"></i>
-                                <span>Designs</span>
-                            </div>
-                            <i :class="subMenuOpen ? 'fa-chevron-down' : 'fa-chevron-right'" class="fas text-xs"></i>
-                        </button>
-                        
-                        <div x-show="subMenuOpen" x-collapse class="pl-8 pr-3 py-2 space-y-1">
-                            <a href="{{ route('admin.designs.index') }}" class="block px-3 py-1.5 rounded-md text-sm {{ request()->routeIs('admin.designs.index') ? 'bg-white/10 text-gold' : 'text-white hover:bg-white/5' }}">
-                                All Designs
-                            </a>
-                        </div>
-                    </div>
-                    @endif
-                    
-                    <!-- Categories -->
-                    @if(auth()->user()->hasRole('admin'))
-                    <a href="{{ route('admin.categories.index') }}" class="mt-1 flex items-center gap-3 px-3 py-2 rounded-md {{ request()->routeIs('admin.categories.*') ? 'bg-white/10 text-gold' : 'text-white hover:bg-white/10' }}">
-                        <i class="fas fa-tags w-5 text-center"></i>
-                        <span>Categories</span>
-                    </a>
-                    @endif
+                        <!-- Categories (Admin only) -->
+                        @if(auth()->user()->hasRole('admin'))
+                        <a href="{{ route('admin.categories.index') }}" class="flex items-center gap-3 px-3 py-2 rounded-md mb-1.5 {{ request()->routeIs('admin.categories.*') ? 'bg-white/10 text-gold' : 'text-white hover:bg-white/10' }} transition-colors duration-200">
+                            <i class="fas fa-tags w-5 text-center"></i>
+                            <span>Categories</span>
+                        </a>
+                        @endif
 
-                    <!-- Artworks Management (For admin) -->
-                    @if(auth()->user()->hasRole('admin'))
-                    <div x-data="{ subMenuOpen: {{ request()->routeIs('admin.artworks.*') ? 'true' : 'false' }} }" class="mt-1">
-                        <button @click="subMenuOpen = !subMenuOpen" class="w-full flex items-center justify-between px-3 py-2 rounded-md {{ request()->routeIs('admin.artworks.*') ? 'bg-white/10 text-gold' : 'text-white hover:bg-white/10' }}">
-                            <div class="flex items-center gap-3">
-                                <i class="fas fa-image w-5 text-center"></i>
-                                <span>Artworks</span>
+                        <!-- Artworks Management (Admin only) -->
+                        @if(auth()->user()->hasRole('admin'))
+                        <div x-data="{ subMenuOpen: {{ request()->routeIs('admin.artworks.*') ? 'true' : 'false' }} }" class="mb-1.5">
+                            <button @click="subMenuOpen = !subMenuOpen" class="w-full flex items-center justify-between px-3 py-2 rounded-md {{ request()->routeIs('admin.artworks.*') ? 'bg-white/10 text-gold' : 'text-white hover:bg-white/10' }} transition-colors duration-200">
+                                <div class="flex items-center gap-3">
+                                    <i class="fas fa-image w-5 text-center"></i>
+                                    <span>Artworks</span>
+                                </div>
+                                <i :class="subMenuOpen ? 'fa-chevron-down' : 'fa-chevron-right'" class="fas text-xs transition-transform duration-200"></i>
+                            </button>
+                            
+                            <div x-show="subMenuOpen" x-collapse x-cloak class="pl-8 pr-3 py-1 space-y-1">
+                                <a href="{{ route('admin.artworks.index') }}" class="block px-3 py-1.5 rounded-md text-sm {{ request()->is('admin/artworks') && !request()->hasAny(['status', 'preview', 'production']) ? 'bg-white/10 text-gold' : 'text-white hover:bg-white/5' }} transition-colors duration-150">
+                                    All Artworks
+                                </a>
+                                <a href="{{ route('admin.artworks.index') }}?preview=pending" class="block px-3 py-1.5 rounded-md text-sm {{ request()->is('admin/artworks') && request()->query('preview') == 'pending' ? 'bg-white/10 text-gold' : 'text-white hover:bg-white/5' }} transition-colors duration-150">
+                                    <div class="flex justify-between items-center">
+                                        <span>Pending Previews</span>
+                                        @if(isset($pendingPreviews) && $pendingPreviews > 0)
+                                            <span class="bg-yellow-400 text-navy text-xs font-bold px-1.5 py-0.5 rounded-full">{{ $pendingPreviews }}</span>
+                                        @endif
+                                    </div>
+                                </a>
+                                <a href="{{ route('admin.artworks.index') }}?preview=rejected" class="block px-3 py-1.5 rounded-md text-sm {{ request()->is('admin/artworks') && request()->query('preview') == 'rejected' ? 'bg-white/10 text-gold' : 'text-white hover:bg-white/5' }} transition-colors duration-150">
+                                    <div class="flex justify-between items-center">
+                                        <span>Rejected Previews</span>
+                                        @if(isset($rejectedPreviews) && $rejectedPreviews > 0)
+                                            <span class="bg-red-400 text-white text-xs font-bold px-1.5 py-0.5 rounded-full">{{ $rejectedPreviews }}</span>
+                                        @endif
+                                    </div>
+                                </a>
+                                <a href="{{ route('admin.artworks.index') }}?production=queued" class="block px-3 py-1.5 rounded-md text-sm {{ request()->is('admin/artworks') && request()->query('production') == 'queued' ? 'bg-white/10 text-gold' : 'text-white hover:bg-white/5' }} transition-colors duration-150">
+                                    Production Queue
+                                </a>
                             </div>
-                            <i :class="subMenuOpen ? 'fa-chevron-down' : 'fa-chevron-right'" class="fas text-xs"></i>
-                        </button>
-                        
-                        <div x-show="subMenuOpen" x-collapse class="pl-8 pr-3 py-2 space-y-1">
-                            <a href="{{ route('admin.artworks.index') }}" class="block px-3 py-1.5 rounded-md text-sm {{ request()->is('admin/artworks') ? 'bg-white/10 text-gold' : 'text-white hover:bg-white/5' }}">
-                                All Artworks
-                            </a>
-                            <a href="{{ route('admin.artworks.index') }}?status=pending" class="block px-3 py-1.5 rounded-md text-sm {{ request()->is('admin/artworks') && request()->query('status') == 'pending' ? 'bg-white/10 text-gold' : 'text-white hover:bg-white/5' }}">
-                                Pending Approval
-                            </a>
-                            <a href="{{ route('admin.artworks.index') }}?preview=pending" class="block px-3 py-1.5 rounded-md text-sm {{ request()->is('admin/artworks') && request()->query('preview') == 'pending' ? 'bg-white/10 text-gold' : 'text-white hover:bg-white/5' }}">
-                                Preview Requests
-                            </a>
-                            <a href="{{ route('admin.artworks.index') }}?production=pending" class="block px-3 py-1.5 rounded-md text-sm {{ request()->is('admin/artworks') && request()->query('production') == 'pending' ? 'bg-white/10 text-gold' : 'text-white hover:bg-white/5' }}">
-                                Production Images
-                            </a>
                         </div>
+                        @endif
+                    </div>
+                    
+                    <!-- Sales & Orders Group (Admin only) -->
+                    @if(auth()->user()->hasRole('admin'))
+                    <div>
+                        <h5 class="text-xs uppercase tracking-wider text-gold font-semibold px-3 mb-3">Sales</h5>
+                        
+                        <a href="{{ route('admin.orders.index') }}" class="flex items-center gap-3 px-3 py-2 rounded-md mb-1.5 {{ request()->routeIs('admin.orders.*') ? 'bg-white/10 text-gold' : 'text-white hover:bg-white/10' }} transition-colors duration-200">
+                            <i class="fas fa-shopping-cart w-5 text-center"></i>
+                            <span>Orders</span>
+                            @if(isset($pendingOrders) && $pendingOrders > 0)
+                                <span class="ml-auto bg-yellow-400 text-navy text-xs font-bold px-1.5 py-0.5 rounded-full">{{ $pendingOrders }}</span>
+                            @endif
+                        </a>
+                        
+                        <a href="{{ route('admin.reviews.index') }}" class="flex items-center gap-3 px-3 py-2 rounded-md mb-1.5 {{ request()->routeIs('admin.reviews.*') ? 'bg-white/10 text-gold' : 'text-white hover:bg-white/10' }} transition-colors duration-200">
+                            <i class="fas fa-star w-5 text-center"></i>
+                            <span>Reviews</span>
+                            @if(isset($pendingReviews) && $pendingReviews > 0)
+                                <span class="ml-auto bg-blue-400 text-white text-xs font-bold px-1.5 py-0.5 rounded-full">{{ $pendingReviews }}</span>
+                            @endif
+                        </a>
                     </div>
                     @endif
-                </div>
-                
-                <!-- Orders & Reviews (For admin) -->
-                @if(auth()->user()->hasRole('admin'))
-                <div class="mt-6 px-3">
-                    <h5 class="text-xs uppercase tracking-wider text-white/50 font-semibold px-3 mb-2">Sales</h5>
                     
-                    {{-- <a href="{{ route('admin.orders.index') }}" class="flex items-center gap-3 px-3 py-2 rounded-md mb-1 {{ request()->routeIs('admin.orders.*') ? 'bg-white/10 text-gold' : 'text-white hover:bg-white/10' }}">
-                        <i class="fas fa-shopping-cart w-5 text-center"></i>
-                        <span>Orders</span>
-                    </a> --}}
-                    
-                    <a href="{{ route('admin.reviews.index') }}" class="flex items-center gap-3 px-3 py-2 rounded-md mb-1 {{ request()->routeIs('admin.reviews.*') ? 'bg-white/10 text-gold' : 'text-white hover:bg-white/10' }}">
-                        <i class="fas fa-star w-5 text-center"></i>
-                        <span>Reviews</span>
-                    </a>
-                </div>
-                @endif
-                
-                <!-- System -->
-                <div class="mt-6 px-3">
-                    <h5 class="text-xs uppercase tracking-wider text-white/50 font-semibold px-3 mb-2">System</h5>
-                    
+                    <!-- System Group (Admin only) -->
                     @if(auth()->user()->hasRole('admin'))
-                    <a href="{{ route('admin.users.index') }}" class="flex items-center gap-3 px-3 py-2 rounded-md mb-1 {{ request()->routeIs('admin.users.*') ? 'bg-white/10 text-gold' : 'text-white hover:bg-white/10' }}">
-                        <i class="fas fa-users w-5 text-center"></i>
-                        <span>Users</span>
-                    </a>
-                    
-                    <a href="{{ route('admin.settings.index') }}" class="flex items-center gap-3 px-3 py-2 rounded-md mb-1 {{ request()->routeIs('admin.settings.*') ? 'bg-white/10 text-gold' : 'text-white hover:bg-white/10' }}">
-                        <i class="fas fa-cog w-5 text-center"></i>
-                        <span>Settings</span>
-                    </a>
+                    <div>
+                        <h5 class="text-xs uppercase tracking-wider text-gold font-semibold px-3 mb-3">System</h5>
+                        
+                        <a href="{{ route('admin.users.index') }}" class="flex items-center gap-3 px-3 py-2 rounded-md mb-1.5 {{ request()->routeIs('admin.users.*') ? 'bg-white/10 text-gold' : 'text-white hover:bg-white/10' }} transition-colors duration-200">
+                            <i class="fas fa-users w-5 text-center"></i>
+                            <span>Users</span>
+                        </a>
+                        
+                        <a href="{{ route('admin.settings.index') }}" class="flex items-center gap-3 px-3 py-2 rounded-md mb-1.5 {{ request()->routeIs('admin.settings.*') ? 'bg-white/10 text-gold' : 'text-white hover:bg-white/10' }} transition-colors duration-200">
+                            <i class="fas fa-cog w-5 text-center"></i>
+                            <span>Settings</span>
+                        </a>
+                    </div>
                     @endif
-                 
                 </div>
             </div>
             
             <!-- Footer Links -->
-            <div class="p-4 mt-auto border-t border-white/10">
-                <a href="{{ url('/') }}" class="flex items-center gap-3 px-3 py-2 rounded-md text-white hover:bg-white/10">
+            <div class="p-4 mt-auto border-t border-white/10 bg-navy-light/30">
+                <a href="{{ url('/') }}" class="flex items-center gap-3 px-3 py-2 rounded-md text-white hover:bg-white/10 transition-colors duration-150 mb-2">
                     <i class="fas fa-home w-5 text-center"></i>
                     <span>Visit Site</span>
                 </a>
                 
-                <form method="POST" action="{{ route('logout') }}" class="mt-1">
+                <form method="POST" action="{{ route('logout') }}">
                     @csrf
-                    <button type="submit" class="flex items-center gap-3 px-3 py-2 rounded-md w-full text-left text-white hover:bg-white/10">
+                    <button type="submit" class="w-full flex items-center gap-3 px-3 py-2 rounded-md text-left text-white hover:bg-white/10 transition-colors duration-150">
                         <i class="fas fa-sign-out-alt w-5 text-center"></i>
                         <span>Log Out</span>
                     </button>
                 </form>
             </div>
-        </div>
+        </aside>
         
         <!-- Content -->
-        <div class="flex-1 flex flex-col">
+        <div class="flex-1 flex flex-col overflow-hidden">
             <!-- Top Navigation Bar -->
-            <div class="bg-white shadow-sm px-4 py-3 flex items-center justify-between sticky top-0 z-10">
-                <!-- Mobile Sidebar Toggle -->
-                <button 
-                    @click="sidebarOpen = true" 
-                    class="text-gray-500 hover:text-gray-700 lg:hidden"
-                >
-                    <i class="fas fa-bars"></i>
-                </button>
-                
-                <!-- Page Title -->
-                <h1 class="text-lg font-medium text-gray-800">@yield('title', 'Dashboard')</h1>
-                
-                <!-- Right Nav Items -->
-                <div class="flex items-center gap-4">
-                    <!-- Notifications Dropdown -->
-                    <div x-data="{ notificationOpen: false }" class="relative">
-                        <button @click="notificationOpen = !notificationOpen" class="text-gray-500 hover:text-gray-700">
-                            <i class="fas fa-bell"></i>
-                        </button>
-                        <div 
-                            x-show="notificationOpen" 
-                            @click.away="notificationOpen = false" 
-                            class="absolute right-0 w-80 mt-2 bg-white rounded-md shadow-lg overflow-hidden z-20"
-                            x-cloak
-                        >
-                            <div class="py-2 px-3 bg-gray-50 border-b border-gray-100 flex justify-between items-center">
-                                <span class="text-sm font-medium text-gray-700">Notifications</span>
-                                <a href="#" class="text-xs text-blue-500 hover:text-blue-700">Mark all as read</a>
-                            </div>
-                            <div class="max-h-64 overflow-y-auto">
-                                <!-- Sample notifications -->
-                                <div class="px-4 py-3 hover:bg-gray-50 border-b border-gray-100">
-                                    <p class="text-sm text-gray-700">New design uploaded</p>
-                                    <p class="text-xs text-gray-500">5 minutes ago</p>
+            <header class="bg-white shadow-sm z-10">
+                <div class="px-4 py-3 flex items-center justify-between">
+                    <!-- Mobile Sidebar Toggle -->
+                    <button 
+                        @click="sidebarOpen = true" 
+                        class="text-gray-500 hover:text-gray-700 focus:outline-none focus:text-gray-700 lg:hidden"
+                    >
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    
+                    <!-- Page Title -->
+                    <h1 class="text-lg font-medium text-gray-800 hidden sm:block">@yield('title', 'Dashboard')</h1>
+                    
+                    <!-- Right Nav Items -->
+                    <div class="flex items-center gap-4">
+                        <!-- Search -->
+                        <div class="hidden md:block relative">
+                            <input type="text" placeholder="Search..." class="w-48 lg:w-64 bg-gray-100 text-sm rounded-full px-4 py-1.5 focus:outline-none focus:ring-2 focus:ring-indigo-300">
+                            <button class="absolute right-0 top-0 h-full flex items-center pr-3 text-gray-400">
+                                <i class="fas fa-search"></i>
+                            </button>
+                        </div>
+                        
+                        <!-- Notifications Dropdown -->
+                        <div x-data="{ notificationOpen: false }" class="relative">
+                            <button @click="notificationOpen = !notificationOpen" class="text-gray-500 hover:text-gray-700 focus:outline-none focus:text-gray-700 transition-colors duration-150 relative">
+                                <i class="fas fa-bell"></i>
+                                <span class="absolute -top-1.5 -right-1.5 bg-red-500 text-white text-xs font-bold rounded-full h-4 w-4 flex items-center justify-center">3</span>
+                            </button>
+                            <div 
+                                x-show="notificationOpen" 
+                                @click.away="notificationOpen = false" 
+                                class="absolute right-0 w-80 mt-2 bg-white rounded-md shadow-lg overflow-hidden z-20"
+                                x-cloak
+                            >
+                                <div class="py-2 px-3 bg-gray-50 border-b border-gray-100 flex justify-between items-center">
+                                    <span class="text-sm font-medium text-gray-700">Notifications</span>
+                                    <a href="#" class="text-xs text-blue-500 hover:text-blue-700 transition-colors duration-150">Mark all as read</a>
                                 </div>
-                                <div class="px-4 py-3 hover:bg-gray-50">
-                                    <p class="text-sm text-gray-700">New review received</p>
-                                    <p class="text-xs text-gray-500">1 hour ago</p>
+                                <div class="max-h-64 overflow-y-auto">
+                                    <div class="px-4 py-3 hover:bg-gray-50 border-b border-gray-100 transition-colors duration-150">
+                                        <p class="text-sm text-gray-700">New design uploaded</p>
+                                        <p class="text-xs text-gray-500 mt-0.5">5 minutes ago</p>
+                                    </div>
+                                    <div class="px-4 py-3 hover:bg-gray-50 border-b border-gray-100 transition-colors duration-150">
+                                        <p class="text-sm text-gray-700">New order received</p>
+                                        <p class="text-xs text-gray-500 mt-0.5">1 hour ago</p>
+                                    </div>
+                                    <div class="px-4 py-3 hover:bg-gray-50 transition-colors duration-150">
+                                        <p class="text-sm text-gray-700">New review received</p>
+                                        <p class="text-xs text-gray-500 mt-0.5">3 hours ago</p>
+                                    </div>
+                                </div>
+                                <a href="#" class="block text-center text-sm text-blue-500 hover:text-blue-700 py-2 border-t border-gray-100 transition-colors duration-150">
+                                    View all notifications
+                                </a>
+                            </div>
+                        </div>
+                        
+                        <!-- User Dropdown -->
+                        <div x-data="{ userMenuOpen: false }" class="relative">
+                            <button @click="userMenuOpen = !userMenuOpen" class="flex items-center focus:outline-none">
+                                <div class="w-8 h-8 rounded-full bg-indigo-500 flex items-center justify-center text-white">
+                                    {{ strtoupper(substr(auth()->user()->name, 0, 1)) }}
+                                </div>
+                            </button>
+                            <div 
+                                x-show="userMenuOpen" 
+                                @click.away="userMenuOpen = false" 
+                                class="absolute right-0 w-48 mt-2 bg-white rounded-md shadow-lg overflow-hidden z-20"
+                                x-cloak
+                            >
+                                <div class="py-2">
+                                    <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors duration-150">
+                                        <i class="fas fa-user-circle mr-2"></i> Profile
+                                    </a>
+                                    <a href="{{ route('admin.settings.index') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors duration-150">
+                                        <i class="fas fa-cog mr-2"></i> Settings
+                                    </a>
+                                    <form method="POST" action="{{ route('logout') }}">
+                                        @csrf
+                                        <button type="submit" class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors duration-150">
+                                            <i class="fas fa-sign-out-alt mr-2"></i> Log Out
+                                        </button>
+                                    </form>
                                 </div>
                             </div>
-                            <a href="#" class="block text-center text-sm text-blue-500 hover:text-blue-700 py-2 border-t border-gray-100">
-                                View all notifications
-                            </a>
                         </div>
                     </div>
                 </div>
-            </div>
+                
+                <!-- Breadcrumbs (optional) -->
+                <div class="px-4 py-2 bg-gray-50 border-t border-b border-gray-200">
+                    <nav class="text-sm">
+                        <ol class="list-none p-0 flex items-center text-gray-500">
+                            <li class="flex items-center">
+                                <a href="{{ route('admin.dashboard') }}" class="hover:text-gray-700 transition-colors duration-150">Dashboard</a>
+                                @if(isset($breadcrumbs))
+                                    <svg class="h-4 w-4 mx-2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                                    </svg>
+                                @endif
+                            </li>
+                            @if(isset($breadcrumbs))
+                                @foreach($breadcrumbs as $breadcrumb)
+                                    <li class="flex items-center">
+                                        @if(!$loop->last)
+                                            <a href="{{ $breadcrumb['url'] }}" class="hover:text-gray-700 transition-colors duration-150">{{ $breadcrumb['label'] }}</a>
+                                            <svg class="h-4 w-4 mx-2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                                            </svg>
+                                        @else
+                                            <span class="text-gray-700">{{ $breadcrumb['label'] }}</span>
+                                        @endif
+                                    </li>
+                                @endforeach
+                            @endif
+                        </ol>
+                    </nav>
+                </div>
+            </header>
             
             <!-- Main Content -->
-            <main class="flex-1 overflow-y-auto bg-ivory p-6">
+            <main class="flex-1 overflow-y-auto bg-gray-50 p-6">
                 @yield('content')
             </main>
         </div>
@@ -321,6 +410,26 @@
 
     <style>
         [x-cloak] { display: none !important; }
+        
+        /* Custom Scrollbar */
+        .scrollbar-thin::-webkit-scrollbar {
+            width: 4px;
+        }
+        
+        .scrollbar-thin::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        
+        .scrollbar-thin::-webkit-scrollbar-thumb {
+            background-color: rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+        }
+        
+        /* Firefox scrollbar */
+        .scrollbar-thin {
+            scrollbar-width: thin;
+            scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+        }
     </style>
     
     @stack('scripts')
