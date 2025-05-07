@@ -21,8 +21,11 @@ class WallpaperController extends Controller
         $wallpapers = Wallpaper::with(['category', 'primaryImage'])
             ->orderBy('created_at', 'desc')
             ->paginate(10);
-            
-        return view('admin.wallpapers.index', compact('wallpapers'));
+
+        // Add categories for the filter dropdown
+        $categories = Category::orderBy('name')->pluck('name', 'id');
+
+        return view('admin.wallpapers.index', compact('wallpapers', 'categories'));
     }
 
     /**
@@ -32,7 +35,7 @@ class WallpaperController extends Controller
     {
         $categories = Category::orderBy('name')->pluck('name', 'id');
         $papers = Paper::where('is_active', true)->orderBy('name')->get();
-        
+
         return view('admin.wallpapers.create', compact('categories', 'papers'));
     }
 
@@ -42,17 +45,17 @@ class WallpaperController extends Controller
     public function store(Request $request)
     {
 
-    
-    // Debug what's being received
-    $primaryIndex = $request->has('primary_image') ? $request->input('primary_image') : 0;
-    // Rest of your code...
+
+        // Debug what's being received
+        $primaryIndex = $request->has('primary_image') ? $request->input('primary_image') : 0;
+        // Rest of your code...
         $validatedData = $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
             'category_id' => 'required|exists:categories,id',
             'images' => 'required',  // Change from 'required|array|min:1'
-    'images.*' => 'image|mimes:jpeg,png,jpg,gif|max:5120',
- 
+            'images.*' => 'image|mimes:jpeg,png,jpg,gif|max:5120',
+
             'image_titles' => 'nullable|array',
             'image_titles.*' => 'nullable|string|max:255',
             'primary_image' => 'nullable|integer|min:0', // Make this optional
@@ -84,7 +87,7 @@ class WallpaperController extends Controller
             $images = $request->file('images');
             $primaryIndex = $request->input('primary_image', 0);
             $imageTitles = $request->input('image_titles', []);
-            
+
             foreach ($images as $index => $image) {
                 // Get image dimensions if not provided in wallpaper
                 if (empty($wallpaper->width) || empty($wallpaper->height)) {
@@ -92,10 +95,10 @@ class WallpaperController extends Controller
                     $wallpaper->width = $imageInfo[0];
                     $wallpaper->height = $imageInfo[1];
                 }
-                
+
                 $filename = time() . '_' . Str::slug($wallpaper->title) . '_' . $index . '.' . $image->getClientOriginalExtension();
                 $imagePath = $image->storeAs('wallpapers', $filename, 'public');
-                
+
                 // Create wallpaper image
                 WallpaperImage::create([
                     'wallpaper_id' => $wallpaper->id,
@@ -105,24 +108,24 @@ class WallpaperController extends Controller
                     'sort_order' => $index,
                 ]);
             }
-            
+
             // Save dimensions to wallpaper if detected from image
             if ($wallpaper->isDirty()) {
                 $wallpaper->save();
             }
         }
-        
+
         // Attach papers if selected
         if (!empty($validatedData['paper_ids'])) {
             $attachData = [];
-            
+
             foreach ($validatedData['paper_ids'] as $paperId) {
-                $isRecommended = !empty($validatedData['recommended_paper_ids']) && 
-                                in_array($paperId, $validatedData['recommended_paper_ids']);
-                
+                $isRecommended = !empty($validatedData['recommended_paper_ids']) &&
+                    in_array($paperId, $validatedData['recommended_paper_ids']);
+
                 $attachData[$paperId] = ['is_recommended' => $isRecommended];
             }
-            
+
             $wallpaper->papers()->attach($attachData);
         }
 
@@ -135,10 +138,10 @@ class WallpaperController extends Controller
      */
     public function show(Wallpaper $wallpaper)
     {
-        $wallpaper->load(['category', 'images', 'papers', 'reviews' => function($query) {
+        $wallpaper->load(['category', 'images', 'papers', 'reviews' => function ($query) {
             $query->where('is_approved', true)->with('user');
         }]);
-        
+
         return view('admin.wallpapers.show', compact('wallpaper'));
     }
 
@@ -149,18 +152,18 @@ class WallpaperController extends Controller
     {
         $categories = Category::orderBy('name')->pluck('name', 'id');
         $papers = Paper::where('is_active', true)->orderBy('name')->get();
-        
+
         // Load wallpaper images
         $wallpaper->load('images');
-        
+
         // Get currently selected papers
         $selectedPaperIds = $wallpaper->papers->pluck('id')->toArray();
         $recommendedPaperIds = $wallpaper->papers()->wherePivot('is_recommended', true)->pluck('papers.id')->toArray();
-        
+
         return view('admin.wallpapers.edit', compact(
-            'wallpaper', 
-            'categories', 
-            'papers', 
+            'wallpaper',
+            'categories',
+            'papers',
             'selectedPaperIds',
             'recommendedPaperIds'
         ));
@@ -216,35 +219,35 @@ class WallpaperController extends Controller
                 }
             }
         }
-        
+
         // Delete images if requested
         if ($request->has('delete_image_ids')) {
             $deleteIds = $request->input('delete_image_ids');
             $imagesToDelete = WallpaperImage::where('wallpaper_id', $wallpaper->id)
                 ->whereIn('id', $deleteIds)
                 ->get();
-                
+
             foreach ($imagesToDelete as $image) {
                 // Delete the image file
                 if (Storage::disk('public')->exists($image->image_path)) {
                     Storage::disk('public')->delete($image->image_path);
                 }
-                
+
                 $image->delete();
             }
         }
-        
+
         // Set primary image
         if ($request->has('primary_image_id')) {
             $primaryId = $request->input('primary_image_id');
-            
+
             // If primary ID is negative, it's a new image
             $isPrimaryNew = $primaryId < 0;
-            
+
             // Reset all existing images as not primary
             WallpaperImage::where('wallpaper_id', $wallpaper->id)
                 ->update(['is_primary' => false]);
-                
+
             if (!$isPrimaryNew) {
                 // Set the selected existing image as primary
                 WallpaperImage::where('id', $primaryId)
@@ -258,18 +261,18 @@ class WallpaperController extends Controller
             $newImages = $request->file('new_images');
             $newImageTitles = $request->input('new_image_titles', []);
             $primaryIndex = null;
-            
+
             // If primary is one of new images, get its index
             if ($primaryId < 0 && isset($isPrimaryNew) && $isPrimaryNew) {
                 $primaryIndex = abs($primaryId) - 1; // Convert to 0-based index
             }
-            
+
             $startIndex = $wallpaper->images()->max('sort_order') + 1;
-            
+
             foreach ($newImages as $index => $image) {
                 $filename = time() . '_' . Str::slug($wallpaper->title) . '_' . ($startIndex + $index) . '.' . $image->getClientOriginalExtension();
                 $imagePath = $image->storeAs('wallpapers', $filename, 'public');
-                
+
                 // Create wallpaper image
                 WallpaperImage::create([
                     'wallpaper_id' => $wallpaper->id,
@@ -280,27 +283,27 @@ class WallpaperController extends Controller
                 ]);
             }
         }
-        
+
         // Make sure at least one image is primary
         $hasPrimary = $wallpaper->images()->where('is_primary', true)->exists();
-        
+
         if (!$hasPrimary && $wallpaper->images()->exists()) {
             $firstImage = $wallpaper->images()->orderBy('id')->first();
             $firstImage->is_primary = true;
             $firstImage->save();
         }
-        
+
         // Sync papers with recommended status
         if (isset($validatedData['paper_ids'])) {
             $attachData = [];
-            
+
             foreach ($validatedData['paper_ids'] as $paperId) {
-                $isRecommended = !empty($validatedData['recommended_paper_ids']) && 
-                                in_array($paperId, $validatedData['recommended_paper_ids']);
-                
+                $isRecommended = !empty($validatedData['recommended_paper_ids']) &&
+                    in_array($paperId, $validatedData['recommended_paper_ids']);
+
                 $attachData[$paperId] = ['is_recommended' => $isRecommended];
             }
-            
+
             $wallpaper->papers()->sync($attachData);
         } else {
             $wallpaper->papers()->detach();
@@ -328,7 +331,7 @@ class WallpaperController extends Controller
         return redirect()->route('admin.wallpapers.index')
             ->with('success', 'Wallpaper deleted successfully!');
     }
-    
+
     /**
      * Update stock levels.
      */
@@ -337,13 +340,13 @@ class WallpaperController extends Controller
         $request->validate([
             'stock' => 'required|integer|min:0',
         ]);
-        
+
         $wallpaper->stock = $request->stock;
         $wallpaper->save();
-        
+
         return back()->with('success', 'Stock updated successfully!');
     }
-    
+
     /**
      * Reorder images
      */
@@ -353,15 +356,15 @@ class WallpaperController extends Controller
             'image_order' => 'required|array',
             'image_order.*' => 'required|integer|exists:wallpaper_images,id',
         ]);
-        
+
         $order = $request->input('image_order');
-        
+
         foreach ($order as $position => $imageId) {
             WallpaperImage::where('id', $imageId)
                 ->where('wallpaper_id', $wallpaper->id)
                 ->update(['sort_order' => $position]);
         }
-        
+
         return response()->json(['success' => true]);
     }
 }
