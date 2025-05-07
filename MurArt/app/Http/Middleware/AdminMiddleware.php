@@ -11,6 +11,7 @@ class AdminMiddleware
     {
         // Check if user is logged in and has admin role
         if (!$request->user() || $request->user()->role !== 'admin') {
+            
             abort(403, 'You do not have permission to access this page.');
         }
 
