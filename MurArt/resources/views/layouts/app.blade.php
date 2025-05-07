@@ -130,16 +130,32 @@
         </div>
         <div class="flex flex-col items-center mt-10 text-white">
             <a href="{{ route('home') }}" class="py-3 text-xl font-heading font-medium hover:text-primary transition">Accueil</a>
+            <a href="{{ route('shop.index') }}" class="py-3 text-xl font-heading font-medium hover:text-primary transition">Boutique</a>
+            
+            @auth
             <a href="{{ route('designs.index') }}" class="py-3 text-xl font-heading font-medium hover:text-primary transition">Designs</a>
             <a href="{{ route('artworks.index') }}" class="py-3 text-xl font-heading font-medium hover:text-primary transition">Mes Créations</a>
-            <a href="{{ route('shop.index') }}" class="py-3 text-xl font-heading font-medium hover:text-primary transition">Boutique</a>
+            @endauth
+            
             <a href="{{ route('about') }}" class="py-3 text-xl font-heading font-medium hover:text-primary transition">À propos</a>
             <a href="{{ route('contact') }}" class="py-3 text-xl font-heading font-medium hover:text-primary transition">Contact</a>
             
             @auth
                 <div class="mt-4 pt-4 border-t border-gray-700 w-4/5 flex flex-col items-center">
                     <span class="text-gray-400 mb-2">{{ Auth::user()->name }}</span>
+                    @if(Auth::user()->hasRole('admin'))
+                        <a href="{{ route('admin.dashboard') }}" class="py-2 text-lg font-medium hover:text-primary transition">Dashboard Admin</a>
+                    @endif
+                    @if(Auth::user()->hasRole('designer'))
+                        <a href="{{ route('designer.designs.index') }}" class="py-2 text-lg font-medium hover:text-primary transition">Designs Manager</a>
+                    @endif
                     <a href="{{ route('client.dashboard') }}" class="py-2 text-lg font-medium hover:text-primary transition">Mon Compte</a>
+                    <a href="{{ route('client.cart.index') }}" class="py-2 text-lg font-medium hover:text-primary transition">
+                        Mon Panier
+                        @if(session()->has('cart') && count(session('cart')) > 0)
+                            <span class="ml-2 bg-primary text-white text-xs px-1.5 py-0.5 rounded-full">{{ count(session('cart')) }}</span>
+                        @endif
+                    </a>
                     <a href="{{ route('logout') }}" class="py-2 text-lg font-medium hover:text-primary transition">Déconnexion</a>
                 </div>
             @else
