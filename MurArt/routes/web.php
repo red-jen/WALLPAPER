@@ -157,8 +157,8 @@ Route::get('/shop/{artwork}', [ShopController::class, 'show'])->name('shop.show'
 Route::post('/shop/{artwork}/review', [ShopController::class, 'storeReview'])->middleware('auth')->name('shop.review.store');
 // Route::post('/shop/{artwork}/cart', [ShopController::class, 'addToCart'])->name('shop.cart.add');
 
-// Shop routes
-Route::post('/shop/{wallpaper}/cart', [ShopController::class, 'addToCart'])->name('shop.cart.add');
+// Shop routes - add middleware('auth') to protect cart functionality
+Route::post('/shop/{wallpaper}/cart', [ShopController::class, 'addToCart'])->middleware('auth')->name('shop.cart.add');
 
 // Wallpaper reviews route
 Route::post('/wallpapers/{wallpaper}/review', [ReviewController::class, 'storeWallpaperReview'])->middleware('auth')->name('wallpapers.review.store');
@@ -201,7 +201,7 @@ Route::prefix('designer')->name('designer.')->middleware(['auth', 'designer'])->
 });
 
 // Review routes - require authentication
-Route::post('/designs/{design}/review', [ReviewController::class, 'store'])->name('reviews.store');
+Route::post('/designs/{design}/review', [ReviewController::class, 'store'])->middleware('auth')->name('reviews.store');
 Route::delete('/reviews/{review}', [ReviewController::class, 'destroy'])->name('reviews.destroy');
 // Admin review management
 
