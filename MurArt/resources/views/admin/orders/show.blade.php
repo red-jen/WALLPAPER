@@ -3,19 +3,19 @@
 @section('title', 'Order #' . $order->order_number)
 
 @section('content')
-<div class="container mx-auto px-4 py-6">
-    <div class="flex justify-between items-center mb-6">
-        <div>
+<div class="w-full max-w-full overflow-hidden">
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
+        <div class="mb-4 md:mb-0">
             <h1 class="text-2xl font-bold text-gray-800">Order #{{ $order->order_number }}</h1>
             <p class="text-gray-600">Placed on {{ $order->created_at->format('M d, Y H:i') }}</p>
         </div>
-        <div class="flex space-x-3">
+        <div class="flex flex-wrap gap-3">
             <a href="{{ route('admin.orders.index') }}" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300">
                 <i class="fas fa-arrow-left mr-2"></i> Back to Orders
             </a>
-            <a href="{{ route('admin.orders.invoice', $order) }}" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+            {{-- <a href="{{ route('admin.orders.invoice', $order) }}" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
                 <i class="fas fa-file-invoice mr-2"></i> Generate Invoice
-            </a>
+            </a> --}}
         </div>
     </div>
 
@@ -32,7 +32,7 @@
     </div>
     @endif
 
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 lg:gap-6">
         <!-- Order Information -->
         <div class="lg:col-span-1">
             <div class="bg-white rounded-lg shadow-sm overflow-hidden mb-6">
@@ -157,19 +157,19 @@
                     <h2 class="font-medium">Order Items</h2>
                 </div>
                 <div class="overflow-x-auto">
-                    <table class="min-w-full divide-y divide-gray-200">
+                    <table class="w-full table-fixed divide-y divide-gray-200">
                         <thead class="bg-gray-50">
                             <tr>
-                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Item</th>
-                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Price</th>
-                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Qty</th>
-                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total</th>
+                                <th scope="col" class="px-4 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-2/5">Item</th>
+                                <th scope="col" class="px-4 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-1/5">Price</th>
+                                <th scope="col" class="px-4 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-1/5">Qty</th>
+                                <th scope="col" class="px-4 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-1/5">Total</th>
                             </tr>
                         </thead>
                         <tbody class="bg-white divide-y divide-gray-200">
                             @foreach($order->items as $item)
                             <tr>
-                                <td class="px-6 py-4 whitespace-nowrap">
+                                <td class="px-4 sm:px-6 py-4 break-words">
                                     <div class="flex items-center">
                                         <div class="flex-shrink-0 h-10 w-10 bg-gray-100 rounded-md overflow-hidden">
                                             @if($item->artwork && $item->artwork->image_path)
@@ -183,7 +183,7 @@
                                             @endif
                                         </div>
                                         <div class="ml-4">
-                                            <div class="text-sm font-medium text-gray-900">{{ $item->product_name }}</div>
+                                            <div class="text-sm font-medium text-gray-900 truncate max-w-[180px] sm:max-w-full">{{ $item->product_name }}</div>
                                             <div class="text-sm text-gray-500">
                                                 @if($item->artwork)
                                                     <a href="{{ route('admin.artworks.edit', $item->artwork) }}" class="text-indigo-600 hover:text-indigo-900">
@@ -191,17 +191,16 @@
                                                     </a>
                                                 @endif
                                             </div>
-                                          
                                         </div>
                                     </div>
                                 </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                <td class="px-4 sm:px-6 py-4 text-sm text-gray-500">
                                     {{ $order->currency }} {{ number_format($item->price, 2) }}
                                 </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                <td class="px-4 sm:px-6 py-4 text-sm text-gray-500">
                                     {{ $item->quantity }}
                                 </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                <td class="px-4 sm:px-6 py-4 text-sm text-gray-500">
                                     {{ $order->currency }} {{ number_format($item->price * $item->quantity, 2) }}
                                 </td>
                             </tr>
@@ -376,3 +375,39 @@
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         // Image preview for production image upload
+        const imageInput = document.getElementById('production_image');
+        const previewContainer = document.getElementById('preview-container');
+        const previewImage = document.getElementById('preview-image');
+        const removeButton = document.getElementById('remove-image');
+        
+        if (imageInput && previewContainer && previewImage && removeButton) {
+            imageInput.addEventListener('change', function() {
+                if (this.files && this.files[0]) {
+                    const reader = new FileReader();
+                    
+                    reader.onload = function(e) {
+                        previewImage.src = e.target.result;
+                        previewContainer.classList.remove('hidden');
+                    }
+                    
+                    reader.readAsDataURL(this.files[0]);
+                }
+            });
+            
+            removeButton.addEventListener('click', function() {
+                imageInput.value = '';
+                previewContainer.classList.add('hidden');
+            });
+            
+            // Make the entire dropzone clickable
+            const dropzone = document.getElementById('dropzone');
+            if (dropzone) {
+                dropzone.addEventListener('click', function() {
+                    imageInput.click();
+                });
+            }
+        }
+    });
+</script>
+@endpush
+@endsection
