@@ -21,9 +21,13 @@
             <!-- Desktop Navigation -->
             <nav class="hidden md:flex items-center space-x-8">
                 <a href="{{ route('home') }}" class="font-heading font-medium hover:text-primary transition {{ request()->routeIs('home') ? 'text-primary' : '' }}">Accueil</a>
+                <a href="{{ route('shop.index') }}" class="font-heading font-medium hover:text-primary transition {{ request()->routeIs('shop.*') ? 'text-primary' : '' }}">Boutique</a>
+                
+                @auth
                 <a href="{{ route('designs.index') }}" class="font-heading font-medium hover:text-primary transition {{ request()->routeIs('designs.*') ? 'text-primary' : '' }}">Designs</a>
                 <a href="{{ route('artworks.index') }}" class="font-heading font-medium hover:text-primary transition {{ request()->routeIs('artworks.*') ? 'text-primary' : '' }}">Mes Créations</a>
-                <a href="{{ route('shop.index') }}" class="font-heading font-medium hover:text-primary transition {{ request()->routeIs('shop.*') ? 'text-primary' : '' }}">Boutique</a>
+                @endauth
+                
                 <div class="relative group">
                     <button class="font-heading font-medium hover:text-primary transition flex items-center">
                         Plus
@@ -34,7 +38,9 @@
                     <div class="absolute left-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-10 hidden group-hover:block">
                         <a href="{{ route('about') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">À propos</a>
                         <a href="{{ route('contact') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Contact</a>
-                        <a href="{{ route('faq') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">FAQ</a>
+                        @if(Route::has('faq'))
+                            <a href="{{ route('faq') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">FAQ</a>
+                        @endif
                     </div>
                 </div>
             </nav>
@@ -48,8 +54,8 @@
                     </button>
                     <!-- Search Dropdown -->
                     <div x-show="open" @click.away="open = false" class="absolute right-0 mt-2 w-64 bg-white rounded-md shadow-lg p-2 z-20">
-                        <form action="/search" method="GET" class="flex">
-                            <input type="text" name="q" placeholder="Rechercher..." class="w-full px-3 py-2 border border-gray-300 rounded-l-md focus:outline-none focus:ring-2 focus:ring-secondary">
+                        <form action="{{ route('shop.index') }}" method="GET" class="flex">
+                            <input type="text" name="search" placeholder="Rechercher..." class="w-full px-3 py-2 border border-gray-300 rounded-l-md focus:outline-none focus:ring-2 focus:ring-secondary">
                             <button type="submit" class="px-3 py-2 bg-secondary text-white rounded-r-md hover:bg-primary transition">
                                 <i class="fas fa-search"></i>
                             </button>
@@ -58,7 +64,7 @@
                 </div>
                 
                 <!-- Cart -->
-                <a href="{{ route('client.cart.index') }}" class="text-dark hover:text-primary transition relative">
+                <a href="{{ auth()->check() ? route('client.cart.index') : route('login') }}" class="text-dark hover:text-primary transition relative">
                     <i class="fas fa-shopping-cart"></i>
                     @if(session()->has('cart') && count(session('cart')) > 0)
                     <span class="absolute -top-2 -right-2 w-5 h-5 rounded-full bg-primary text-white text-xs flex items-center justify-center">
@@ -75,12 +81,12 @@
                         <span class="hidden sm:inline-block">{{ Str::limit(Auth::user()->name, 10) }}</span>
                     </button>
                     <div class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-10 hidden group-hover:block">
-                        @if(Auth::user()->role === 'admin')
+                        @if(Auth::user()->hasRole('admin'))
                         <a href="{{ route('admin.dashboard') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                             <i class="fas fa-tachometer-alt mr-2"></i>Dashboard Admin
                         </a>
                         @endif
-                        @if(Auth::user()->role === 'designer')
+                        @if(Auth::user()->hasRole('designer'))
                         <a href="{{ route('designer.designs.index') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                             <i class="fas fa-palette mr-2"></i>Mes Designs
                         </a>
@@ -122,8 +128,8 @@
     
     <!-- Mobile Search (visible only on small screens) -->
     <div class="sm:hidden bg-gray-100 py-2 px-4">
-        <form action="/search" method="GET" class="flex">
-            <input type="text" name="q" placeholder="Rechercher..." class="w-full px-3 py-2 text-sm border border-gray-300 rounded-l-md focus:outline-none focus:ring-2 focus:ring-secondary">
+        <form action="{{ route('shop.index') }}" method="GET" class="flex">
+            <input type="text" name="search" placeholder="Rechercher..." class="w-full px-3 py-2 text-sm border border-gray-300 rounded-l-md focus:outline-none focus:ring-2 focus:ring-secondary">
             <button type="submit" class="px-3 py-2 bg-secondary text-white rounded-r-md hover:bg-primary transition">
                 <i class="fas fa-search"></i>
             </button>
@@ -137,7 +143,7 @@
     <div class="container mx-auto px-4">
         <div class="flex items-center justify-center space-x-6 overflow-x-auto pb-1">
             @foreach($featuredCategories as $category)
-            <a href="{{ route('designs.index', ['category' => $category->id]) }}" class="text-sm hover:text-primary transition whitespace-nowrap">
+            <a href="{{ route('shop.index', ['category' => $category->id]) }}" class="text-sm hover:text-primary transition whitespace-nowrap">
                 {{ $category->name }}
             </a>
             @endforeach
