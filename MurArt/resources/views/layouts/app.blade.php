@@ -123,26 +123,27 @@
 
     <!-- Mobile Menu (Hidden by default) -->
     <div id="mobile-menu" class="fixed inset-0 bg-dark bg-opacity-90 z-50 hidden">
-        <div class="flex justify-end p-6">
+        <div class="flex justify-end p-4">
             <button id="close-mobile-menu" class="focus:outline-none text-white">
                 <i class="fas fa-times text-2xl"></i>
             </button>
         </div>
-        <div class="flex flex-col items-center mt-10 text-white">
+        <div class="flex flex-col items-center mt-6 text-white">
             <a href="{{ route('home') }}" class="py-3 text-xl font-heading font-medium hover:text-primary transition">Accueil</a>
             <a href="{{ route('shop.index') }}" class="py-3 text-xl font-heading font-medium hover:text-primary transition">Boutique</a>
             
             @auth
             <a href="{{ route('designs.index') }}" class="py-3 text-xl font-heading font-medium hover:text-primary transition">Designs</a>
             <a href="{{ route('artworks.index') }}" class="py-3 text-xl font-heading font-medium hover:text-primary transition">Mes Créations</a>
+            <a href="{{ route('client.orders.index') }}" class="py-3 text-xl font-heading font-medium hover:text-primary transition">Mes Commandes</a>
             @endauth
             
             <a href="{{ route('about') }}" class="py-3 text-xl font-heading font-medium hover:text-primary transition">À propos</a>
             <a href="{{ route('contact') }}" class="py-3 text-xl font-heading font-medium hover:text-primary transition">Contact</a>
             
             @auth
-                <div class="mt-4 pt-4 border-t border-gray-700 w-4/5 flex flex-col items-center">
-                    <span class="text-gray-400 mb-2">{{ Auth::user()->name }}</span>
+                <div class="mt-6 pt-6 border-t border-gray-700 w-4/5 flex flex-col items-center">
+                    <span class="text-gray-400 mb-3">{{ Auth::user()->name }}</span>
                     @if(Auth::user()->hasRole('admin'))
                         <a href="{{ route('admin.dashboard') }}" class="py-2 text-lg font-medium hover:text-primary transition">Dashboard Admin</a>
                     @endif
@@ -150,7 +151,7 @@
                         <a href="{{ route('designer.designs.index') }}" class="py-2 text-lg font-medium hover:text-primary transition">Designs Manager</a>
                     @endif
                     <a href="{{ route('client.dashboard') }}" class="py-2 text-lg font-medium hover:text-primary transition">Mon Compte</a>
-                    <a href="{{ route('client.cart.index') }}" class="py-2 text-lg font-medium hover:text-primary transition">
+                    <a href="{{ route('client.cart.index') }}" class="py-2 text-lg font-medium hover:text-primary transition flex items-center">
                         Mon Panier
                         @if(session()->has('cart') && count(session('cart')) > 0)
                             <span class="ml-2 bg-primary text-white text-xs px-1.5 py-0.5 rounded-full">{{ count(session('cart')) }}</span>
@@ -159,7 +160,7 @@
                     <a href="{{ route('logout') }}" class="py-2 text-lg font-medium hover:text-primary transition">Déconnexion</a>
                 </div>
             @else
-                <div class="mt-4 pt-4 border-t border-gray-700 w-4/5 flex flex-col items-center">
+                <div class="mt-6 pt-6 border-t border-gray-700 w-4/5 flex flex-col items-center">
                     <a href="{{ route('login') }}" class="py-2 text-lg font-medium hover:text-primary transition">Connexion</a>
                     <a href="{{ route('registerform') }}" class="py-2 text-lg font-medium hover:text-primary transition">Inscription</a>
                 </div>
@@ -178,7 +179,7 @@
     <!-- Global Scripts -->
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Mobile menu toggle
+            // Mobile menu toggle with improved animation
             const menuButton = document.querySelector('#mobile-menu-button');
             const closeButton = document.querySelector('#close-mobile-menu');
             const mobileMenu = document.querySelector('#mobile-menu');
@@ -186,12 +187,20 @@
             if (menuButton && closeButton && mobileMenu) {
                 menuButton.addEventListener('click', function() {
                     mobileMenu.classList.remove('hidden');
+                    // Add slide-in animation
+                    setTimeout(() => {
+                        mobileMenu.querySelector('div:nth-child(2)').classList.add('animate-fade-in');
+                    }, 50);
                     document.body.style.overflow = 'hidden'; // Prevent scrolling
                 });
                 
                 closeButton.addEventListener('click', function() {
-                    mobileMenu.classList.add('hidden');
-                    document.body.style.overflow = ''; // Re-enable scrolling
+                    // Add slide-out animation then hide
+                    mobileMenu.querySelector('div:nth-child(2)').classList.remove('animate-fade-in');
+                    setTimeout(() => {
+                        mobileMenu.classList.add('hidden');
+                        document.body.style.overflow = ''; // Re-enable scrolling
+                    }, 200);
                 });
             }
             
@@ -264,8 +273,22 @@
             });
         });
     </script>
+
+    <style>
+        /* Add this for mobile menu animation */
+        .animate-fade-in {
+            animation: fadeIn 0.3s ease-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* ...existing styles... */
+    </style>
     
     <!-- Additional Scripts -->
     @stack('scripts')
 </body>
-</html>// Updated on 2025-03-30 09:30:25 by red-jen
+</html>

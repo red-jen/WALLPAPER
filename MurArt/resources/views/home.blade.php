@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'MurArt - Papiers Peints Artistiques Personnalisables')
+@section('title', 'MurArt - Customizable Artistic Wallpapers')
 
 @push('styles')
 <style>
@@ -75,11 +75,11 @@
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <!-- Text Content -->
             <div class="text-center lg:text-left">
-                <h1 class="text-5xl md:text-6xl font-heading font-bold mb-6 tracking-tight text-dark">Transformez vos murs en œuvres d'art</h1>
-                <p class="text-xl md:text-2xl mb-10 text-gray-600">Découvrez notre collection exclusive de papiers peints artistiques qui élèvent l'ambiance de votre intérieur</p>
+                <h1 class="text-5xl md:text-6xl font-heading font-bold mb-6 tracking-tight text-dark">Transform Your Walls Into Works of Art</h1>
+                <p class="text-xl md:text-2xl mb-10 text-gray-600">Discover our exclusive collection of artistic wallpapers that elevate the ambiance of your interior</p>
                 <div class="flex flex-col sm:flex-row justify-center lg:justify-start space-y-4 sm:space-y-0 sm:space-x-6">
-                    <a href="{{ route('artworks.create') }}" class="bg-primary hover:bg-opacity-90 text-white py-4 px-10 rounded-md font-heading font-medium text-center transition duration-300 transform hover:scale-105 shadow-lg">Créer mon papier peint</a>
-                    <a href="{{ route('designs.index') }}" class="bg-secondary hover:bg-opacity-90 text-white py-4 px-10 rounded-md font-heading font-medium text-center transition duration-300 transform hover:scale-105">Explorer les designs</a>
+                    <a href="{{ route('artworks.create') }}" class="bg-primary hover:bg-opacity-90 text-white py-4 px-10 rounded-md font-heading font-medium text-center transition duration-300 transform hover:scale-105 shadow-lg">Create My Wallpaper</a>
+                    <a href="{{ route('designs.index') }}" class="bg-secondary hover:bg-opacity-90 text-white py-4 px-10 rounded-md font-heading font-medium text-center transition duration-300 transform hover:scale-105">Explore Designs</a>
                 </div>
             </div>
             
@@ -103,9 +103,9 @@
     
     <div class="container mx-auto px-4 relative z-10">
         <div class="text-center mb-16">
-            <h2 class="text-4xl font-heading font-bold mb-4 text-dark">Comment ça marche</h2>
+            <h2 class="text-4xl font-heading font-bold mb-4 text-dark">How It Works</h2>
             <div class="w-24 h-1 bg-primary mx-auto mb-6"></div>
-            <p class="text-gray-600 max-w-3xl mx-auto text-lg">Notre processus unique vous permet de créer votre papier peint parfait</p>
+            <p class="text-gray-600 max-w-3xl mx-auto text-lg">Our unique process allows you to create your perfect wallpaper</p>
         </div>
         
         <!-- Steps with Alternating Layout -->
@@ -119,10 +119,10 @@
                     </div>
                 </div>
                 <div class="order-1 lg:order-2">
-                    <h3 class="text-3xl font-heading font-bold mb-6 text-dark">1. Choisissez votre design</h3>
-                    <p class="text-gray-600 text-lg mb-6">Explorez notre collection exclusive de motifs créés par nos artistes talentueux ou téléchargez votre propre création.</p>
+                    <h3 class="text-3xl font-heading font-bold mb-6 text-dark">1. Choose Your Design</h3>
+                    <p class="text-gray-600 text-lg mb-6">Explore our exclusive collection of patterns created by our talented artists or upload your own creation.</p>
                     <a href="{{ route('designs.index') }}" class="text-secondary hover:text-primary font-medium transition inline-flex items-center">
-                        Découvrir les designs <i class="fas fa-arrow-right ml-2"></i>
+                        Discover designs <i class="fas fa-arrow-right ml-2"></i>
                     </a>
                 </div>
             </div>
@@ -130,10 +130,10 @@
             <!-- Step 2 -->
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
                 <div>
-                    <h3 class="text-3xl font-heading font-bold mb-6 text-dark">2. Personnalisez votre papier peint</h3>
-                    <p class="text-gray-600 text-lg mb-6">Ajustez les couleurs, les dimensions et choisissez parmi nos différentes qualités de papier pour un résultat parfait.</p>
+                    <h3 class="text-3xl font-heading font-bold mb-6 text-dark">2. Customize Your Wallpaper</h3>
+                    <p class="text-gray-600 text-lg mb-6">Adjust colors, dimensions and choose from our different paper qualities for a perfect result.</p>
                     <a href="#" class="text-secondary hover:text-primary font-medium transition inline-flex items-center">
-                        Explorer les options <i class="fas fa-arrow-right ml-2"></i>
+                        Explore options <i class="fas fa-arrow-right ml-2"></i>
                     </a>
                 </div>
                 <div class="relative">
@@ -151,10 +151,10 @@
                     </div>
                 </div>
                 <div class="order-1 lg:order-2">
-                    <h3 class="text-3xl font-heading font-bold mb-6 text-dark">3. Recevez votre création</h3>
-                    <p class="text-gray-600 text-lg mb-6">Nous imprimons et livrons votre papier peint personnalisé directement chez vous, prêt à transformer votre intérieur.</p>
+                    <h3 class="text-3xl font-heading font-bold mb-6 text-dark">3. Receive Your Creation</h3>
+                    <p class="text-gray-600 text-lg mb-6">We print and deliver your custom wallpaper directly to your home, ready to transform your interior.</p>
                     <a href="{{ route('artworks.create') }}" class="text-secondary hover:text-primary font-medium transition inline-flex items-center">
-                        Commander maintenant <i class="fas fa-arrow-right ml-2"></i>
+                        Order now <i class="fas fa-arrow-right ml-2"></i>
                     </a>
                 </div>
             </div>
@@ -169,9 +169,9 @@
     
     <div class="container mx-auto px-4 relative z-10">
         <div class="text-center mb-16">
-            <h2 class="text-4xl font-heading font-bold mb-4 text-dark">Nos créations</h2>
+            <h2 class="text-4xl font-heading font-bold mb-4 text-dark">Our Creations</h2>
             <div class="w-24 h-1 bg-primary mx-auto mb-6"></div>
-            <p class="text-gray-600 max-w-3xl mx-auto text-lg">Découvrez notre sélection de designs exclusifs</p>
+            <p class="text-gray-600 max-w-3xl mx-auto text-lg">Discover our selection of exclusive designs</p>
         </div>
         
         <!-- Creative Grid Layout -->
@@ -181,8 +181,8 @@
                     <img src="{{ asset('storage/wallpapers/1745908565_cafe-wallpaper_1.jpg') }}" alt="Featured Design" class="w-full h-full object-cover transition duration-500 group-hover:scale-110">
                     <div class="absolute inset-0 bg-gradient-to-t from-dark to-transparent opacity-60 group-hover:opacity-70 transition duration-300"></div>
                     <div class="absolute bottom-0 left-0 p-6">
-                        <h3 class="text-white font-heading font-bold text-xl mb-2">Collection Signature</h3>
-                        <p class="text-gray-200">Designs exclusifs</p>
+                        <h3 class="text-white font-heading font-bold text-xl mb-2">Signature Collection</h3>
+                        <p class="text-gray-200">Exclusive Designs</p>
                     </div>
                 </div>
             </div>
@@ -205,7 +205,7 @@
     
     <div class="container mx-auto px-4 relative z-10">
         <div class="text-center mb-16">
-            <h2 class="text-4xl font-heading font-bold mb-4 text-white">Ce que disent nos clients</h2>
+            <h2 class="text-4xl font-heading font-bold mb-4 text-white">What Our Customers Say</h2>
             <div class="w-24 h-1 bg-primary mx-auto mb-6"></div>
         </div>
         
@@ -222,7 +222,7 @@
                     <div class="w-12 h-12 rounded-full bg-primary mr-4"></div>
                     <div>
                         <h4 class="font-heading font-semibold text-white">Client {{ $index }}</h4>
-                        <p class="text-gray-300 text-sm">Client depuis 2023</p>
+                        <p class="text-gray-300 text-sm">Customer since 2023</p>
                     </div>
                 </div>
             </div>
@@ -239,13 +239,13 @@
     
     <div class="container mx-auto px-4 relative z-10">
         <div class="max-w-4xl mx-auto text-center">
-            <h2 class="text-4xl md:text-5xl font-heading font-bold mb-6 text-dark">Prêt à transformer votre intérieur ?</h2>
-            <p class="text-gray-600 text-xl mb-10">Créez dès maintenant votre papier peint unique qui reflétera parfaitement votre style et votre personnalité.</p>
+            <h2 class="text-4xl md:text-5xl font-heading font-bold mb-6 text-dark">Ready to Transform Your Interior?</h2>
+            <p class="text-gray-600 text-xl mb-10">Create your unique wallpaper now that perfectly reflects your style and personality.</p>
             <div class="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-6">
-                <a href="{{ route('artworks.create') }}" class="bg-primary hover:bg-opacity-90 text-white py-4 px-10 rounded-md font-heading font-medium text-center transition duration-300 transform hover:scale-105 shadow-lg">Créer mon papier peint</a>
-                <a href="{{ route('about') }}" class="bg-secondary hover:bg-opacity-90 text-white py-4 px-10 rounded-md font-heading font-medium text-center transition duration-300 transform hover:scale-105">En savoir plus</a>
+                <a href="{{ route('artworks.create') }}" class="bg-primary hover:bg-opacity-90 text-white py-4 px-10 rounded-md font-heading font-medium text-center transition duration-300 transform hover:scale-105 shadow-lg">Create My Wallpaper</a>
+                <a href="{{ route('about') }}" class="bg-secondary hover:bg-opacity-90 text-white py-4 px-10 rounded-md font-heading font-medium text-center transition duration-300 transform hover:scale-105">Learn More</a>
             </div>
         </div>
     </div>
 </section>
-@endsection// Updated on 2025-04-01 16:58:27 by red-jen
+@endsection

@@ -226,7 +226,9 @@
                                             <div class="flex text-sm mb-2">
                                                 @php
                                                     $avgRating = $wallpaper->reviews->where('is_approved', true)->avg('rating');
+
                                                     $roundedRating = round($avgRating);
+                                                    
                                                 @endphp
                                                 
                                                 @for($i = 1; $i <= 5; $i++)

@@ -22,6 +22,8 @@ use App\Http\Controllers\admin\WallpaperController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\Client\ShopController;
+use App\Http\Controllers\NewsletterController;
+use App\Http\Controllers\PageController;
 
 use App\Http\Controllers\Client\DesignController as ClientDesignController;
 
@@ -30,13 +32,14 @@ use App\Http\Controllers\Admin\ArtworkController;
 // Home route
 Route::get('/order', [ShopController::class, 'index'])->name('orders.index');
 
-Route::get('/contact/submit', [ShopController::class, 'index'])->name('contact.submit');
-// Route::get('/admin/dashboard', [App\Http\Controllers\Admin\DashboardController::class, 'index'])
-//     ->name('admin.dashboard')
-//     ->middleware(['auth', 'admin']);
-// Basic pages
+
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/about', [PageController::class, 'about'])->name('about');
+Route::get('/contact', [PageController::class, 'contact'])->name('contact');
+Route::post('/contact', [PageController::class, 'submitContact'])->name('contact.submit');
+Route::get('/faq', [PageController::class, 'faq'])->name('faq');
+Route::get('/services', [PageController::class, 'services'])->name('services');
+Route::get('/returns', [PageController::class, 'returns'])->name('returns');
 
 
 
@@ -101,17 +104,15 @@ Route::prefix('client')->name('client.')->middleware(['auth', 'client'])->group(
 
 
     // Profile
-    Route::get('/profile', [App\Http\Controllers\Client\ProfileController::class, 'edit'])->name('profile.edit');
-    Route::put('/profile', [App\Http\Controllers\Client\ProfileController::class, 'update'])->name('profile.update');
+    // Route::get('/profile', [App\Http\Controllers\Client\ProfileController::class, 'edit'])->name('profile.edit');
+    // Route::put('/profile', [App\Http\Controllers\Client\ProfileController::class, 'update'])->name('profile.update');
 });
 
 
 
 
 
-// Route::get('/contact', [PageController::class, 'contact'])->name('contact');
-Route::get('/faq', [PageController::class, 'faq'])->name('faq');
-Route::get('/returns', [PageController::class, 'returns'])->name('returns');
+
 
 
 // Route::get('/dasshop', [CartController::class, 'check'])->name('client.dashboard');
@@ -157,8 +158,8 @@ Route::get('/shop/{artwork}', [ShopController::class, 'show'])->name('shop.show'
 Route::post('/shop/{artwork}/review', [ShopController::class, 'storeReview'])->middleware('auth')->name('shop.review.store');
 // Route::post('/shop/{artwork}/cart', [ShopController::class, 'addToCart'])->name('shop.cart.add');
 
-// Shop routes - add middleware('auth') to protect cart functionality
-Route::post('/shop/{wallpaper}/cart', [ShopController::class, 'addToCart'])->middleware('auth')->name('shop.cart.add');
+// Shop routes
+Route::post('/shop/{wallpaper}/cart', [ShopController::class, 'addToCart'])->name('shop.cart.add');
 
 // Wallpaper reviews route
 Route::post('/wallpapers/{wallpaper}/review', [ReviewController::class, 'storeWallpaperReview'])->middleware('auth')->name('wallpapers.review.store');
@@ -201,7 +202,7 @@ Route::prefix('designer')->name('designer.')->middleware(['auth', 'designer'])->
 });
 
 // Review routes - require authentication
-Route::post('/designs/{design}/review', [ReviewController::class, 'store'])->middleware('auth')->name('reviews.store');
+Route::post('/designs/{design}/review', [ReviewController::class, 'store'])->name('reviews.store');
 Route::delete('/reviews/{review}', [ReviewController::class, 'destroy'])->name('reviews.destroy');
 // Admin review management
 
@@ -324,4 +325,3 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
     Route::get('/sales-chart-data', [AdminDashboardController::class, 'getSalesChartData']);
     Route::get('/filter-users', [AdminDashboardController::class, 'filterUsers']);
 });
-// Updated on 2025-03-24 09:19:01 by red-jen

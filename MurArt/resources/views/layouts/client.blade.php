@@ -47,7 +47,7 @@
                 
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
-                        <a class="nav-link position-relative" href="{{ route('cart.index') }}">
+                        <a class="nav-link position-relative" href="{{ route('client.cart.index') }}">
                             <i class="fas fa-shopping-cart"></i>
                             @if(session()->has('cart') && count(session('cart')) > 0)
                                 <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
