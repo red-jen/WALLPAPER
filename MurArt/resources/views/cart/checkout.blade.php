@@ -223,6 +223,13 @@
                                 </div>
                             </div>
                             
+                            <!-- Processing indicator (hidden by default) -->
+                            <div id="processing-indicator" class="hidden mb-6 text-center">
+                                <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600 mb-2"></div>
+                                <p class="text-indigo-600 font-medium">Processing your payment...</p>
+                                <p class="text-sm text-gray-500 mt-1">Please do not close this page.</p>
+                            </div>
+                            
                             <div class="mb-6">
                                 <button type="submit" id="payment-button" class="w-full bg-indigo-600 text-white py-3 px-4 rounded-md hover:bg-indigo-700">
                                     Complete Order
@@ -243,9 +250,11 @@
 @push('scripts')
 <script>
     document.addEventListener('DOMContentLoaded', function() {
+        const form = document.getElementById('checkout-form');
+        const paymentButton = document.getElementById('payment-button');
+        const processingIndicator = document.getElementById('processing-indicator');
         const sameBillingCheckbox = document.getElementById('same_billing');
         const billingFields = document.getElementById('billing-fields');
-        const paymentButton = document.getElementById('payment-button');
         
         // Toggle billing address fields visibility
         if (sameBillingCheckbox) {
@@ -254,10 +263,36 @@
             });
         }
         
-        if (paymentButton) {
-            paymentButton.addEventListener('click', function() {
+        // Prevent multiple form submissions and show loading state
+        if (form && paymentButton) {
+            form.addEventListener('submit', function(e) {
+                // Show processing indicator
+                if (processingIndicator) {
+                    processingIndicator.classList.remove('hidden');
+                }
+                
+                // Disable button and change text
                 paymentButton.disabled = true;
+                paymentButton.classList.add('opacity-75', 'cursor-not-allowed');
                 paymentButton.textContent = 'Processing...';
+                
+                // Set a timeout to re-enable the button if the form submission takes too long
+                setTimeout(function() {
+                    if (paymentButton.disabled) {
+                        paymentButton.disabled = false;
+                        paymentButton.classList.remove('opacity-75', 'cursor-not-allowed');
+                        paymentButton.textContent = 'Complete Order';
+                        
+                        if (processingIndicator) {
+                            processingIndicator.classList.add('hidden');
+                        }
+                        
+                        alert('The payment process is taking longer than expected. Please try again.');
+                    }
+                }, 30000); // 30 seconds timeout
+                
+                // Continue with form submission - no need to prevent default
+                return true;
             });
         }
     });

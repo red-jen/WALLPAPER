@@ -18,9 +18,10 @@ class OrderItem extends Model
     protected $fillable = [
         'order_id',
         'artwork_id',
-        'product_name',
-        'price',
+        'wallpaper_id',
+        'name', // Make sure name is included here
         'quantity',
+        'price',
         'options',
     ];
 
@@ -31,7 +32,7 @@ class OrderItem extends Model
      */
     protected $casts = [
         'price' => 'float',
-        'options' => 'json',
+        'options' => 'array',
     ];
 
     /**
@@ -48,5 +49,13 @@ class OrderItem extends Model
     public function artwork(): BelongsTo
     {
         return $this->belongsTo(Artwork::class);
+    }
+
+    /**
+     * Get the wallpaper associated with the item.
+     */
+    public function wallpaper(): BelongsTo
+    {
+        return $this->belongsTo(Wallpaper::class);
     }
 }

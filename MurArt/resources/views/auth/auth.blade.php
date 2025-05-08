@@ -6,20 +6,37 @@
 <div class="min-h-screen flex items-center justify-center bg-pattern">
     <div class="flex w-full max-w-[1200px] h-[700px] mx-4">
         <!-- Left Side - Wallpaper Preview -->
-        <div class="hidden md:block w-2/3 bg-cover bg-center rounded-l-2xl overflow-hidden">
-            <img src="{{ asset('resources/imgs/floral-wallpaper-empty-room-with-wooden-floor_53876-74596.jpg') }}" 
+        <div class="hidden md:block w-2/3 bg-cover bg-center rounded-l-2xl overflow-hidden relative">
+            <!-- Logo -->
+            <img src="{{ asset('imgs/logo.png') }}" 
+                 alt="MurArt Logo" 
+                 class="absolute top-4 left-4 h-14 z-10">
+                 
+            <!-- Main background image - now using venice image -->
+            <img src="{{ asset('imgs/venice (1).jpg') }}" 
                  alt="Decorative Wallpaper" 
                  class="w-full h-full object-cover">
+                 
+            <div class="absolute inset-0 bg-gradient-to-t from-black to-transparent opacity-60"></div>
+            
+            <div class="absolute bottom-10 left-10 text-white z-10 max-w-lg">
+                <h2 class="text-3xl font-bold mb-3">Transform your walls into works of art</h2>
+                <p class="text-lg text-gray-200">Join MurArt and discover a world of custom wallpaper designs created by talented artists.</p>
+            </div>
         </div>
 
         <!-- Right Side - Auth Form -->
-        <div class="w-full md:w-1/3 bg-white rounded-2xl md:rounded-l-none md:rounded-r-2xl shadow-xl p-8 flex flex-col justify-between">
+        <div class="w-full md:w-1/3 bg-white rounded-2xl md:rounded-l-none md:rounded-r-2xl shadow-xl p-8 flex flex-col justify-between relative">
             <div class="text-center mb-6">
-                <h1 class="text-2xl font-bold text-gray-800 mb-2">Wall<span class="text-blue-600">Art</span></h1>
+                <img src="{{ asset('imgs/logo.png') }}" alt="MurArt Logo" class="h-16 mx-auto mb-4">
             </div>
 
+            <!-- Decorative elements -->
+            <div class="absolute top-0 right-0 w-32 h-32 bg-primary bg-opacity-5 rounded-full -mr-16 -mt-16"></div>
+            <div class="absolute bottom-0 right-0 w-24 h-24 bg-secondary bg-opacity-5 rounded-full -mr-12 -mb-12"></div>
+
             <div class="flex justify-center gap-8 mb-6">
-                <button id="loginTab" class="text-blue-600 font-semibold border-b-2 border-blue-600 pb-1">Login</button>
+                <button id="loginTab" class="text-primary font-semibold border-b-2 border-primary pb-1">Login</button>
                 <button id="registerTab" class="text-gray-400 hover:text-gray-600 transition-colors">Sign Up</button>
             </div>
 
@@ -64,7 +81,7 @@
                     </div>
                 </div>
 
-                <button type="submit" class="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition-colors">
+                <button type="submit" class="w-full bg-primary text-white py-2 rounded-lg hover:bg-opacity-90 transition-colors">
                     Login
                 </button>
             </form>
@@ -175,7 +192,7 @@
                     </label>
                 </div>
 
-                <button type="submit" class="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition-colors">
+                <button type="submit" class="w-full bg-primary text-white py-2 rounded-lg hover:bg-opacity-90 transition-colors">
                     Create Account
                 </button>
             </form>
@@ -214,11 +231,11 @@
 
 /* Custom radio button styles */
 input[type="radio"]:checked + span span i {
-    color: #2563eb;
+    color: var(--primary-color);
 }
 
 input[type="radio"]:checked + span + span {
-    border-color: #2563eb;
+    border-color: var(--primary-color);
 }
 </style>
 
@@ -234,16 +251,16 @@ document.addEventListener('DOMContentLoaded', function() {
         if (isLogin) {
             loginForm.classList.remove('hidden');
             registerForm.classList.add('hidden');
-            loginTab.classList.add('text-blue-600', 'border-b-2', 'border-blue-600');
+            loginTab.classList.add('text-primary', 'border-b-2', 'border-primary');
             loginTab.classList.remove('text-gray-400');
-            registerTab.classList.remove('text-blue-600', 'border-b-2', 'border-blue-600');
+            registerTab.classList.remove('text-primary', 'border-b-2', 'border-primary');
             registerTab.classList.add('text-gray-400');
         } else {
             loginForm.classList.add('hidden');
             registerForm.classList.remove('hidden');
-            registerTab.classList.add('text-blue-600', 'border-b-2', 'border-blue-600');
+            registerTab.classList.add('text-primary', 'border-b-2', 'border-primary');
             registerTab.classList.remove('text-gray-400');
-            loginTab.classList.remove('text-blue-600', 'border-b-2', 'border-blue-600');
+            loginTab.classList.remove('text-primary', 'border-b-2', 'border-primary');
             loginTab.classList.add('text-gray-400');
         }
     }
@@ -259,15 +276,15 @@ document.addEventListener('DOMContentLoaded', function() {
             roleInputs.forEach(ri => {
                 const border = ri.parentElement.querySelector('span:last-child');
                 if (ri.checked) {
-                    border.classList.add('border-blue-600');
-                    ri.parentElement.querySelector('i').classList.add('text-blue-600');
+                    border.classList.add('border-primary');
+                    ri.parentElement.querySelector('i').classList.add('text-primary');
                 } else {
-                    border.classList.remove('border-blue-600');
-                    ri.parentElement.querySelector('i').classList.remove('text-blue-600');
+                    border.classList.remove('border-primary');
+                    ri.parentElement.querySelector('i').classList.remove('text-primary');
                 }
             });
         });
     });
 });
 </script>
-@endsection 
+@endsection
