@@ -43,8 +43,10 @@ class AuthentificationController extends Controller
 
         if ($user->isDesigner()) {
             return redirect()->route('designer.dashboard');
-        } else {
-            return redirect()->route('client.dashboard');
+        } else if ($user->isAdmin()) {
+            return redirect()->route('admin.dashboard');
+        }else{
+            return redirect()->route('/');
         }
     }
 

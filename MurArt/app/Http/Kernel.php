@@ -68,4 +68,4 @@
 //         'customer' => \App\Http\Middleware\CustomerMiddleware::class,
 //         'files' => \App\Http\Middleware\FileMiddleware::class,
 //     ];
-}
+
