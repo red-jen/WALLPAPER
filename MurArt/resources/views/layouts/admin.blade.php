@@ -257,9 +257,9 @@
                             <a href="{{ route('admin.reviews.index') }}" class="flex items-center gap-3 px-3 py-2 rounded-md mb-1.5 {{ request()->routeIs('admin.reviews.*') ? 'bg-white/10 text-gold' : 'text-white hover:bg-white/10' }} transition-colors duration-200">
                                 <i class="fas fa-star w-5 text-center"></i>
                                 <span>Reviews</span>
-                                @if(isset($pendingReviews) && $pendingReviews > 0)
+                                {{-- @if(isset($pendingReviews) && $pendingReviews > 0)
                                     <span class="ml-auto bg-blue-400 text-white text-xs font-bold px-1.5 py-0.5 rounded-full">{{ $pendingReviews }}</span>
-                                @endif
+                                @endif --}}
                             </a>
                         </div>
                         @endif

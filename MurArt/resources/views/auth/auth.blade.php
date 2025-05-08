@@ -3,16 +3,16 @@
 @section('title', 'Authentication')
 
 @section('content')
-<div class="min-h-screen flex items-center justify-center bg-pattern">
-    <div class="flex w-full max-w-[1200px] h-[700px] mx-4">
+<div class="min-h-screen flex items-center justify-center bg-pattern py-8">
+    <div class="flex w-full max-w-[1200px] mx-4 flex-col md:flex-row">
         <!-- Left Side - Wallpaper Preview -->
-        <div class="hidden md:block w-2/3 bg-cover bg-center rounded-l-2xl overflow-hidden relative">
+        <div class="hidden md:block md:w-2/3 bg-cover bg-center rounded-t-2xl md:rounded-l-2xl md:rounded-tr-none overflow-hidden relative">
             <!-- Logo -->
             <img src="{{ asset('imgs/logo.png') }}" 
                  alt="MurArt Logo" 
                  class="absolute top-4 left-4 h-14 z-10">
                  
-            <!-- Main background image - now using venice image -->
+            <!-- Main background image -->
             <img src="{{ asset('imgs/venice (1).jpg') }}" 
                  alt="Decorative Wallpaper" 
                  class="w-full h-full object-cover">
@@ -26,31 +26,31 @@
         </div>
 
         <!-- Right Side - Auth Form -->
-        <div class="w-full md:w-1/3 bg-white rounded-2xl md:rounded-l-none md:rounded-r-2xl shadow-xl p-8 flex flex-col justify-between relative">
-            <div class="text-center mb-6">
-                <img src="{{ asset('imgs/logo.png') }}" alt="MurArt Logo" class="h-16 mx-auto mb-4">
+        <div class="w-full md:w-1/3 bg-white rounded-b-2xl md:rounded-r-2xl md:rounded-bl-none shadow-xl p-6 relative">
+            <div class="text-center mb-4">
+                <img src="{{ asset('imgs/logo.png') }}" alt="MurArt Logo" class="h-14 mx-auto mb-2">
             </div>
 
             <!-- Decorative elements -->
             <div class="absolute top-0 right-0 w-32 h-32 bg-primary bg-opacity-5 rounded-full -mr-16 -mt-16"></div>
             <div class="absolute bottom-0 right-0 w-24 h-24 bg-secondary bg-opacity-5 rounded-full -mr-12 -mb-12"></div>
 
-            <div class="flex justify-center gap-8 mb-6">
+            <div class="flex justify-center gap-8 mb-4">
                 <button id="loginTab" class="text-primary font-semibold border-b-2 border-primary pb-1">Login</button>
                 <button id="registerTab" class="text-gray-400 hover:text-gray-600 transition-colors">Sign Up</button>
             </div>
 
             <!-- Login Form -->
-            <form id="loginForm" method="POST" action="{{ route('login') }}" class="space-y-6">
+            <form id="loginForm" method="POST" action="{{ route('login') }}" class="space-y-4">
                 @csrf
                 
-                <div class="space-y-2">
+                <div class="space-y-1">
                     <label for="login_email" class="block text-sm font-medium text-gray-700">Email</label>
                     <input type="email" 
                            id="login_email" 
                            name="email" 
                            value="{{ old('email') }}" 
-                           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors" 
+                           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors" 
                            placeholder="Enter your email"
                            required>
                     @error('email')
@@ -58,12 +58,12 @@
                     @enderror
                 </div>
 
-                <div class="space-y-2">
+                <div class="space-y-1">
                     <label for="login_password" class="block text-sm font-medium text-gray-700">Password</label>
                     <input type="password" 
                            id="login_password" 
                            name="password" 
-                           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors" 
+                           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors" 
                            placeholder="Enter your password"
                            required>
                     @error('password')
@@ -71,15 +71,13 @@
                     @enderror
                 </div>
 
-                <div class="flex items-center justify-between">
-                    <div class="flex items-center">
-                        <input type="checkbox" 
-                               id="remember" 
-                               name="remember" 
-                               class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
-                        <label for="remember" class="ml-2 text-sm text-gray-600">Remember me</label>
-                    </div>
-                </div>
+                {{-- <div class="flex items-center">
+                    <input type="checkbox" 
+                           id="remember" 
+                           name="remember" 
+                           class="h-4 w-4 text-primary border-gray-300 rounded focus:ring-primary">
+                    <label for="remember" class="ml-2 text-sm text-gray-600">Remember me</label>
+                </div> --}}
 
                 <button type="submit" class="w-full bg-primary text-white py-2 rounded-lg hover:bg-opacity-90 transition-colors">
                     Login
@@ -87,16 +85,16 @@
             </form>
 
             <!-- Register Form -->
-            <form id="registerForm" method="POST" action="{{ route('register') }}" class="space-y-6 hidden">
+            <form id="registerForm" method="POST" action="{{ route('register') }}" class="space-y-3 hidden max-h-[400px] overflow-y-auto">
                 @csrf
                 
-                <div class="space-y-2">
+                <div class="space-y-1">
                     <label for="name" class="block text-sm font-medium text-gray-700">Full Name</label>
                     <input type="text" 
                            id="name" 
                            name="name" 
                            value="{{ old('name') }}" 
-                           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors" 
+                           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors" 
                            placeholder="Enter your full name"
                            required>
                     @error('name')
@@ -104,13 +102,13 @@
                     @enderror
                 </div>
 
-                <div class="space-y-2">
+                <div class="space-y-1">
                     <label for="register_email" class="block text-sm font-medium text-gray-700">Email</label>
                     <input type="email" 
                            id="register_email" 
                            name="email" 
                            value="{{ old('email') }}" 
-                           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors" 
+                           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors" 
                            placeholder="Enter your email"
                            required>
                     @error('email')
@@ -118,10 +116,10 @@
                     @enderror
                 </div>
 
-                <div class="space-y-2">
+                <div class="space-y-1">
                     <label class="block text-sm font-medium text-gray-700">I am a</label>
-                    <div class="grid grid-cols-2 gap-4">
-                        <label class="relative flex cursor-pointer rounded-lg border bg-white p-4 shadow-sm focus:outline-none">
+                    <div class="grid grid-cols-2 gap-2">
+                        <label class="relative flex cursor-pointer rounded-lg border bg-white p-3 shadow-sm focus:outline-none">
                             <input type="radio" 
                                    name="role" 
                                    value="client" 
@@ -129,14 +127,14 @@
                                    {{ old('role', 'client') == 'client' ? 'checked' : '' }}>
                             <span class="flex flex-1 items-center justify-center">
                                 <span class="flex flex-col items-center">
-                                    <i class="fas fa-user text-xl mb-1"></i>
-                                    <span class="block text-sm font-medium">Client</span>
+                                    <i class="fas fa-user text-lg"></i>
+                                    <span class="block text-xs font-medium mt-1">Client</span>
                                 </span>
                             </span>
                             <span class="pointer-events-none absolute -inset-px rounded-lg border-2" aria-hidden="true"></span>
                         </label>
 
-                        <label class="relative flex cursor-pointer rounded-lg border bg-white p-4 shadow-sm focus:outline-none">
+                        <label class="relative flex cursor-pointer rounded-lg border bg-white p-3 shadow-sm focus:outline-none">
                             <input type="radio" 
                                    name="role" 
                                    value="designer" 
@@ -144,8 +142,8 @@
                                    {{ old('role') == 'designer' ? 'checked' : '' }}>
                             <span class="flex flex-1 items-center justify-center">
                                 <span class="flex flex-col items-center">
-                                    <i class="fas fa-paint-brush text-xl mb-1"></i>
-                                    <span class="block text-sm font-medium">Designer</span>
+                                    <i class="fas fa-paint-brush text-lg"></i>
+                                    <span class="block text-xs font-medium mt-1">Designer</span>
                                 </span>
                             </span>
                             <span class="pointer-events-none absolute -inset-px rounded-lg border-2" aria-hidden="true"></span>
@@ -156,12 +154,12 @@
                     @enderror
                 </div>
 
-                <div class="space-y-2">
+                <div class="space-y-1">
                     <label for="register_password" class="block text-sm font-medium text-gray-700">Password</label>
                     <input type="password" 
                            id="register_password" 
                            name="password" 
-                           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors" 
+                           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors" 
                            placeholder="Create a password"
                            required>
                     @error('password')
@@ -169,26 +167,26 @@
                     @enderror
                 </div>
 
-                <div class="space-y-2">
+                <div class="space-y-1">
                     <label for="password_confirmation" class="block text-sm font-medium text-gray-700">Confirm Password</label>
                     <input type="password" 
                            id="password_confirmation" 
                            name="password_confirmation" 
-                           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors" 
+                           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors" 
                            placeholder="Confirm your password"
                            required>
                 </div>
 
                 <div class="flex items-start">
-                    <div class="flex items-center h-5">
+                    <div class="flex items-center h-5 mt-1">
                         <input type="checkbox" 
                                id="terms" 
                                name="terms" 
-                               class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                               class="h-4 w-4 text-primary border-gray-300 rounded focus:ring-primary"
                                required>
                     </div>
-                    <label for="terms" class="ml-2 block text-sm text-gray-600">
-                        I agree to the <a href="#" class="text-blue-600 hover:text-blue-800">Terms of Service</a> and <a href="#" class="text-blue-600 hover:text-blue-800">Privacy Policy</a>
+                    <label for="terms" class="ml-2 block text-xs text-gray-600">
+                        I agree to the <a href="#" class="text-primary hover:text-primary-dark">Terms of Service</a> and <a href="#" class="text-primary hover:text-primary-dark">Privacy Policy</a>
                     </label>
                 </div>
 
@@ -197,7 +195,7 @@
                 </button>
             </form>
 
-            <div class="mt-6">
+            <div class="mt-4">
                 <div class="relative">
                     <div class="absolute inset-0 flex items-center">
                         <div class="w-full border-t border-gray-300"></div>
@@ -207,17 +205,17 @@
                     </div>
                 </div>
 
-                <div class="mt-6 grid grid-cols-3 gap-3">
+                {{-- <div class="mt-4 grid grid-cols-3 gap-3">
                     <button class="flex justify-center items-center px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
-                        <i class="fab fa-google text-xl text-gray-600"></i>
+                        <i class="fab fa-google text-lg text-gray-600"></i>
                     </button>
                     <button class="flex justify-center items-center px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
-                        <i class="fab fa-facebook-f text-xl text-gray-600"></i>
+                        <i class="fab fa-facebook-f text-lg text-gray-600"></i>
                     </button>
                     <button class="flex justify-center items-center px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
-                        <i class="fab fa-linkedin-in text-xl text-gray-600"></i>
+                        <i class="fab fa-linkedin-in text-lg text-gray-600"></i>
                     </button>
-                </div>
+                </div> --}}
             </div>
         </div>
     </div>

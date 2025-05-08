@@ -1,5 +1,11 @@
 @extends('layouts.admin')
-
+<style>
+    /* .container{
+        color: aqua;
+        display:flex;
+        fl
+    } */
+</style>
 @section('content')
 <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 <div class="container mx-auto px-4 py-8">

@@ -80,14 +80,14 @@ class AuthentificationController extends Controller
             // Redirect based on role
             switch ($user->role) {
                 case 'admin':
-                    return view('welcome');
+                    return redirect()->route('admin.dashboard');
                     // return redirect()->route('admin.categories.create');
                 case 'designer':
-                    return view('welcome');
+                    return redirect()->route('designer.dashboard');
                     // return redirect()->route('designer.designs.create');
                 case 'client':
                 default:
-                    return redirect()->route('client.dashboard');
+                    return redirect()->route('/');
             }
         }
         
