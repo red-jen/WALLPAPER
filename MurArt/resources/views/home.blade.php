@@ -137,7 +137,7 @@
                     </a>
                 </div>
                 <div class="relative">
-                    <img src="{{ asset('storage/wallpapers/1745772684_chateau-wallpaper_0.jpg') }}" alt="Customize" class="rounded-lg shadow-xl">
+                    <img src="{{ asset('/imgs/step2.png') }}" alt="Customize" class="rounded-lg shadow-xl">
                     <div class="absolute inset-0 bg-gradient-to-l from-secondary to-transparent opacity-20"></div>
                 </div>
             </div>

@@ -25,7 +25,7 @@
             </p>
             
             <div class="flex flex-col md:flex-row space-y-3 md:space-y-0 md:space-x-3">
-                <a href="{{ route('cart.index') }}" class="inline-block bg-primary text-white py-2 px-4 rounded-md hover:bg-primary-dark transition">
+                <a href="{{ route('client.cart.index') }}" class="inline-block bg-primary text-white py-2 px-4 rounded-md hover:bg-primary-dark transition">
                     Return to Cart
                 </a>
                 <a href="{{ route('shop.index') }}" class="inline-block bg-gray-200 text-gray-800 py-2 px-4 rounded-md hover:bg-gray-300 transition">

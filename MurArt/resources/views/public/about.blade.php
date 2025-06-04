@@ -31,7 +31,13 @@
     .team-image {
         transition: transform 0.3s ease;
     }
+
+    .pfp{
+        background-color: rgb(156, 142, 51)
+    }
+    
 </style>
+ <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 @endpush
 
 @section('content')
@@ -157,7 +163,7 @@
 
 <!-- Our Team Section -->
 <section class="py-20">
-    <div class="container mx-auto px-4">
+    <div class="container mx-auto px-4 ">
         <div class="max-w-5xl mx-auto">
             <h2 class="text-3xl font-heading font-bold mb-8 text-dark text-center">Our Team</h2>
             <p class="text-center text-lg text-gray-600 mb-12">Behind every beautiful wallpaper is a team of passionate individuals dedicated to bringing art to your walls.</p>
@@ -165,8 +171,9 @@
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
                 <div class="bg-white rounded-lg shadow-md overflow-hidden team-card">
                     <div class="h-48 overflow-hidden">
-                        <div class="bg-gray-200 h-full w-full flex items-center justify-center team-image">
-                            <i class="fas fa-user-circle text-gray-400 text-5xl"></i>
+                        <div class=" h-full w-full flex items-center justify-center team-image" style="background-color: #B56917;">
+                            <img src="../imgs/fake profiloes/8.jpg" class="rounded-full text-5xl"  alt="">
+                            {{-- <i class="fas fa-user-circle text-gray-400 text-5xl"></i> --}}
                         </div>
                     </div>
                     <div class="p-6 text-center">
@@ -185,8 +192,9 @@
                 
                 <div class="bg-white rounded-lg shadow-md overflow-hidden team-card">
                     <div class="h-48 overflow-hidden">
-                        <div class="bg-gray-200 h-full w-full flex items-center justify-center team-image">
-                            <i class="fas fa-user-circle text-gray-400 text-5xl"></i>
+                         <div class=" h-full w-full flex items-center justify-center team-image" style="background-color: #B56917;">
+                            <img src="../imgs/fake profiloes/22.jpg" class="rounded-full text-5xl"  alt="">
+                           
                         </div>
                     </div>
                     <div class="p-6 text-center">
@@ -205,8 +213,9 @@
                 
                 <div class="bg-white rounded-lg shadow-md overflow-hidden team-card">
                     <div class="h-48 overflow-hidden">
-                        <div class="bg-gray-200 h-full w-full flex items-center justify-center team-image">
-                            <i class="fas fa-user-circle text-gray-400 text-5xl"></i>
+                        <div class=" h-full w-full flex items-center justify-center team-image" style="background-color: #B56917;">
+                            <img src="../imgs/fake profiloes/8.jpg" class="rounded-full text-5xl"  alt="">
+                           
                         </div>
                     </div>
                     <div class="p-6 text-center">
@@ -225,8 +234,9 @@
                 
                 <div class="bg-white rounded-lg shadow-md overflow-hidden team-card">
                     <div class="h-48 overflow-hidden">
-                        <div class="bg-gray-200 h-full w-full flex items-center justify-center team-image">
-                            <i class="fas fa-user-circle text-gray-400 text-5xl"></i>
+                      <div class=" h-full w-full flex items-center justify-center team-image" style="background-color: #B56917;">
+                            <img src="../imgs/fake profiloes/8.jpg" class="rounded-full text-5xl"  alt="">
+                           
                         </div>
                     </div>
                     <div class="p-6 text-center">

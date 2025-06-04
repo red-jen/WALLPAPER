@@ -5,6 +5,49 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', 'MurArt - Papiers Peints Artistiques Personnalisables')</title>
+    
+    <!-- Favicon and App Icons -->
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('imgs/logo.png') }}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('imgs/logo.png') }}">
+    <link rel="apple-touch-icon" href="{{ asset('imgs/logo.png') }}">
+    <link rel="shortcut icon" href="{{ asset('imgs/logo.png') }}">
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="@yield('description', 'MurArt - Créez des papiers peints artistiques personnalisés avec nos designs uniques. Transformez vos murs en œuvres d\'art.')">
+    <meta name="keywords" content="papier peint, art mural, décoration, design, personnalisé, artistique">
+    <meta name="author" content="MurArt">
+    
+    <!-- Open Graph Meta Tags for Social Media -->
+    <meta property="og:title" content="@yield('title', 'MurArt - Papiers Peints Artistiques Personnalisables')">
+    <meta property="og:description" content="@yield('description', 'MurArt - Créez des papiers peints artistiques personnalisés avec nos designs uniques. Transformez vos murs en œuvres d\'art.')">
+    <meta property="og:image" content="{{ asset('imgs/logo.png') }}">
+    <meta property="og:url" content="{{ url()->current() }}">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="MurArt">
+    
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="@yield('title', 'MurArt - Papiers Peints Artistiques Personnalisables')">
+    <meta name="twitter:description" content="@yield('description', 'MurArt - Créez des papiers peints artistiques personnalisés avec nos designs uniques.')">
+    <meta name="twitter:image" content="{{ asset('imgs/logo.png') }}">
+    
+    <!-- Schema.org JSON-LD for Google -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "name": "MurArt",
+        "description": "Papiers peints artistiques personnalisables",
+        "url": "{{ url('/') }}",
+        "logo": "{{ asset('imgs/logo.png') }}",
+        "contactPoint": {
+            "@type": "ContactPoint",
+            "contactType": "Customer Service",
+            "url": "{{ route('contact') }}"
+        }
+    }
+    </script>
+    
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Font Awesome Icons -->
@@ -123,45 +166,97 @@
 
     <!-- Mobile Menu (Hidden by default) -->
     <div id="mobile-menu" class="fixed inset-0 bg-dark bg-opacity-90 z-50 hidden">
-        <div class="flex justify-end p-6">
-            <button id="close-mobile-menu" class="focus:outline-none text-white">
+        <div class="flex justify-between items-center p-6 bg-white">
+            <!-- Logo in mobile menu -->
+            <div class="flex items-center space-x-2">
+                <img src="{{ asset('imgs/logo.png') }}" alt="MurArt Logo" class="h-8 w-auto">
+                <span class="font-heading font-bold text-lg text-dark">MurArt</span>
+            </div>
+            <button id="close-mobile-menu" class="focus:outline-none text-gray-700 hover:text-primary transition-colors duration-200">
                 <i class="fas fa-times text-2xl"></i>
             </button>
         </div>
-        <div class="flex flex-col items-center mt-10 text-white">
-            <a href="{{ route('home') }}" class="py-3 text-xl font-heading font-medium hover:text-primary transition">Accueil</a>
-            <a href="{{ route('shop.index') }}" class="py-3 text-xl font-heading font-medium hover:text-primary transition">Boutique</a>
+        
+        <div class="flex flex-col px-6 py-4 bg-white h-full">
+            <!-- Main Navigation Links -->
+            <div class="space-y-1">
+                <a href="{{ route('home') }}" class="block py-3 text-lg font-medium text-gray-700 hover:text-primary hover:bg-gray-50 rounded-md px-3 transition-colors duration-200 {{ request()->routeIs('home') ? 'text-primary bg-primary bg-opacity-10' : '' }}">
+                    <i class="fas fa-home mr-3"></i>Accueil
+                </a>
+                <a href="{{ route('shop.index') }}" class="block py-3 text-lg font-medium text-gray-700 hover:text-primary hover:bg-gray-50 rounded-md px-3 transition-colors duration-200 {{ request()->routeIs('shop.*') ? 'text-primary bg-primary bg-opacity-10' : '' }}">
+                    <i class="fas fa-store mr-3"></i>Boutique
+                </a>
+                
+                @auth
+                <a href="{{ route('designs.index') }}" class="block py-3 text-lg font-medium text-gray-700 hover:text-primary hover:bg-gray-50 rounded-md px-3 transition-colors duration-200 {{ request()->routeIs('designs.*') ? 'text-primary bg-primary bg-opacity-10' : '' }}">
+                    <i class="fas fa-palette mr-3"></i>Designs
+                </a>
+                <a href="{{ route('artworks.index') }}" class="block py-3 text-lg font-medium text-gray-700 hover:text-primary hover:bg-gray-50 rounded-md px-3 transition-colors duration-200 {{ request()->routeIs('artworks.*') ? 'text-primary bg-primary bg-opacity-10' : '' }}">
+                    <i class="fas fa-paint-brush mr-3"></i>Mes Créations
+                </a>
+                @endauth
+                
+                <a href="{{ route('about') }}" class="block py-3 text-lg font-medium text-gray-700 hover:text-primary hover:bg-gray-50 rounded-md px-3 transition-colors duration-200 {{ request()->routeIs('about') ? 'text-primary bg-primary bg-opacity-10' : '' }}">
+                    <i class="fas fa-info-circle mr-3"></i>À propos
+                </a>
+                <a href="{{ route('contact') }}" class="block py-3 text-lg font-medium text-gray-700 hover:text-primary hover:bg-gray-50 rounded-md px-3 transition-colors duration-200 {{ request()->routeIs('contact') ? 'text-primary bg-primary bg-opacity-10' : '' }}">
+                    <i class="fas fa-envelope mr-3"></i>Contact
+                </a>
+            </div>
             
             @auth
-            <a href="{{ route('designs.index') }}" class="py-3 text-xl font-heading font-medium hover:text-primary transition">Designs</a>
-            <a href="{{ route('artworks.index') }}" class="py-3 text-xl font-heading font-medium hover:text-primary transition">Mes Créations</a>
-            @endauth
-            
-            <a href="{{ route('about') }}" class="py-3 text-xl font-heading font-medium hover:text-primary transition">À propos</a>
-            <a href="{{ route('contact') }}" class="py-3 text-xl font-heading font-medium hover:text-primary transition">Contact</a>
-            
-            @auth
-                <div class="mt-4 pt-4 border-t border-gray-700 w-4/5 flex flex-col items-center">
-                    <span class="text-gray-400 mb-2">{{ Auth::user()->name }}</span>
-                    @if(Auth::user()->hasRole('admin'))
-                        <a href="{{ route('admin.dashboard') }}" class="py-2 text-lg font-medium hover:text-primary transition">Dashboard Admin</a>
-                    @endif
-                    @if(Auth::user()->hasRole('designer'))
-                        <a href="{{ route('designer.designs.index') }}" class="py-2 text-lg font-medium hover:text-primary transition">Designs Manager</a>
-                    @endif
-                    <a href="{{ route('client.dashboard') }}" class="py-2 text-lg font-medium hover:text-primary transition">Mon Compte</a>
-                    <a href="{{ route('cart.index') }}" class="py-2 text-lg font-medium hover:text-primary transition">
-                        Mon Panier
-                        @if(session()->has('cart') && count(session('cart')) > 0)
-                            <span class="ml-2 bg-primary text-white text-xs px-1.5 py-0.5 rounded-full">{{ count(session('cart')) }}</span>
+                <!-- User Section -->
+                <div class="mt-6 pt-6 border-t border-gray-200">
+                    <div class="flex items-center mb-4 px-3">
+                        <div class="w-10 h-10 bg-primary rounded-full flex items-center justify-center text-white font-medium">
+                            {{ substr(Auth::user()->name, 0, 1) }}
+                        </div>
+                        <div class="ml-3">
+                            <p class="text-sm font-medium text-gray-900">{{ Auth::user()->name }}</p>
+                            <p class="text-xs text-gray-500">{{ Auth::user()->email }}</p>
+                        </div>
+                    </div>
+                    
+                    <div class="space-y-1">
+                        @if(Auth::user()->hasRole('admin'))
+                            <a href="{{ route('admin.dashboard') }}" class="block py-2 text-sm font-medium text-gray-700 hover:text-primary hover:bg-gray-50 rounded-md px-3 transition-colors duration-200">
+                                <i class="fas fa-tachometer-alt mr-3"></i>Dashboard Admin
+                            </a>
                         @endif
-                    </a>
-                    <a href="{{ route('logout') }}" class="py-2 text-lg font-medium hover:text-primary transition">Déconnexion</a>
+                        @if(Auth::user()->hasRole('designer'))
+                            <a href="{{ route('designer.designs.index') }}" class="block py-2 text-sm font-medium text-gray-700 hover:text-primary hover:bg-gray-50 rounded-md px-3 transition-colors duration-200">
+                                <i class="fas fa-palette mr-3"></i>Designs Manager
+                            </a>
+                        @endif
+                        <a href="{{ route('client.dashboard') }}" class="block py-2 text-sm font-medium text-gray-700 hover:text-primary hover:bg-gray-50 rounded-md px-3 transition-colors duration-200">
+                            <i class="fas fa-user mr-3"></i>Mon Compte
+                        </a>
+                        <a href="{{ route('client.orders.index') }}" class="block py-2 text-sm font-medium text-gray-700 hover:text-primary hover:bg-gray-50 rounded-md px-3 transition-colors duration-200">
+                            <i class="fas fa-shopping-bag mr-3"></i>Mes Commandes
+                        </a>
+                        <a href="{{ route('client.cart.index') }}" class="block py-2 text-sm font-medium text-gray-700 hover:text-primary hover:bg-gray-50 rounded-md px-3 transition-colors duration-200">
+                            <i class="fas fa-shopping-cart mr-3"></i>Mon Panier
+                            @if(session()->has('cart') && count(session('cart')) > 0)
+                                <span class="ml-2 bg-primary text-white text-xs px-2 py-1 rounded-full">{{ count(session('cart')) }}</span>
+                            @endif
+                        </a>
+                        <form action="{{ route('logout') }}" method="POST" class="m-0">
+                            @csrf
+                            <button type="submit" class="block w-full text-left py-2 text-sm font-medium text-gray-700 hover:text-primary hover:bg-gray-50 rounded-md px-3 transition-colors duration-200">
+                                <i class="fas fa-sign-out-alt mr-3"></i>Déconnexion
+                            </button>
+                        </form>
+                    </div>
                 </div>
             @else
-                <div class="mt-4 pt-4 border-t border-gray-700 w-4/5 flex flex-col items-center">
-                    <a href="{{ route('login') }}" class="py-2 text-lg font-medium hover:text-primary transition">Connexion</a>
-                    <a href="{{ route('registerform') }}" class="py-2 text-lg font-medium hover:text-primary transition">Inscription</a>
+                <!-- Guest Section -->
+                <div class="mt-6 pt-6 border-t border-gray-200 space-y-2">
+                    <a href="{{ route('login') }}" class="block py-3 text-lg font-medium text-gray-700 hover:text-primary hover:bg-gray-50 rounded-md px-3 transition-colors duration-200">
+                        <i class="fas fa-sign-in-alt mr-3"></i>Connexion
+                    </a>
+                    <a href="{{ route('registerform') }}" class="block py-3 text-lg font-medium bg-primary text-white hover:bg-opacity-90 rounded-md px-3 transition-colors duration-200 text-center">
+                        <i class="fas fa-user-plus mr-3"></i>Inscription
+                    </a>
                 </div>
             @endauth
         </div>

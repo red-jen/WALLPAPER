@@ -286,10 +286,10 @@
             
             <!-- Footer Links -->
             <div class="flex-shrink-0 p-4 border-t border-white/10 bg-navy-light/30">
-                <a href="{{ url('/') }}" class="flex items-center gap-3 px-3 py-2 rounded-md text-white hover:bg-white/10 transition-colors duration-150 mb-2">
+                {{-- <a href="{{ url('/') }}" class="flex items-center gap-3 px-3 py-2 rounded-md text-white hover:bg-white/10 transition-colors duration-150 mb-2">
                     <i class="fas fa-home w-5 text-center"></i>
                     <span>Visit Site</span>
-                </a>
+                </a> --}}
                 
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf

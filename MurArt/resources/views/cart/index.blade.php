@@ -81,7 +81,7 @@
                                     </div>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-center">
-                                    <form action="{{ route('cart.updateItem', $item) }}" method="POST" class="flex justify-center">
+                                    <form action="{{ route('client.cart.updateItem', $item) }}" method="POST" class="flex justify-center">
                                         @csrf
                                         @method('PUT')
                                         <select name="quantity" onchange="this.form.submit()" class="rounded border-gray-300 text-center w-16">
@@ -100,7 +100,7 @@
                                     ${{ number_format($item->price * $item->quantity, 2) }}
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-center text-sm font-medium">
-                                    <form action="{{ route('cart.removeItem', $item) }}" method="POST">
+                                    <form action="{{ route('client.cart.removeItem', $item) }}" method="POST">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="text-red-600 hover:text-red-900">
@@ -130,7 +130,7 @@
                     Continue Shopping
                 </a>
                 
-                <a href="{{ route('cart.checkout') }}" class="px-6 py-3 bg-indigo-600 text-white rounded-md hover:bg-indigo-700">
+                <a href="{{ route('client.cart.checkout') }}" class="px-6 py-3 bg-indigo-600 text-white rounded-md hover:bg-indigo-700">
                     Proceed to Checkout
                 </a>
             </div>

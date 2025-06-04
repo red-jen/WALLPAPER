@@ -244,7 +244,7 @@
                                         </div>
                                     </div>
                                     
-                                    <form action="{{ route('artworks.addToCart', $artwork) }}" method="POST" class="mt-4">
+                                    <form action="{{ route('client.artworks.addToCart', $artwork) }}" method="POST" class="mt-4">
                                         @csrf
                                         <button type="submit" class="w-full bg-indigo-600 text-white py-3 px-4 rounded-md hover:bg-indigo-700 flex items-center justify-center">
                                             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">

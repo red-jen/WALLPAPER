@@ -44,7 +44,7 @@ class CartController extends Controller
             $cartItems = $this->getCartItems($request);
 
             if ($cartItems->isEmpty()) {
-                return redirect()->route('cart.index')->with('error', 'Your cart is empty');
+                return redirect()->route('client.cart.index')->with('error', 'Your cart is empty');
             }
 
             // Log cart items for debugging
@@ -371,7 +371,7 @@ class CartController extends Controller
             ]);
         }
 
-        return redirect()->route('cart.index')
+        return redirect()->route('client.cart.index')
             ->with('success', "{$artwork->title} added to your cart.");
     }
 
@@ -387,7 +387,7 @@ class CartController extends Controller
 
         $item->delete();
 
-        return redirect()->route('cart.index')
+        return redirect()->route('client.cart.index')
             ->with('success', 'Item removed from cart.');
     }
 
@@ -421,7 +421,7 @@ class CartController extends Controller
         $cartItems = $this->getCartItems($request);
 
         if ($cartItems->isEmpty()) {
-            return redirect()->route('cart.index')
+            return redirect()->route('client.cart.index')
                 ->with('error', 'Your cart is empty.');
         }
 
@@ -519,7 +519,7 @@ class CartController extends Controller
                 'trace' => $e->getTraceAsString()
             ]);
 
-            return redirect()->route('cart.index')
+            return redirect()->route('client.cart.index')
                 ->with('error', 'There was an issue with your order. Please try again or contact support.');
         }
     }

@@ -6,6 +6,31 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>@yield('title') - MurArt</title>
     
+    <!-- Favicon and App Icons -->
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('imgs/logo.png') }}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('imgs/logo.png') }}">
+    <link rel="apple-touch-icon" href="{{ asset('imgs/logo.png') }}">
+    <link rel="shortcut icon" href="{{ asset('imgs/logo.png') }}">
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="@yield('description', 'MurArt - Create custom artistic wallpapers with our unique designs. Transform your walls into works of art.')">
+    <meta name="keywords" content="wallpaper, wall art, decoration, design, custom, artistic">
+    <meta name="author" content="MurArt">
+    
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:title" content="@yield('title', 'MurArt')">
+    <meta property="og:description" content="@yield('description', 'MurArt - Create custom artistic wallpapers with our unique designs.')">
+    <meta property="og:image" content="{{ asset('imgs/logo.png') }}">
+    <meta property="og:url" content="{{ url()->current() }}">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="MurArt">
+    
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="@yield('title', 'MurArt')">
+    <meta name="twitter:description" content="@yield('description', 'MurArt - Create custom artistic wallpapers with our unique designs.')">
+    <meta name="twitter:image" content="{{ asset('imgs/logo.png') }}">
+    
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Font Awesome -->
@@ -21,7 +46,7 @@
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container">
             <a class="navbar-brand" href="{{ route('home') }}">
-                <img src="{{ asset('images/logo.png') }}" alt="MurArt Logo" height="40">
+                <img src="{{ asset('imgs/logo.png') }}" alt="MurArt Logo" height="40">
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
@@ -29,7 +54,7 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav me-auto">
                     <li class="nav-item">
-                        <a class="nav-link {{ request()->routeIs('home') ? 'active' : '' }}" href="{{ route('home') }}">Home</a>
+                        <a class="nav-link {{ request()->routeIs('home') ? 'active' : '' }}" href="{{ route('home') }}">Homell</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link {{ request()->routeIs('shop.*') ? 'active' : '' }}" href="{{ route('shop.index') }}">Shop</a>

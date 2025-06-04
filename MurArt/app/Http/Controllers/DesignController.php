@@ -61,7 +61,7 @@ class DesignController extends Controller
             'category_id' => $validatedData['category_id'],
         ]);
 
-        return redirect()->route('designs.show', $design)
+        return redirect()->route('designer.designs.show', $design)
             ->with('success', 'Design created successfully!');
     }
 
@@ -133,7 +133,7 @@ class DesignController extends Controller
         $design->category_id = $validatedData['category_id'];
         $design->save();
 
-        return redirect()->route('designs.show', $design)
+        return redirect()->route('designer.designs.show', $design)
             ->with('success', 'Design updated successfully!');
     }
 
@@ -156,7 +156,7 @@ class DesignController extends Controller
         // Delete the design
         $design->delete();
 
-        return redirect()->route('designs.index')
+        return redirect()->route('designer.designs.index')
             ->with('success', 'Design deleted successfully!');
     }
 }

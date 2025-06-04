@@ -46,7 +46,7 @@ class AuthentificationController extends Controller
         } else if ($user->isAdmin()) {
             return redirect()->route('admin.dashboard');
         }else{
-            return redirect()->route('/');
+            return redirect()->route('home');
         }
     }
 
@@ -87,7 +87,7 @@ class AuthentificationController extends Controller
                     // return redirect()->route('designer.designs.create');
                 case 'client':
                 default:
-                    return redirect()->route('/');
+                    return redirect()->route('home');
             }
         }
         
