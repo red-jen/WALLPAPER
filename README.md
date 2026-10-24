@@ -13,13 +13,13 @@ A Laravel 12 wallpaper ecommerce application for browsing, purchasing, and manag
 
 ## 🚀 Deployment
 
-See [DEPLOY.md](DEPLOY.md) for instructions on deploying to Railway with PostgreSQL.
+See [DEPLOY.md](DEPLOY.md) for instructions on deploying to Render with PostgreSQL.
 
 Quick start:
-1. Connect GitHub repo to Railway
-2. Add PostgreSQL database
-3. Set environment variables (APP_KEY, APP_URL)
-4. Deploy automatically
+1. Connect GitHub repo to Render via Blueprint
+2. PostgreSQL database auto-provisioned
+3. Set APP_URL to your Render domain
+4. Deploy automatically with migrations
 
 ---
 
