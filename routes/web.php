@@ -27,6 +27,12 @@ use App\Http\Controllers\Client\DesignController as ClientDesignController;
 
 
 use App\Http\Controllers\Admin\ArtworkController;
+
+// Health check endpoint for Railway
+Route::get('/health', function () {
+    return response('OK', 200);
+});
+
 // Home route
 
 

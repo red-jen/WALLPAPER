@@ -7,6 +7,22 @@
 <a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
 </p>
 
+# MurArt - Wallpaper Ecommerce Platform
+
+A Laravel 12 wallpaper ecommerce application for browsing, purchasing, and managing artistic wall papers.
+
+## 🚀 Deployment
+
+See [DEPLOY.md](DEPLOY.md) for instructions on deploying to Railway with PostgreSQL.
+
+Quick start:
+1. Connect GitHub repo to Railway
+2. Add PostgreSQL database
+3. Set environment variables (APP_KEY, APP_URL)
+4. Deploy automatically
+
+---
+
 ## About Laravel
 
 Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
