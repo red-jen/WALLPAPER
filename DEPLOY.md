@@ -169,46 +169,44 @@ Wasmer Anybuild for Laravel:
 
 Since Wasmer Edge uses a specific app config schema that doesn't support Railway-style `app.yaml` files, you must configure migrations directly in the **Wasmer Dashboard**.
 
-**For Initial Deploy / Database Recovery** (half-migrated state):
+**For Initial Deploy / Production** (Safe - Preserves Data):
 
 1. Go to **Wasmer Dashboard** → Your App → **Settings**
 2. Look for **Jobs**, **After Deploy**, or **Post-Deploy Hooks** section
 3. Set the migration command to:
    ```bash
-   php artisan migrate:fresh --force --no-interaction && php artisan config:cache && php artisan route:cache && php artisan view:cache
-   ```
-
-**Why migrate:fresh initially?**
-- Drops ALL tables and recreates them
-- Recovers from half-migrated database state (free tier has no console access)
-- Ensures migrations run in correct order (artworks before tags)
-
-**⚠️ CRITICAL: After First Successful Deploy**
-
-Once all migrations have been applied successfully:
-
-1. Go back to **Wasmer Dashboard** → Your App → **Settings**
-2. Change the migration command to:
-   ```bash
    php artisan migrate --force --no-interaction && php artisan config:cache && php artisan route:cache && php artisan view:cache
    ```
 
-**Why change to migrate?**
-- `migrate:fresh` wipes ALL data on every deploy (dangerous!)
-- `migrate` only adds new migrations, preserving existing data
-- Production apps MUST use `migrate` (not `migrate:fresh`) to keep data safe
+**⚠️ IMPORTANT**: Use `migrate` (NOT `migrate:fresh`) for production. This preserves existing data and only runs new migrations.
+
+**For Database Recovery ONLY** (Wipes All Data):
+
+If you need to recover from a broken database state (half-migrated tables):
+1. **BACKUP YOUR DATA FIRST** (if any)
+2. Temporarily set command to:
+   ```bash
+   php artisan migrate:fresh --force --no-interaction && php artisan config:cache && php artisan route:cache && php artisan view:cache
+   ```
+3. **Immediately change back to `migrate --force` after successful deploy**
+
+**Why NOT migrate:fresh by default?**
+- `migrate:fresh` drops ALL tables and recreates from scratch
+- **Wipes ALL data** on every deploy
+- Only use for initial setup or emergency database recovery
+- Production must use `migrate` to preserve data
 
 #### If Dashboard Doesn't Have Post-Deploy Configuration
 
 If Wasmer doesn't provide a post-deploy hooks UI:
 
-**Option 1: Use Start Command** (runs migrations before starting app)
+**If Dashboard Doesn't Have Post-Deploy Configuration**
+
+If Wasmer doesn't provide a post-deploy hooks UI:
+
+**Option 1: Use Start Command** (Production-Safe)
 1. Go to **Settings** → **Start Command**
 2. Set to:
-   ```bash
-   php artisan migrate:fresh --force --no-interaction && php artisan config:cache && php -S 0.0.0.0:8080 -t public/
-   ```
-3. After first successful deploy, change to:
    ```bash
    php artisan migrate --force --no-interaction && php artisan config:cache && php -S 0.0.0.0:8080 -t public/
    ```
@@ -444,9 +442,10 @@ Configure the migration command directly in Wasmer Dashboard:
 2. Look for **Jobs**, **After Deploy**, **Post-Deploy Hooks**, or **Start Command**
 3. Set to:
    ```bash
-   php artisan migrate:fresh --force --no-interaction && php artisan config:cache
+   php artisan migrate --force --no-interaction && php artisan config:cache
    ```
-   (Use `migrate:fresh` for recovery, then change to `migrate` after first success)
+
+**⚠️ Use `migrate` NOT `migrate:fresh`**: The `migrate` command adds new migrations safely without wiping data. Only use `migrate:fresh` for emergency database recovery (wipes ALL data).
 
 **Solution 2: Emergency APP_ENV Workaround**
 
