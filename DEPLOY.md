@@ -139,7 +139,7 @@ DB_CONNECTION=pgsql
 
 This works with external PostgreSQL providers or if Wasmer offers PostgreSQL add-ons.
 
-### Step 6: Deploy and Configure Non-Interactive Migrations
+### Step 6: Configure Migrations in Wasmer Dashboard
 
 **CRITICAL**: Wasmer's Anybuild always injects `after_deploy: php artisan migrate` (without `--force`), which hangs on production's "Are you sure? (yes/no)" prompt.
 
@@ -154,68 +154,61 @@ Wasmer Anybuild for Laravel:
 
 **Problem**: The injected `after_deploy` command prompts "Do you really wish to run this command?" with no TTY, causing deployment to hang.
 
-#### Solution: Override after_deploy in app.yaml
+#### Solution: Configure in Wasmer Dashboard
 
-This repository includes an `app.yaml` file that **overrides** Wasmer's default `after_deploy`:
+Since Wasmer Edge uses a specific app config schema that doesn't support Railway-style `app.yaml` files, you must configure migrations directly in the **Wasmer Dashboard**.
 
-```yaml
-after_deploy:
-  - php artisan migrate --force --no-interaction
-  - php artisan config:cache
-  - php artisan route:cache
-  - php artisan view:cache
-```
+**For Initial Deploy / Database Recovery** (half-migrated state):
 
-**⚠️ IMPORTANT - Recovery Note**: The current commit temporarily uses `migrate:fresh` instead of `migrate` to recover from a half-migrated database state on Wasmer free tier (which has no console access). 
+1. Go to **Wasmer Dashboard** → Your App → **Settings**
+2. Look for **Jobs**, **After Deploy**, or **Post-Deploy Hooks** section
+3. Set the migration command to:
+   ```bash
+   php artisan migrate:fresh --force --no-interaction && php artisan config:cache && php artisan route:cache && php artisan view:cache
+   ```
 
-**Current app.yaml** (TEMPORARY - for recovery):
-```yaml
-after_deploy:
-  - php artisan migrate:fresh --force --no-interaction  # ⚠️ Drops all tables!
-  - php artisan config:cache
-  - php artisan route:cache
-  - php artisan view:cache
-```
+**Why migrate:fresh initially?**
+- Drops ALL tables and recreates them
+- Recovers from half-migrated database state (free tier has no console access)
+- Ensures migrations run in correct order (artworks before tags)
 
-**After successful deployment** with all migrations applied, **you MUST** change it back to:
-```yaml
-after_deploy:
-  - php artisan migrate --force --no-interaction  # ✅ Safe for production
-  - php artisan config:cache
-  - php artisan route:cache
-  - php artisan view:cache
-```
+**⚠️ CRITICAL: After First Successful Deploy**
 
-**Why migrate:fresh is temporary**: It drops and recreates all tables, wiping all data. Only use this for initial setup or database recovery when you have no console access. Production deployments should use `migrate` (not `migrate:fresh`) to preserve data.
+Once all migrations have been applied successfully:
 
-**How to Apply**:
+1. Go back to **Wasmer Dashboard** → Your App → **Settings**
+2. Change the migration command to:
+   ```bash
+   php artisan migrate --force --no-interaction && php artisan config:cache && php artisan route:cache && php artisan view:cache
+   ```
 
-1. This `app.yaml` is already in the repository
-2. After connecting GitHub, go to **Wasmer Dashboard** → Your App
-3. Navigate to **Settings** → **Yaml** (or **Build Configuration**)
-4. You should see the `app.yaml` content auto-loaded
-5. If not, paste the content from `app.yaml` and save
-6. Trigger a new deployment
+**Why change to migrate?**
+- `migrate:fresh` wipes ALL data on every deploy (dangerous!)
+- `migrate` only adds new migrations, preserving existing data
+- Production apps MUST use `migrate` (not `migrate:fresh`) to keep data safe
 
-The `after_deploy` override runs migrations with `--force --no-interaction`, preventing the hang.
+#### If Dashboard Doesn't Have Post-Deploy Configuration
 
-#### Emergency Workaround (If Yaml Override Doesn't Work)
+If Wasmer doesn't provide a post-deploy hooks UI:
 
-If Wasmer still ignores the `app.yaml` override:
+**Option 1: Use Start Command** (runs migrations before starting app)
+1. Go to **Settings** → **Start Command**
+2. Set to:
+   ```bash
+   php artisan migrate:fresh --force --no-interaction && php artisan config:cache && php -S 0.0.0.0:8080 -t public/
+   ```
+3. After first successful deploy, change to:
+   ```bash
+   php artisan migrate --force --no-interaction && php artisan config:cache && php -S 0.0.0.0:8080 -t public/
+   ```
 
-**Temporary Fix**: Set environment variable to bypass production prompt:
+**Option 2: Emergency Workaround** (bypass production prompt)
+Set environment variable temporarily:
 ```bash
 APP_ENV=staging  # Laravel only prompts when APP_ENV=production
 ```
 
 This allows plain `php artisan migrate` to run without prompting. Change back to `APP_ENV=production` after migrations complete.
-
-**Better Fix**: Use Dashboard Start Command (runs migrations before starting):
-```bash
-php artisan migrate --force --no-interaction && php artisan config:cache && php -S 0.0.0.0:8080 -t public/
-```
-
-But note: Wasmer's `after_deploy` may still run separately and hang. The `app.yaml` override is the proper solution.
 
 #### Deploy Steps
 
@@ -224,12 +217,12 @@ But note: Wasmer's `after_deploy` may still run separately and hang. The `app.ya
    - Detect Laravel application
    - Run `composer install --no-scripts --no-interaction`
    - Run `npm install && npm run build`
-   - Execute custom `after_deploy` from `app.yaml` (with --force ✅)
+   - Run your configured migration command (from Dashboard settings)
    - Start: `php -S 0.0.0.0:8080 -t public/`
 
 3. Monitor build logs for:
-   - ✅ "Running after_deploy"
-   - ✅ "php artisan migrate --force --no-interaction"
+   - ✅ Migration command executing (configured in Dashboard)
+   - ✅ "php artisan migrate:fresh --force" (first deploy) or "migrate --force"
    - ✅ Migration output showing tables created
    - ❌ NO "Do you really wish to run this command?" prompt
 
@@ -432,25 +425,17 @@ Then deployment hangs and times out.
 - No TTY available to provide input
 - Deployment hangs indefinitely
 
-**Solution 1: app.yaml Override (PRIMARY)**
+**Solution 1: Configure in Wasmer Dashboard (PRIMARY)**
 
-Override the injected `after_deploy` command in `app.yaml`:
+Configure the migration command directly in Wasmer Dashboard:
 
-```yaml
-after_deploy:
-  - php artisan migrate --force --no-interaction
-  - php artisan config:cache
-  - php artisan route:cache
-  - php artisan view:cache
-```
-
-**This repository includes the corrected `app.yaml`.**
-
-To apply:
-1. Go to Wasmer Dashboard → Your App → **Settings** → **Yaml**
-2. Verify `app.yaml` content is loaded (should show after_deploy with --force)
-3. If not auto-loaded, copy from repository and paste
-4. Save and redeploy
+1. Go to Wasmer Dashboard → Your App → **Settings**
+2. Look for **Jobs**, **After Deploy**, **Post-Deploy Hooks**, or **Start Command**
+3. Set to:
+   ```bash
+   php artisan migrate:fresh --force --no-interaction && php artisan config:cache
+   ```
+   (Use `migrate:fresh` for recovery, then change to `migrate` after first success)
 
 **Solution 2: Emergency APP_ENV Workaround**
 
@@ -465,14 +450,14 @@ APP_ENV=staging  # or local, testing - anything except "production"
 
 **Important**: Change back to `APP_ENV=production` after migrations complete for proper security settings.
 
-**Solution 3: Dashboard Start Command (Partial)**
+**Solution 3: Start Command** (if no post-deploy hooks)
 
-Set Start Command to run migrations first:
+If Wasmer doesn't have a separate post-deploy config, use Start Command:
 ```bash
 php artisan migrate --force --no-interaction && php artisan config:cache && php -S 0.0.0.0:8080 -t public/
 ```
 
-**Note**: This runs migrations before starting the app, but Wasmer's `after_deploy` may still run separately and hang. Use app.yaml override for complete fix.
+Note: This runs migrations on every container start, which may cause issues with multiple instances.
 
 ### HTTP 500 Error - Empty Database
 
@@ -527,7 +512,6 @@ If migrations still don't run:
 5. Starts application with configured start command
 
 **Files That Wasmer Respects**:
-- ✅ `app.yaml` - **PRIMARY CONFIG** - Settings → Yaml in dashboard
 - ✅ `package.json` - npm dependencies and build scripts
 - ✅ `composer.json` - PHP dependencies (but scripts are disabled with --no-scripts)
 - ⚠️ `Procfile` - May work but not confirmed for Wasmer
@@ -535,9 +519,10 @@ If migrations still don't run:
 
 **Files That DON'T Work on Wasmer**:
 - ❌ `composer.json` scripts (disabled with --no-scripts flag)
+- ❌ `app.yaml` with Railway-style fields (Wasmer requires wasmer.io/App.v1 schema)
 - ❌ Custom deployment hooks in wasmer.toml (unsupported keys)
 
-**The Fix**: Override `after_deploy` in `app.yaml` to add `--force --no-interaction` flags.
+**Configuration Location**: Use **Wasmer Dashboard** → **Settings** for post-deploy hooks and start commands.
 
 ## Performance & Limitations
 
