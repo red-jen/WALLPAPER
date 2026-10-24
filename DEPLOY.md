@@ -113,11 +113,20 @@ DB_DATABASE=murart  # Set to match your Wasmer DB_NAME value
 # DB_HOST, DB_PORT, DB_USERNAME, DB_PASSWORD
 # (auto-injected by Wasmer database add-on)
 
-# Cache, Session, Queue
+# Session Driver
+SESSION_DRIVER=database  # Requires sessions table migration (included)
+# Or use: SESSION_DRIVER=file  # Simpler alternative, no database table needed
+
+# Cache, Queue
 CACHE_STORE=database
-SESSION_DRIVER=database
 QUEUE_CONNECTION=database
 ```
+
+**Note on SESSION_DRIVER**: 
+- `SESSION_DRIVER=database` requires the `sessions` table (migration included in this repository)
+- `SESSION_DRIVER=file` stores sessions in `storage/framework/sessions/` (simpler, no database table)
+- For production with multiple servers, use `database` or `redis`
+- For single-server or testing, `file` works fine
 
 ### Step 5: Database Connection Setup
 
