@@ -41,9 +41,19 @@ Wasmer Edge provides database add-ons:
 3. Wasmer will automatically inject environment variables:
    - `DB_HOST`
    - `DB_PORT`
-   - `DB_DATABASE`
+   - `DB_NAME` ⚠️ (Wasmer injects this, but Laravel reads `DB_DATABASE`)
    - `DB_USERNAME`
    - `DB_PASSWORD`
+
+**⚠️ IMPORTANT - Database Name Variable**: Wasmer injects `DB_NAME`, but Laravel reads `DB_DATABASE`. You must **manually add** `DB_DATABASE` environment variable:
+
+```bash
+DB_DATABASE=${DB_NAME}  # Copy the value from DB_NAME
+# Or set it to the same database name directly:
+DB_DATABASE=murart
+```
+
+Without this mapping, Laravel won't find your database and migrations will fail.
 
 #### Option B: External Database
 
@@ -93,8 +103,13 @@ APP_KEY=base64:YOUR_GENERATED_KEY_HERE  # CRITICAL - Generate this first!
 
 # Database - Choose MySQL OR PostgreSQL based on your setup
 DB_CONNECTION=mysql  # or 'pgsql' for PostgreSQL
-# DB_HOST, DB_PORT, DB_DATABASE, DB_USERNAME, DB_PASSWORD
-# (auto-injected if using Wasmer database add-on)
+
+# IMPORTANT: Wasmer injects DB_NAME, but Laravel reads DB_DATABASE
+# You MUST manually set DB_DATABASE to the same value as DB_NAME
+DB_DATABASE=murart  # Set to match your Wasmer DB_NAME value
+
+# DB_HOST, DB_PORT, DB_USERNAME, DB_PASSWORD
+# (auto-injected by Wasmer database add-on)
 
 # Cache, Session, Queue
 CACHE_STORE=database
@@ -313,6 +328,48 @@ Wasmer Edge auto-deploys when you push to the connected branch.
 - **Composer errors**: Check that `composer.json` is valid and dependencies are compatible
 - **npm errors**: Verify `package.json` and that Vite build succeeds locally
 - **Check Wasmer build logs** for specific error messages
+
+### Database Connection Fails
+
+**Symptom**: Migrations fail with:
+```
+SQLSTATE[HY000] [1049] Unknown database 'murart'
+```
+or similar "unknown database" error.
+
+**Cause**: Wasmer injects `DB_NAME` environment variable, but Laravel reads `DB_DATABASE`.
+
+**Solution**:
+1. Go to Wasmer Dashboard → Your App → **Settings** → **Environment Variables**
+2. Check if `DB_NAME` exists (injected by Wasmer)
+3. Add a new variable: `DB_DATABASE` with the same value as `DB_NAME`
+   ```bash
+   DB_DATABASE=murart  # Use the same value as DB_NAME
+   ```
+4. Save and redeploy
+
+**Verification**:
+```bash
+# Via Wasmer console
+php artisan tinker
+>>> DB::connection()->getDatabaseName()
+=> "murart"  # Should show your database name
+```
+
+### Migration Foreign Key Errors
+
+**Symptom**: Migration fails with:
+```
+SQLSTATE[HY000]: General error: 1824 Failed to open the referenced table 'artworks'
+```
+
+**Cause**: Migration tried to create a foreign key before the referenced table exists. This has been **fixed in this repository** by reordering migrations.
+
+**Migration Order (Correct)**:
+1. `2025_03_16_063551_artworks.php` - Creates `artworks` table FIRST
+2. `2025_03_17_063827_tags.php` - Creates `artwork_tag` pivot with FK to artworks
+
+If you still see this error, ensure you're deploying from the latest commit where migration order is fixed.
 
 ### Database Connection Issues
 
