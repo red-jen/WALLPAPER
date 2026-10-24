@@ -1,0 +1,27 @@
+[package]
+name = "red-jen/murart"
+version = "0.1.0"
+description = "MurArt - Laravel wallpaper ecommerce platform"
+
+[[module]]
+name = "murart"
+source = "php/php:8.3"
+abi = "wasi"
+
+[module.interfaces]
+wasi = "0.1.0-unstable"
+
+[fs]
+"/app" = "."
+
+[command]
+name = "serve"
+module = "murart"
+runner = "https://webc.org/runner/wasi"
+
+[command.annotations.wasi]
+main-args = ["-S", "0.0.0.0:8080", "-t", "/app/public"]
+env = [
+    "APP_ENV=production",
+    "APP_DEBUG=false"
+]

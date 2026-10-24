@@ -13,13 +13,14 @@ A Laravel 12 wallpaper ecommerce application for browsing, purchasing, and manag
 
 ## 🚀 Deployment
 
-See [DEPLOY.md](DEPLOY.md) for instructions on deploying to Render with PostgreSQL.
+See [DEPLOY.md](DEPLOY.md) for instructions on deploying to **Wasmer Edge** (free, no credit card), Render, or Railway.
 
-Quick start:
-1. Connect GitHub repo to Render via Blueprint
-2. PostgreSQL database auto-provisioned
-3. Set APP_URL to your Render domain
-4. Deploy automatically with migrations
+### Quick Start (Wasmer Edge - Free!)
+1. Sign up at [wasmer.io](https://wasmer.io) (no credit card)
+2. Connect GitHub repo: https://github.com/red-jen/WALLPAPER
+3. Add database (MySQL or PostgreSQL)
+4. Set `APP_KEY` and `DB_CONNECTION` environment variables
+5. Deploy automatically → Get public URL at `*.wasmer.app`
 
 ---
 
