@@ -18,6 +18,8 @@ This guide explains how to deploy the MurArt Laravel wallpaper ecommerce applica
 5. Authorize Wasmer and select the **WALLPAPER** repository
 6. Choose branch: `cursor/railway-deployment-c148` (or `main` after PR merge)
 
+**Note on Migrations**: Migration timestamps have been reordered to ensure proper foreign key dependency order on MySQL. All base tables are created before dependent tables reference them (e.g., `designs` before `design_paper` pivot, `categories` before `wallpapers.category_id`, etc.).
+
 ### Step 2: Configure Deployment
 
 Wasmer will auto-detect the Laravel application and:
