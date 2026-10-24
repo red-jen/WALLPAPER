@@ -19,8 +19,7 @@ return new class extends Migration
                     'preview_status',
                     'preview_image_path',
                     'preview_updated_at',
-                    'status_notes',
-                    'feedback'
+                    'status_notes'
                 ]);
             }
         });
