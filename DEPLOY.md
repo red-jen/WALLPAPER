@@ -166,6 +166,28 @@ after_deploy:
   - php artisan view:cache
 ```
 
+**⚠️ IMPORTANT - Recovery Note**: The current commit temporarily uses `migrate:fresh` instead of `migrate` to recover from a half-migrated database state on Wasmer free tier (which has no console access). 
+
+**Current app.yaml** (TEMPORARY - for recovery):
+```yaml
+after_deploy:
+  - php artisan migrate:fresh --force --no-interaction  # ⚠️ Drops all tables!
+  - php artisan config:cache
+  - php artisan route:cache
+  - php artisan view:cache
+```
+
+**After successful deployment** with all migrations applied, **you MUST** change it back to:
+```yaml
+after_deploy:
+  - php artisan migrate --force --no-interaction  # ✅ Safe for production
+  - php artisan config:cache
+  - php artisan route:cache
+  - php artisan view:cache
+```
+
+**Why migrate:fresh is temporary**: It drops and recreates all tables, wiping all data. Only use this for initial setup or database recovery when you have no console access. Production deployments should use `migrate` (not `migrate:fresh`) to preserve data.
+
 **How to Apply**:
 
 1. This `app.yaml` is already in the repository
