@@ -14,6 +14,11 @@ wasi = "0.1.0-unstable"
 [fs]
 "/app" = "."
 
+# Build/deploy hook - runs migrations non-interactively
+[build]
+command = "php artisan migrate --force && php artisan config:cache && php artisan route:cache && php artisan view:cache"
+
+# Main serve command
 [command]
 name = "serve"
 module = "murart"
@@ -25,3 +30,8 @@ env = [
     "APP_ENV=production",
     "APP_DEBUG=false"
 ]
+
+# Post-deploy hook (alternative/fallback if [build] doesn't work)
+[[hooks]]
+type = "post-deploy"
+command = "php artisan migrate --force"

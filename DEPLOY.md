@@ -58,14 +58,35 @@ Add the connection details manually in Wasmer environment variables.
 
 Add these in the Wasmer Edge dashboard under **Settings** → **Environment Variables**:
 
+#### ⚠️ CRITICAL: APP_KEY Required
+
+**You MUST set APP_KEY before deploying** or the app will fail with encryption errors.
+
+Generate APP_KEY locally:
+```bash
+php -r "echo 'base64:' . base64_encode(random_bytes(32)) . PHP_EOL;"
+```
+
+Example output:
+```
+base64:XvK8jNW5rM3pQ7sT9wZ2bC4dE6fG7hJ8iK9lM0nO1pQ=
+```
+
+Or if you have PHP/Laravel CLI access:
+```bash
+php artisan key:generate --show
+```
+
+**⚠️ Never commit APP_KEY to Git** - only set it in Wasmer environment variables.
+
 #### Required Variables
 
 ```bash
-# Application
+# Application (REQUIRED!)
 APP_NAME=MurArt
 APP_ENV=production
 APP_DEBUG=false
-APP_KEY=base64:YOUR_GENERATED_KEY_HERE
+APP_KEY=base64:YOUR_GENERATED_KEY_HERE  # CRITICAL - Generate this first!
 
 # Important: APP_URL will be auto-set by Wasmer
 # Format: https://your-app.wasmer.app
@@ -79,18 +100,6 @@ DB_CONNECTION=mysql  # or 'pgsql' for PostgreSQL
 CACHE_STORE=database
 SESSION_DRIVER=database
 QUEUE_CONNECTION=database
-```
-
-#### Generate APP_KEY
-
-Run locally or use an online generator:
-```bash
-php -r "echo 'base64:' . base64_encode(random_bytes(32)) . PHP_EOL;"
-```
-
-Or if you have PHP/Laravel CLI access:
-```bash
-php artisan key:generate --show
 ```
 
 ### Step 5: Database Connection Setup
@@ -122,25 +131,32 @@ This works with external PostgreSQL providers or if Wasmer offers PostgreSQL add
    - Install Composer dependencies
    - Run `npm install && npm run build` for Vite assets
    - Configure PHP 8.3 runtime
+   - **Automatically run migrations** via `wasmer.toml` deployment hooks
    - Start the application
 
 3. Deployment takes ~2-5 minutes
 
-### Step 7: Run Migrations
+### Step 7: Migrations (Automatic!)
 
-After first deployment:
+**Good news**: Migrations run automatically on each deploy via the `wasmer.toml` configuration.
 
-1. Go to your app dashboard in Wasmer
-2. Open **Console** or **Shell** (if available)
-3. Run migrations:
-   ```bash
-   php artisan migrate --force
-   ```
+The deployment includes:
+```bash
+php artisan migrate --force  # Non-interactive, safe for production
+php artisan config:cache      # Cache configuration
+php artisan route:cache       # Cache routes
+php artisan view:cache        # Cache views
+```
 
-**Note**: If Wasmer doesn't provide a console, you may need to:
-- Add a migration command to your deployment process
-- Use a one-time startup script
-- Check Wasmer docs for automated migration support
+**Why `--force`?** Without the `--force` flag, Laravel asks "Are you sure? (yes/no)" in production, which hangs deployments since there's no TTY for input. The `wasmer.toml` configuration ensures migrations always run non-interactively.
+
+**Manual migrations** (if needed):
+If you need to run migrations manually via Wasmer console:
+```bash
+php artisan migrate --force  # Always use --force!
+```
+
+**Never use** `php artisan migrate` without `--force` in production - it will hang waiting for confirmation.
 
 ### Step 8: Verify Deployment
 
@@ -260,13 +276,30 @@ Wasmer Edge auto-deploys when you push to the connected branch.
 - Ensure `public/build` directory exists
 - Check asset paths in browser developer console
 
+### Deployment Hangs or Times Out
+
+**Symptom**: Deployment hangs during migration step and eventually times out.
+
+**Cause**: Laravel's `php artisan migrate` prompts "Are you sure? (yes/no)" in production, but there's no TTY to provide input.
+
+**Solution**: The `wasmer.toml` configuration includes `php artisan migrate --force` which runs migrations non-interactively. If you still experience hangs:
+
+1. Check that `wasmer.toml` is present and includes the deployment hooks
+2. Verify the build command uses `--force`: `php artisan migrate --force`
+3. Never run `php artisan migrate` without `--force` in Wasmer console
+4. Check Wasmer build logs for the actual command being executed
+
+**Fixed in this PR**: The `wasmer.toml` now includes proper deployment hooks to prevent this issue.
+
 ### Migrations Not Running
 
-Wasmer may not auto-run migrations. Options:
-1. Run manually via Wasmer console: `php artisan migrate --force`
-2. Add a post-deploy hook if Wasmer supports it
-3. Use a Laravel package for auto-migrations
-4. Check Wasmer Edge documentation for deployment hooks
+**Updated**: Migrations now run automatically via `wasmer.toml` deployment hooks using `php artisan migrate --force`.
+
+If migrations don't run:
+1. Check Wasmer build/deployment logs for errors
+2. Verify `APP_KEY` is set (migrations fail without it)
+3. Verify database connection (check `DB_*` environment variables)
+4. Run manually if needed: `php artisan migrate --force` (always use `--force`!)
 
 ## Performance & Limitations
 
