@@ -124,39 +124,78 @@ DB_CONNECTION=pgsql
 
 This works with external PostgreSQL providers or if Wasmer offers PostgreSQL add-ons.
 
-### Step 6: Deploy
+### Step 6: Deploy and Configure Start Command
+
+**IMPORTANT**: Wasmer's Anybuild auto-detects Laravel and may run plain `php artisan migrate` (which hangs). We need to ensure migrations run non-interactively.
+
+#### Three Solutions Implemented
+
+This repository includes **three approaches** to ensure non-interactive migrations:
+
+**1. Composer Post-Install Script** (Automatic)
+- Runs after `composer install` during deployment
+- Added to `composer.json`:
+  ```json
+  "post-install-cmd": [
+    "@php artisan migrate --force --no-interaction",
+    "@php artisan config:cache --no-interaction",
+    "@php artisan route:cache --no-interaction",
+    "@php artisan view:cache --no-interaction"
+  ]
+  ```
+- Wasmer runs this automatically ✅
+
+**2. Procfile** (Platform Standard)
+- Standard deployment config used by Heroku, Railway, etc.
+- `Procfile` includes:
+  ```
+  release: php artisan migrate --force && php artisan config:cache
+  web: php -S 0.0.0.0:8080 -t public/
+  ```
+- Wasmer may respect this ✅
+
+**3. Dashboard Start Command Override** (Manual Fallback)
+
+If Anybuild still runs plain `php artisan migrate`:
+
+1. Go to your app in Wasmer Dashboard
+2. Click **Settings** or **Build & Deploy**
+3. Find **Start Command** or **Run Command**
+4. Override with:
+   ```bash
+   php artisan migrate --force --no-interaction && php artisan config:cache && php -S 0.0.0.0:8080 -t public/
+   ```
+5. Save and redeploy
+
+#### Deploy Steps
 
 1. Click **Deploy** in Wasmer dashboard
-2. Wasmer will:
-   - Install Composer dependencies
+2. Wasmer Anybuild will:
+   - Detect Laravel application
+   - Run `composer install` (triggers post-install-cmd with migrate --force)
    - Run `npm install && npm run build` for Vite assets
    - Configure PHP 8.3 runtime
-   - **Automatically run migrations** via `wasmer.toml` deployment hooks
    - Start the application
 
-3. Deployment takes ~2-5 minutes
+3. Monitor the build logs:
+   - ✅ Look for "Running post-install-cmd" with migrate --force
+   - ❌ If you see plain "php artisan migrate" prompting yes/no, use Dashboard override (Solution 3)
 
-### Step 7: Migrations (Automatic!)
+4. Deployment takes ~2-5 minutes
 
-**Good news**: Migrations run automatically on each deploy via the `wasmer.toml` configuration.
+### Step 7: Verify Migrations
 
-The deployment includes:
-```bash
-php artisan migrate --force  # Non-interactive, safe for production
-php artisan config:cache      # Cache configuration
-php artisan route:cache       # Cache routes
-php artisan view:cache        # Cache views
-```
+After deployment, check that migrations ran:
 
-**Why `--force`?** Without the `--force` flag, Laravel asks "Are you sure? (yes/no)" in production, which hangs deployments since there's no TTY for input. The `wasmer.toml` configuration ensures migrations always run non-interactively.
+1. Visit your app at `https://wallpaper-red-jen.wasmer.app`
+2. If you see HTTP 500 errors, migrations may not have run
+3. Check Wasmer build logs for migration output
+4. If needed, run manually via Wasmer console:
+   ```bash
+   php artisan migrate --force --no-interaction
+   ```
 
-**Manual migrations** (if needed):
-If you need to run migrations manually via Wasmer console:
-```bash
-php artisan migrate --force  # Always use --force!
-```
-
-**Never use** `php artisan migrate` without `--force` in production - it will hang waiting for confirmation.
+**Why three solutions?** Different platforms respect different conventions. This ensures migrations work regardless of Wasmer's specific Anybuild implementation.
 
 ### Step 8: Verify Deployment
 
@@ -276,30 +315,114 @@ Wasmer Edge auto-deploys when you push to the connected branch.
 - Ensure `public/build` directory exists
 - Check asset paths in browser developer console
 
-### Deployment Hangs or Times Out
+### Deployment Hangs on Migration Prompt
 
-**Symptom**: Deployment hangs during migration step and eventually times out.
+**Symptom**: Wasmer build logs show:
+```
+Running: php artisan migrate
+**************************************
+*     Application In Production!     *
+**************************************
 
-**Cause**: Laravel's `php artisan migrate` prompts "Are you sure? (yes/no)" in production, but there's no TTY to provide input.
+Do you really wish to run this command? (yes/no) [no]:
+```
+Then deployment hangs and times out.
 
-**Solution**: The `wasmer.toml` configuration includes `php artisan migrate --force` which runs migrations non-interactively. If you still experience hangs:
+**Root Cause**: Wasmer's Anybuild auto-detects Laravel and runs `php artisan migrate` without `--force`, which prompts for confirmation but there's no TTY to provide input.
 
-1. Check that `wasmer.toml` is present and includes the deployment hooks
-2. Verify the build command uses `--force`: `php artisan migrate --force`
-3. Never run `php artisan migrate` without `--force` in Wasmer console
-4. Check Wasmer build logs for the actual command being executed
+**Solution**: Use one of three approaches (all included in this repository):
 
-**Fixed in this PR**: The `wasmer.toml` now includes proper deployment hooks to prevent this issue.
+#### Solution 1: composer.json post-install-cmd (BEST)
+
+This repository includes `post-install-cmd` in `composer.json` that runs automatically:
+```json
+"post-install-cmd": [
+  "@php artisan migrate --force --no-interaction",
+  "@php artisan config:cache --no-interaction",
+  "@php artisan route:cache --no-interaction",
+  "@php artisan view:cache --no-interaction"
+]
+```
+
+Wasmer runs `composer install` which triggers these scripts automatically.
+
+#### Solution 2: Override Start Command in Dashboard
+
+If Anybuild ignores composer scripts:
+
+1. Go to Wasmer Dashboard → Your App
+2. Navigate to **Settings** → **Build & Deploy** (or similar section)
+3. Find **Start Command** or **Custom Start Command**
+4. Set to:
+   ```bash
+   php artisan migrate --force --no-interaction && php artisan config:cache && php -S 0.0.0.0:8080 -t public/
+   ```
+5. Save and trigger a new deployment
+
+#### Solution 3: Procfile
+
+This repository includes a `Procfile` with:
+```
+release: php artisan migrate --force && php artisan config:cache
+web: php -S 0.0.0.0:8080 -t public/
+```
+
+Some platforms (Heroku, Railway) respect the `release` phase for migrations.
+
+**Verification**: Check Wasmer build logs for:
+- ✅ `Running post-install-cmd` with migrate --force
+- ✅ No "Do you really wish to run this command?" prompt
+- ✅ Migration output showing tables created
+
+### HTTP 500 Error - Empty Database
+
+**Symptom**: App loads but shows HTTP 500 errors.
+
+**Likely Cause**: Migrations didn't run, so database tables don't exist.
+
+**Solution**:
+1. Check Wasmer build logs - did migrations run?
+2. If migrations were skipped or hung, use console to run manually:
+   ```bash
+   php artisan migrate --force --no-interaction
+   ```
+3. Or use Dashboard Start Command override (see above)
+
+**Verify Database**:
+```bash
+# Via Wasmer console
+php artisan migrate:status
+```
+
+Should show all migrations with "Ran" status.
 
 ### Migrations Not Running
 
-**Updated**: Migrations now run automatically via `wasmer.toml` deployment hooks using `php artisan migrate --force`.
+**Updated**: This repository includes **three solutions** to ensure migrations run:
 
-If migrations don't run:
-1. Check Wasmer build/deployment logs for errors
+1. **Composer post-install-cmd** - Runs automatically after `composer install`
+2. **Procfile** - Standard platform convention
+3. **Dashboard Start Command** - Manual override option
+
+If none work:
+1. Check Wasmer build logs for errors during composer install
 2. Verify `APP_KEY` is set (migrations fail without it)
 3. Verify database connection (check `DB_*` environment variables)
-4. Run manually if needed: `php artisan migrate --force` (always use `--force`!)
+4. Run manually via console: `php artisan migrate --force --no-interaction`
+
+### Anybuild Behavior
+
+**What Wasmer Anybuild Does**:
+- Auto-detects Laravel from `composer.json`
+- Runs `composer install` (triggers our post-install-cmd ✅)
+- Runs `npm install && npm run build`
+- May auto-run `php artisan migrate` (problematic - we override via composer)
+
+**Files That Help**:
+- ✅ `composer.json` with `post-install-cmd` - Wasmer respects this
+- ✅ `Procfile` - Standard platform convention
+- ✅ `app.yaml` - May provide additional hints
+- ⚠️ `wasmer.toml` - Simplified package definition only
 
 ## Performance & Limitations
 

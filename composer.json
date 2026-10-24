@@ -43,6 +43,12 @@
         "post-update-cmd": [
             "@php artisan vendor:publish --tag=laravel-assets --ansi --force"
         ],
+        "post-install-cmd": [
+            "@php artisan migrate --force --no-interaction",
+            "@php artisan config:cache --no-interaction",
+            "@php artisan route:cache --no-interaction",
+            "@php artisan view:cache --no-interaction"
+        ],
         "post-root-package-install": [
             "@php -r \"file_exists('.env') || copy('.env.example', '.env');\""
         ],

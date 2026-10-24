@@ -20,7 +20,10 @@ See [DEPLOY.md](DEPLOY.md) for instructions on deploying to **Wasmer Edge** (fre
 2. Connect GitHub repo: https://github.com/red-jen/WALLPAPER
 3. Add database (MySQL or PostgreSQL)
 4. Set `APP_KEY` and `DB_CONNECTION` environment variables
-5. Deploy automatically → Get public URL at `*.wasmer.app`
+5. Deploy → Migrations run automatically via composer scripts
+6. Get public URL at `*.wasmer.app`
+
+**Migration Note**: Repository includes `composer.json` post-install scripts and `Procfile` to ensure migrations run non-interactively (`--force` flag). If deployment hangs, see [DEPLOY.md](DEPLOY.md) for Dashboard Start Command override.
 
 ---
 
