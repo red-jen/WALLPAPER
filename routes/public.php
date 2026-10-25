@@ -17,7 +17,9 @@ Route::get('/order', [ShopController::class, 'index'])->name('orders.index');
 
 Route::get('/contact/submit', [ShopController::class, 'index'])->name('contact.submit');
 
-Route::get('/', [HomeController::class, 'index'])->name('home');
+Route::get('/', function () {
+    return response()->file(resource_path('views/landing.html'));
+})->name('home');
 
 
 
