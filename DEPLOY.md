@@ -249,6 +249,61 @@ After deployment:
    - `/shop` - Storefront
    - `/health` - Health check
 
+### Step 8: Seed Demo Data (Optional)
+
+**For Wasmer Apps with Frozen Start Commands**:
+
+If your Wasmer app was created with a frozen start command (cannot edit in UI), use automatic boot seeding:
+
+1. Go to **Wasmer Dashboard** → Your App → **Settings** → **Environment Variables**
+2. Add:
+   ```bash
+   SEED_DEMO=true
+   ```
+3. Save and redeploy (or restart the app)
+4. On first request, the app will automatically seed demo data
+5. **After successful seeding**, remove `SEED_DEMO` variable (or set to `false`)
+
+The seeder runs only once when:
+- ✅ `SEED_DEMO=true` is set
+- ✅ Database is empty (zero wallpapers AND papers)
+- ✅ Seeding hasn't completed before
+
+**Safe Guards**:
+- Won't duplicate data if catalog already has content
+- Won't crash site if seeding fails (logs error instead)
+- Sets cache flag after completion to prevent re-runs
+
+**For New Wasmer Apps or Editable Start Commands**:
+
+If you can edit the start command, add seeding directly:
+
+```bash
+bash -c 'php artisan migrate --force --no-interaction && php artisan db:seed --force && exec php -S 0.0.0.0:8080 -t public'
+```
+
+**Via Wasmer Console (If Available)**:
+
+```bash
+php artisan db:seed --force
+```
+
+**What Gets Seeded**:
+- **5 demo users** (1 admin, 2 designers, 2 customers) - see [SEED.md](../SEED.md)
+- **6 wallpaper categories** (Geometric, Floral, Abstract, etc.)
+- **6 paper types** (Matte, Glossy, Recycled, etc.)
+- **10 designs** by demo designers
+- **12 wallpaper products** ready for purchase
+
+**Demo Credentials** (all use password: `password`):
+- Admin: `admin@murart.com`
+- Designer: `designer@murart.com`
+- Customer: `customer@murart.com`
+
+**⚠️ Security Note**: These are DEMO credentials only! Remove `SEED_DEMO` after initial seeding and change passwords for any production use.
+
+See [SEED.md](../SEED.md) for complete seeding documentation.
+
 If HTTP 500 errors persist:
 - Check Wasmer build logs - did after_deploy run with --force?
 - Verify `app.yaml` is loaded in Settings → Yaml

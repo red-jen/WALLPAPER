@@ -2,7 +2,58 @@
 
 This document provides information about seeding the MurArt database with demo data.
 
-## Quick Start
+## Automatic Seeding on Boot (Wasmer Apps)
+
+**For apps with frozen Wasmer start commands** (cannot edit in UI):
+
+### Quick Start
+
+1. Set environment variable in Wasmer Dashboard:
+   ```bash
+   SEED_DEMO=true
+   ```
+
+2. Save and redeploy (or restart app)
+
+3. First request will automatically seed demo data
+
+4. **After successful seeding**, remove or disable the variable:
+   ```bash
+   SEED_DEMO=false
+   # Or delete the variable entirely
+   ```
+
+### How It Works
+
+The AppServiceProvider checks on every boot:
+- Is `SEED_DEMO=true`?
+- Is catalog empty? (zero wallpapers AND papers)
+- Has seeding completed before?
+
+If all conditions pass, runs `php artisan db:seed --force` automatically.
+
+### Safety Features
+
+- ✅ **No Duplicates**: Checks if data exists before seeding
+- ✅ **One-Shot**: Sets cache flag after completion
+- ✅ **Fail-Safe**: Errors logged, site stays up (no 500 errors)
+- ✅ **Idempotent**: Safe to leave enabled, won't re-run if data exists
+
+### Troubleshooting Auto-Seed
+
+**Seeding didn't run?**
+1. Check application logs for "SEED_DEMO" messages
+2. Verify `SEED_DEMO=true` (not `1` or `yes`, though those work too)
+3. Confirm database is empty: `Wallpaper::count()` and `Paper::count()` both return 0
+4. Clear cache if needed: `php artisan cache:clear`
+
+**Need to re-seed?**
+1. Set `SEED_DEMO=false` or remove variable
+2. Clear cache: `php artisan cache:clear`
+3. Empty relevant tables (or use fresh DB)
+4. Set `SEED_DEMO=true` and redeploy
+
+## Manual Seeding
 
 To seed the database with demo data, run:
 
