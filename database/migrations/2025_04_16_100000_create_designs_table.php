@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('image_path');
             $table->foreignId('designer_id')->constrained('users')->onDelete('cascade');
             $table->foreignId('category_id')->constrained()->onDelete('cascade');
+            $table->string('status')->default('approved');
             $table->timestamps();
         });
     }

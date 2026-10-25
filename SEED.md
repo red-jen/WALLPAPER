@@ -23,10 +23,43 @@ This document provides information about seeding the MurArt database with demo d
    # Or delete the variable entirely
    ```
 
+### Manual Trigger (Debug)
+
+If auto-seed on boot doesn't work, use the debug endpoint:
+
+```bash
+# GET or POST to trigger seeding manually
+curl https://murart.wasmer.app/__seed-demo
+
+# Response (success):
+{
+  "ok": true,
+  "exit_code": 0,
+  "output": "Seeding: Database\\Seeders\\UserSeeder...",
+  "before": {"papers": 0, "wallpapers": 0},
+  "after": {"papers": 6, "wallpapers": 12},
+  "message": "Demo data seeded successfully"
+}
+
+# Response (SEED_DEMO not enabled):
+{
+  "ok": false,
+  "error": "SEED_DEMO not enabled in environment",
+  "hint": "Set SEED_DEMO=true in Wasmer environment variables"
+}
+```
+
+**Debug endpoint features**:
+- Only accessible when `SEED_DEMO=true`
+- Shows before/after counts
+- Returns seeder output or error details
+- Clears failure backoff cache
+- Can be called via browser or curl
+
 ### How It Works
 
 The AppServiceProvider checks on every boot:
-- Is `SEED_DEMO=true`?
+- Is `SEED_DEMO=true`? (via `config('app.seed_demo')` - works with config:cache)
 - Is catalog empty? (zero wallpapers AND papers)
 - Has seeding completed before?
 
@@ -38,14 +71,28 @@ If all conditions pass, runs `php artisan db:seed --force` automatically.
 - ✅ **One-Shot**: Sets cache flag after completion
 - ✅ **Fail-Safe**: Errors logged, site stays up (no 500 errors)
 - ✅ **Idempotent**: Safe to leave enabled, won't re-run if data exists
+- ✅ **Config Cache Safe**: Uses `config('app.seed_demo')` instead of `env()` - works when config is cached
+- ✅ **Smart Retry**: Only caches success forever; failures get 5-minute backoff
 
 ### Troubleshooting Auto-Seed
 
 **Seeding didn't run?**
 1. Check application logs for "SEED_DEMO" messages
-2. Verify `SEED_DEMO=true` (not `1` or `yes`, though those work too)
+2. Verify `SEED_DEMO=true` in environment variables (Wasmer Dashboard → Settings)
 3. Confirm database is empty: `Wallpaper::count()` and `Paper::count()` both return 0
-4. Clear cache if needed: `php artisan cache:clear`
+4. Try manual trigger: `curl https://murart.wasmer.app/__seed-demo` (returns JSON with details)
+5. Check for config cache issues: Wasmer rebuilds should run `php artisan config:cache` automatically
+
+**Manual debug endpoint returns 403?**
+- Verify `SEED_DEMO=true` is actually set in environment
+- Redeploy after adding the variable
+- Check that config cache was rebuilt (Wasmer should do this automatically)
+
+**Seeding returns error?**
+- Read the `output` field in `/__seed-demo` JSON response
+- Check for missing users/categories (seeders run in order)
+- Verify all migrations completed successfully
+- Check database connection is working
 
 **Need to re-seed?**
 1. Set `SEED_DEMO=false` or remove variable
@@ -55,7 +102,9 @@ If all conditions pass, runs `php artisan db:seed --force` automatically.
 
 ## Manual Seeding
 
-To seed the database with demo data, run:
+## Manual Seeding
+
+For environments where you can run artisan commands directly:
 
 ```bash
 php artisan db:seed --force
@@ -207,6 +256,25 @@ The seeders use `firstOrCreate` which makes them safe to run multiple times:
 - Existing records (matched by email/name) won't be duplicated
 - New relationships will be created only if they don't exist
 - Safe for both fresh databases and existing data
+
+## Wasmer Deployment Note
+
+**For apps created with frozen start commands**:
+
+The existing `murart` app at https://murart.wasmer.app has a frozen start command that cannot be edited in the Wasmer UI. Use the automatic boot seeding method above (`SEED_DEMO=true` environment variable).
+
+**For new Wasmer apps**, include seeding in the start command:
+
+```bash
+bash -c 'php artisan migrate --force --no-interaction && php artisan db:seed --force && exec php -S 0.0.0.0:8080 -t public'
+```
+
+This runs migrations, seeds demo data, then starts the server.
+
+**Alternatively**, if Wasmer provides console access:
+```bash
+php artisan db:seed --force
+```
 
 ## Production Note
 

@@ -36,8 +36,9 @@ class AppServiceProvider extends ServiceProvider
      */
     private function shouldSeedDemo(): bool
     {
-        // Check if SEED_DEMO env var is enabled
-        if (!in_array(env('SEED_DEMO'), ['true', '1', 'yes'], true)) {
+        // Check if SEED_DEMO is enabled (use config, not env - works with config:cache)
+        $seedDemo = config('app.seed_demo');
+        if (!in_array($seedDemo, ['true', '1', 'yes', true, 1], true)) {
             return false;
         }
 
@@ -69,20 +70,26 @@ class AppServiceProvider extends ServiceProvider
             Log::info('SEED_DEMO: Starting automatic demo data seeding...');
             
             // Run the seeder
-            Artisan::call('db:seed', ['--force' => true]);
+            $exitCode = Artisan::call('db:seed', ['--force' => true]);
+            $output = Artisan::output();
             
-            // Set cache flag to prevent re-running (forever)
-            Cache::forever('demo_seed_completed', true);
-            
-            Log::info('SEED_DEMO: Demo data seeded successfully!');
-            Log::info('SEED_DEMO: Demo credentials - Admin: admin@murart.com, Customer: customer@murart.com, Password: password');
+            if ($exitCode === 0) {
+                // Success - set permanent cache flag
+                Cache::forever('demo_seed_completed', true);
+                Log::info('SEED_DEMO: Demo data seeded successfully!');
+                Log::info('SEED_DEMO: Artisan output: ' . $output);
+                Log::info('SEED_DEMO: Demo credentials - Admin: admin@murart.com, Customer: customer@murart.com, Password: password');
+            } else {
+                // Non-zero exit - treat as failure, short backoff
+                Log::error('SEED_DEMO: Seeder returned exit code ' . $exitCode);
+                Log::error('SEED_DEMO: Artisan output: ' . $output);
+                Cache::put('demo_seed_completed_retry_after', now()->timestamp, now()->addMinutes(5));
+            }
         } catch (\Exception $e) {
-            // Log error but don't crash the application
+            // Exception thrown - log and short backoff
             Log::error('SEED_DEMO: Failed to seed demo data: ' . $e->getMessage());
-            
-            // Set flag anyway to prevent infinite retry loops
-            // User can clear cache and redeploy if needed
-            Cache::put('demo_seed_completed', true, now()->addHours(24));
+            Log::error('SEED_DEMO: Exception trace: ' . $e->getTraceAsString());
+            Cache::put('demo_seed_completed_retry_after', now()->timestamp, now()->addMinutes(5));
         }
     }
 }

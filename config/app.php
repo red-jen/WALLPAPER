@@ -25,6 +25,18 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Demo Seeding on Boot
+    |--------------------------------------------------------------------------
+    |
+    | When true and catalog is empty, automatically seeds demo data on boot.
+    | For Wasmer apps with frozen start commands. Remove after first seed.
+    |
+    */
+
+    'seed_demo' => env('SEED_DEMO', false),
+
+    /*
+    |--------------------------------------------------------------------------
     | Application URL
     |--------------------------------------------------------------------------
     */
