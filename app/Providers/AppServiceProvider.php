@@ -38,18 +38,19 @@ class AppServiceProvider extends ServiceProvider
      */
     private function shouldSeedDemo(): bool
     {
-        // Check if SEED_DEMO is enabled (use config, not env - works with config:cache)
-        $seedDemo = config('app.seed_demo');
-        if (!in_array($seedDemo, ['true', '1', 'yes', true, 1], true)) {
-            return false;
-        }
-
-        // Check if seeding already completed (cache flag)
-        if (Cache::has('demo_seed_completed')) {
-            return false;
-        }
-
         try {
+            // Check if SEED_DEMO is enabled (use config, not env - works with config:cache)
+            $seedDemo = config('app.seed_demo');
+            if (!in_array($seedDemo, ['true', '1', 'yes', true, 1], true)) {
+                return false;
+            }
+
+            // Check if seeding already completed (cache flag)
+            // Wrapped in try-catch: cache might not be available during build
+            if (Cache::has('demo_seed_completed')) {
+                return false;
+            }
+
             // Check if catalog is empty (both wallpapers AND papers)
             // If either table has data, assume catalog is seeded
             $wallpaperCount = Wallpaper::count();
@@ -57,8 +58,9 @@ class AppServiceProvider extends ServiceProvider
             
             return ($wallpaperCount === 0 && $paperCount === 0);
         } catch (\Exception $e) {
-            // Database not ready yet or tables don't exist
+            // Database/cache not ready yet (build time, tables don't exist, etc.)
             // Fail silently and try again on next request
+            Log::debug('SEED_DEMO: shouldSeedDemo check skipped: ' . $e->getMessage());
             return false;
         }
     }
