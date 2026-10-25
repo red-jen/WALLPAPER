@@ -17,7 +17,6 @@ class UserSeeder extends Seeder
                 'name' => 'Admin User',
                 'password' => Hash::make('password'),
                 'role' => 'admin',
-                'status' => 'active',
                 'bio' => 'MurArt Administrator',
             ]
         );
@@ -29,7 +28,6 @@ class UserSeeder extends Seeder
                 'name' => 'Emma Designer',
                 'password' => Hash::make('password'),
                 'role' => 'designer',
-                'status' => 'active',
                 'bio' => 'Creative wallpaper designer specializing in modern geometric patterns.',
             ]
         );
@@ -40,7 +38,6 @@ class UserSeeder extends Seeder
                 'name' => 'Lucas Artisan',
                 'password' => Hash::make('password'),
                 'role' => 'designer',
-                'status' => 'active',
                 'bio' => 'Nature-inspired design artist with focus on botanical themes.',
             ]
         );
@@ -52,7 +49,6 @@ class UserSeeder extends Seeder
                 'name' => 'Sarah Customer',
                 'password' => Hash::make('password'),
                 'role' => 'client',
-                'status' => 'active',
                 'bio' => 'Interior design enthusiast.',
             ]
         );
@@ -63,7 +59,6 @@ class UserSeeder extends Seeder
                 'name' => 'Mike Johnson',
                 'password' => Hash::make('password'),
                 'role' => 'client',
-                'status' => 'active',
                 'bio' => 'Home decorator looking for unique wallpaper designs.',
             ]
         );
