@@ -26,7 +26,9 @@ class AppServiceProvider extends ServiceProvider
     {
         // One-shot demo seeding on boot for frozen Wasmer deployments
         // Only runs when SEED_DEMO=true AND catalog is empty
-        if ($this->shouldSeedDemo()) {
+        // CRITICAL: Skip during console/build (artisan commands, composer hooks)
+        // Only run on actual HTTP requests when DB is available
+        if (!app()->runningInConsole() && $this->shouldSeedDemo()) {
             $this->seedDemoData();
         }
     }
