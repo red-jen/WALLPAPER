@@ -37,6 +37,18 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Demo Seeding Refresh
+    |--------------------------------------------------------------------------
+    |
+    | When true, replaces existing wallpaper catalog with scraped products.
+    | One-shot refresh for updating live catalogs. Auto-disables after run.
+    |
+    */
+
+    'seed_demo_refresh' => env('SEED_DEMO_REFRESH', false),
+
+    /*
+    |--------------------------------------------------------------------------
     | Application URL
     |--------------------------------------------------------------------------
     */

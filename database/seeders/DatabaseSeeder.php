@@ -16,8 +16,14 @@ class DatabaseSeeder extends Seeder
             CategorySeeder::class,
             PaperSeeder::class,
             DesignSeeder::class,
-            WallpaperSeeder::class,
         ]);
+        
+        // Use scraped catalog if available, fallback to demo wallpapers
+        if (file_exists(database_path('data/scraped-wallpapers.json'))) {
+            $this->call(ScrapedWallpaperSeeder::class);
+        } else {
+            $this->call(WallpaperSeeder::class);
+        }
 
         $this->command->info('Database seeded successfully!');
         $this->command->info('');
