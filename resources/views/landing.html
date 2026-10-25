@@ -284,6 +284,16 @@
     @media (max-width: 576px) {
       .newsletter-form {
         flex-direction: column;
+        gap: 1rem;
+      }
+      
+      .newsletter-input {
+        width: 100%;
+      }
+      
+      .btn-secondary {
+        width: 100%;
+        padding: 1rem 2rem;
       }
     }
     
@@ -435,6 +445,25 @@
         flex-direction: column;
         gap: 1rem;
         text-align: center;
+      }
+    }
+    
+    @media (max-width: 576px) {
+      footer {
+        padding: 3rem 0 1.5rem;
+      }
+      
+      .footer-top {
+        gap: 2rem;
+      }
+      
+      .footer-links-title {
+        font-size: 1.1rem;
+        margin-bottom: 1rem;
+      }
+      
+      .social-icons {
+        justify-content: center;
       }
     }
   </style>
@@ -766,7 +795,7 @@
             </div>
             <div class="testimonial-author">
               <div class="author-image">
-                <img src="/imgs/fake profiloes/8.jpg" alt="Photo designer">
+                <img src="/imgs/fake profiloes/72.jpg" alt="Photo designer">
               </div>
               <div class="author-info">
                 <h4>Thomas Durand</h4>
@@ -790,7 +819,7 @@
             </div>
             <div class="testimonial-author">
               <div class="author-image">
-                <img src="/imgs/fake profiloes/72.jpg" alt="Photo décorateur">
+                <img src="/imgs/fake profiloes/8.jpg" alt="Photo décorateur">
               </div>
               <div class="author-info">
                 <h4>Julie Lefevre</h4>
@@ -917,6 +946,12 @@
       }
     }
     
+    @media (max-width: 576px) {
+      .container {
+        padding: 0 1rem;
+      }
+    }
+    
     /* Buttons */
     .btn {
       display: inline-block;
@@ -930,6 +965,7 @@
       text-align: center;
       border: none;
       font-family: 'Poppins', sans-serif;
+      min-height: 44px; /* Minimum touch target size */
     }
     
     .btn-primary {
@@ -1132,6 +1168,35 @@
       
       .search-box {
         display: none;
+      }
+    }
+    
+    @media (max-width: 576px) {
+      header {
+        padding: 0.5rem 0;
+      }
+      
+      .logo {
+        font-size: 1.5rem;
+      }
+      
+      .logo-icon {
+        font-size: 1.3rem;
+        margin-right: 0.3rem;
+      }
+      
+      .header-actions {
+        gap: 0.5rem;
+      }
+      
+      .header-actions .btn {
+        padding: 0.5rem 1rem;
+        font-size: 0.85rem;
+      }
+      
+      .mobile-menu-toggle {
+        font-size: 1.3rem;
+        padding: 0.5rem;
       }
     }
     
@@ -1560,6 +1625,32 @@
       
       .section-title h2 {
         font-size: 2rem;
+      }
+    }
+    
+    @media (max-width: 576px) {
+      .features {
+        padding: 3rem 0;
+      }
+      
+      .section-title {
+        margin-bottom: 2.5rem;
+      }
+      
+      .section-title h2 {
+        font-size: 1.75rem;
+      }
+      
+      .section-title p {
+        font-size: 1rem;
+      }
+      
+      .feature-cards {
+        gap: 1.5rem;
+      }
+      
+      .feature-card {
+        padding: 2rem 1.5rem;
       }
     }
     
