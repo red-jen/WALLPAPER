@@ -231,8 +231,8 @@ This allows plain `php artisan migrate` to run without prompting. Change back to
 
 3. Monitor build logs for:
    - ✅ Migration command executing (configured in Dashboard)
-   - ✅ "php artisan migrate:fresh --force" (first deploy) or "migrate --force"
-   - ✅ Migration output showing tables created
+   - ✅ "php artisan migrate --force --no-interaction"
+   - ✅ Migration output showing "Migrating" or "Nothing to migrate"
    - ❌ NO "Do you really wish to run this command?" prompt
 
 4. Deployment takes ~2-5 minutes
