@@ -27,6 +27,78 @@ use App\Http\Controllers\Client\DesignController as ClientDesignController;
 
 
 use App\Http\Controllers\Admin\ArtworkController;
+
+// Health check endpoint for Railway
+Route::get('/health', function () {
+    return response('OK', 200);
+});
+
+// Debug endpoint for manual demo seeding (Wasmer frozen start command workaround)
+Route::match(['GET', 'POST'], '/__seed-demo', function () {
+    // Only works when SEED_DEMO is enabled
+    $seedDemo = config('app.seed_demo');
+    if (!in_array($seedDemo, ['true', '1', 'yes', true, 1], true)) {
+        return response()->json([
+            'ok' => false,
+            'error' => 'SEED_DEMO not enabled in environment',
+            'hint' => 'Set SEED_DEMO=true in Wasmer environment variables',
+        ], 403);
+    }
+
+    try {
+        // Clear any failure backoff cache
+        Cache::forget('demo_seed_completed_retry_after');
+        
+        // Check current catalog state
+        $wallpaperCount = \App\Models\Wallpaper::count();
+        $paperCount = \App\Models\Paper::count();
+        
+        \Log::info("/__seed-demo: Manual seed requested. Current state: {$paperCount} papers, {$wallpaperCount} wallpapers");
+        
+        // Run seeder
+        $exitCode = Artisan::call('db:seed', ['--force' => true]);
+        $output = Artisan::output();
+        
+        // Check new counts
+        $newWallpaperCount = \App\Models\Wallpaper::count();
+        $newPaperCount = \App\Models\Paper::count();
+        
+        if ($exitCode === 0) {
+            Cache::forever('demo_seed_completed', true);
+            \Log::info("/__seed-demo: Seed succeeded. New state: {$newPaperCount} papers, {$newWallpaperCount} wallpapers");
+            
+            return response()->json([
+                'ok' => true,
+                'exit_code' => $exitCode,
+                'output' => $output,
+                'before' => ['papers' => $paperCount, 'wallpapers' => $wallpaperCount],
+                'after' => ['papers' => $newPaperCount, 'wallpapers' => $newWallpaperCount],
+                'message' => 'Demo data seeded successfully',
+            ]);
+        } else {
+            \Log::error("/__seed-demo: Seed failed with exit code {$exitCode}");
+            
+            return response()->json([
+                'ok' => false,
+                'exit_code' => $exitCode,
+                'output' => $output,
+                'before' => ['papers' => $paperCount, 'wallpapers' => $wallpapers],
+                'after' => ['papers' => $newPaperCount, 'wallpapers' => $newWallpaperCount],
+                'error' => 'Seeder returned non-zero exit code',
+            ], 500);
+        }
+    } catch (\Exception $e) {
+        \Log::error("/__seed-demo: Exception: " . $e->getMessage());
+        \Log::error("/__seed-demo: Trace: " . $e->getTraceAsString());
+        
+        return response()->json([
+            'ok' => false,
+            'error' => $e->getMessage(),
+            'trace' => $e->getTraceAsString(),
+        ], 500);
+    }
+});
+
 // Home route
 
 

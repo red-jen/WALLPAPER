@@ -7,6 +7,27 @@
 <a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
 </p>
 
+# MurArt - Wallpaper Ecommerce Platform
+
+A Laravel 12 wallpaper ecommerce application for browsing, purchasing, and managing artistic wall papers.
+
+## 🚀 Deployment
+
+See [DEPLOY.md](DEPLOY.md) for instructions on deploying to **Wasmer Edge** (free, no credit card), Render, or Railway.
+
+### Quick Start (Wasmer Edge - Free!)
+1. Sign up at [wasmer.io](https://wasmer.io) (no credit card)
+2. Connect GitHub repo: https://github.com/red-jen/WALLPAPER
+3. Add database (MySQL or PostgreSQL)
+4. Set `APP_KEY` and `DB_CONNECTION` environment variables
+5. **Verify Settings → Yaml loads `app.yaml`** (critical for non-interactive migrations)
+6. Deploy → Migrations run via `app.yaml` after_deploy override
+7. Get public URL at `*.wasmer.app`
+
+**Migration Note**: Wasmer injects `after_deploy: php artisan migrate` which hangs on production prompt. This repo's `app.yaml` overrides it with `--force` flag. Verify it loads in Settings → Yaml. Emergency workaround: set `APP_ENV=staging` temporarily. See [DEPLOY.md](DEPLOY.md) for details.
+
+---
+
 ## About Laravel
 
 Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:

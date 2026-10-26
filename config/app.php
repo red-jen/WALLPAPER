@@ -25,6 +25,30 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Demo Seeding on Boot
+    |--------------------------------------------------------------------------
+    |
+    | When true and catalog is empty, automatically seeds demo data on boot.
+    | For Wasmer apps with frozen start commands. Remove after first seed.
+    |
+    */
+
+    'seed_demo' => env('SEED_DEMO', false),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Demo Seeding Refresh
+    |--------------------------------------------------------------------------
+    |
+    | When true, replaces existing wallpaper catalog with scraped products.
+    | One-shot refresh for updating live catalogs. Auto-disables after run.
+    |
+    */
+
+    'seed_demo_refresh' => env('SEED_DEMO_REFRESH', false),
+
+    /*
+    |--------------------------------------------------------------------------
     | Application URL
     |--------------------------------------------------------------------------
     */

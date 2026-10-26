@@ -23,6 +23,7 @@ class Design extends Model
         'image_path',
         'designer_id',
         'category_id',
+        'status',
     ];
 
     /**

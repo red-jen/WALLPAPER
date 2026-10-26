@@ -1,0 +1,10 @@
+[package]
+name = "red-jen/murart"
+version = "0.1.0"
+description = "MurArt - Laravel wallpaper ecommerce platform"
+
+[dependencies]
+"php/php" = "8.3"
+
+[fs]
+"/app" = "."
