@@ -1,390 +1,642 @@
 @extends('layouts.app')
 
-@section('title', 'MurArt - Papiers Peints Personnalisés')
+@section('title', 'MurArt - Créez le Papier Peint de vos Rêves')
 
 @push('styles')
 <style>
-    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800&family=Poppins:wght@300;400;500;600;700&display=swap');
-    
-    .hero-wallpaper-bg {
-        background-image: linear-gradient(135deg, rgba(74, 108, 139, 0.95) 0%, rgba(217, 165, 102, 0.85) 100%), 
-                          url('{{ asset('imgs/floral-wallpaper-empty-room-with-wooden-floor_53876-74596.jpg') }}');
-        background-size: cover;
-        background-position: center;
-        background-attachment: fixed;
+    /* French WallArt Color Palette */
+    :root {
+        --primary: #4A6C8B;
+        --primary-light: #6D8BA6;
+        --primary-dark: #354E64;
+        --secondary: #D9A566;
+        --secondary-light: #E6C393;
+        --secondary-dark: #B78546;
+        --accent: #9C6A8C;
+        --light: #F8F7F5;
+        --dark: #2D3142;
+        --neutral: #E0DED8;
+        --text: #4F4F4F;
+        --text-light: #8E8E8E;
+        --shadow: 0 8px 30px rgba(0, 0, 0, 0.06);
+        --transition: all 0.3s ease-in-out;
     }
-    
-    .creative-heading {
-        font-family: 'Playfair Display', serif;
-        font-weight: 700;
-        letter-spacing: -0.02em;
-        line-height: 1.1;
-    }
-    
-    .elegant-text {
-        font-family: 'Poppins', sans-serif;
-        font-weight: 300;
-        letter-spacing: 0.02em;
-    }
-    
-    .wallpaper-card {
-        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+
+    /* Clean minimalist hero */
+    .hero-section {
+        position: relative;
+        padding: 6rem 0 5rem;
         overflow: hidden;
+        background-color: var(--light);
     }
-    
-    .wallpaper-card:hover {
-        transform: translateY(-12px);
-        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+
+    .hero-section::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(45deg, rgba(74, 108, 139, 0.03), rgba(217, 165, 102, 0.03));
+        z-index: 0;
     }
-    
-    .wallpaper-card img {
-        transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-    
-    .wallpaper-card:hover img {
-        transform: scale(1.08);
-    }
-    
-    .feature-icon-circle {
-        width: 80px;
-        height: 80px;
-        background: linear-gradient(135deg, #4A6C8B 0%, #6D8BA6 100%);
+
+    .hero-container {
         display: flex;
         align-items: center;
-        justify-content: center;
-        border-radius: 50%;
-        font-size: 2rem;
-        color: white;
-        margin: 0 auto 1.5rem;
-        box-shadow: 0 10px 25px rgba(74, 108, 139, 0.3);
+        justify-content: space-between;
+        gap: 4rem;
+        position: relative;
+        z-index: 1;
     }
-    
-    .stats-number {
+
+    .hero-content {
+        flex: 1;
+        max-width: 600px;
+    }
+
+    .hero-tagline {
+        color: var(--secondary);
+        font-weight: 600;
+        font-size: 0.9rem;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        display: block;
+        margin-bottom: 1.5rem;
+    }
+
+    .hero-content h1 {
         font-family: 'Playfair Display', serif;
         font-size: 3.5rem;
         font-weight: 700;
-        color: #D9A566;
-        line-height: 1;
+        color: var(--dark);
+        margin-bottom: 1.5rem;
+        line-height: 1.2;
     }
-    
-    .pattern-overlay {
-        background-image: url('{{ asset('imgs/falsterbo-stripe.jpg') }}');
-        background-size: 400px;
-        opacity: 0.03;
+
+    .hero-content p {
+        font-size: 1.15rem;
+        color: var(--text);
+        margin-bottom: 2.5rem;
+        line-height: 1.8;
+    }
+
+    .hero-buttons {
+        display: flex;
+        gap: 1rem;
+        margin-bottom: 3rem;
+    }
+
+    .btn-primary-clean {
+        background-color: var(--primary);
+        color: white;
+        padding: 1rem 2.5rem;
+        border-radius: 30px;
+        font-weight: 600;
+        text-decoration: none;
+        display: inline-block;
+        transition: var(--transition);
+        box-shadow: 0 4px 15px rgba(74, 108, 139, 0.2);
+    }
+
+    .btn-primary-clean:hover {
+        background-color: var(--primary-dark);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 25px rgba(74, 108, 139, 0.3);
+        color: white;
+    }
+
+    .btn-outline-clean {
+        background-color: transparent;
+        color: var(--primary);
+        border: 2px solid var(--primary);
+        padding: 1rem 2.5rem;
+        border-radius: 30px;
+        font-weight: 600;
+        text-decoration: none;
+        display: inline-block;
+        transition: var(--transition);
+    }
+
+    .btn-outline-clean:hover {
+        background-color: var(--primary);
+        color: white;
+        transform: translateY(-2px);
+    }
+
+    .hero-stats {
+        display: flex;
+        gap: 3rem;
+    }
+
+    .hero-stat {
+        text-align: center;
+    }
+
+    .hero-stat-number {
+        font-family: 'Playfair Display', serif;
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: var(--secondary);
+        margin-bottom: 0.5rem;
+    }
+
+    .hero-stat-text {
+        color: var(--text-light);
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    .hero-image-container {
+        flex: 1;
+        position: relative;
+        max-width: 550px;
+    }
+
+    .hero-image {
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: var(--shadow);
+        position: relative;
+    }
+
+    .hero-image img {
+        width: 100%;
+        height: auto;
+        display: block;
+    }
+
+    .hero-badge {
         position: absolute;
-        inset: 0;
+        top: 20px;
+        right: 20px;
+        background-color: var(--secondary);
+        color: white;
+        padding: 0.75rem 1.5rem;
+        border-radius: 30px;
+        font-weight: 600;
+        font-size: 0.85rem;
+        box-shadow: 0 4px 15px rgba(217, 165, 102, 0.3);
     }
-    
-    .gradient-text {
-        background: linear-gradient(135deg, #4A6C8B 0%, #D9A566 100%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-    }
-    
-    .designer-avatar {
-        width: 100px;
-        height: 100px;
+
+    .hero-image-accent {
+        position: absolute;
+        width: 150px;
+        height: 150px;
+        background-color: var(--secondary);
+        opacity: 0.1;
         border-radius: 50%;
-        border: 4px solid #D9A566;
+        bottom: -30px;
+        right: -30px;
+        z-index: -1;
+    }
+
+    /* Section Styles */
+    .section-clean {
+        padding: 5rem 0;
+    }
+
+    .section-title-clean {
+        text-align: center;
+        margin-bottom: 3rem;
+    }
+
+    .section-title-clean h2 {
+        font-family: 'Playfair Display', serif;
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: var(--dark);
+        margin-bottom: 1rem;
+        position: relative;
+        display: inline-block;
+    }
+
+    .section-title-clean h2::after {
+        content: '';
+        position: absolute;
+        width: 60px;
+        height: 3px;
+        background-color: var(--secondary);
+        left: 50%;
+        transform: translateX(-50%);
+        bottom: -10px;
+    }
+
+    .section-title-clean p {
+        color: var(--text-light);
+        font-size: 1.05rem;
+        max-width: 600px;
+        margin: 1.5rem auto 0;
+    }
+
+    /* Collection Grid */
+    .collection-grid-clean {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 2rem;
+        margin-top: 3rem;
+    }
+
+    .collection-card-clean {
+        background-color: white;
+        border-radius: 15px;
+        overflow: hidden;
+        box-shadow: var(--shadow);
+        transition: var(--transition);
+        cursor: pointer;
+    }
+
+    .collection-card-clean:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.12);
+    }
+
+    .collection-card-image {
+        width: 100%;
+        height: 320px;
+        overflow: hidden;
+        position: relative;
+    }
+
+    .collection-card-image img {
+        width: 100%;
+        height: 100%;
         object-fit: cover;
-        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        transition: transform 0.5s ease;
     }
-    
-    .btn-primary-custom {
-        background: linear-gradient(135deg, #4A6C8B 0%, #6D8BA6 100%);
+
+    .collection-card-clean:hover .collection-card-image img {
+        transform: scale(1.05);
+    }
+
+    .collection-card-overlay {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: linear-gradient(to top, rgba(45, 49, 66, 0.9), transparent);
+        padding: 1.5rem;
         color: white;
-        padding: 1rem 2.5rem;
-        border-radius: 50px;
+    }
+
+    .collection-card-body {
+        padding: 1.5rem;
+    }
+
+    .collection-card-body h3 {
+        font-family: 'Playfair Display', serif;
+        font-size: 1.3rem;
         font-weight: 600;
-        font-size: 1.1rem;
-        transition: all 0.3s ease;
-        box-shadow: 0 10px 25px rgba(74, 108, 139, 0.3);
+        color: var(--dark);
+        margin-bottom: 0.5rem;
     }
-    
-    .btn-primary-custom:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 15px 35px rgba(74, 108, 139, 0.4);
-        color: white;
+
+    .collection-card-body p {
+        color: var(--text-light);
+        font-size: 0.9rem;
+        margin-bottom: 1rem;
     }
-    
-    .btn-secondary-custom {
-        background: linear-gradient(135deg, #D9A566 0%, #E6C393 100%);
-        color: white;
-        padding: 1rem 2.5rem;
-        border-radius: 50px;
-        font-weight: 600;
-        font-size: 1.1rem;
-        transition: all 0.3s ease;
-        box-shadow: 0 10px 25px rgba(217, 165, 102, 0.3);
+
+    .collection-card-price {
+        color: var(--secondary);
+        font-weight: 700;
+        font-size: 1.2rem;
     }
-    
-    .btn-secondary-custom:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 15px 35px rgba(217, 165, 102, 0.4);
+
+    /* Features Section */
+    .features-clean {
+        background-color: white;
+    }
+
+    .features-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 3rem;
+        margin-top: 3rem;
+    }
+
+    .feature-item {
+        text-align: center;
+    }
+
+    .feature-icon {
+        width: 70px;
+        height: 70px;
+        background: linear-gradient(135deg, var(--primary), var(--primary-light));
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1.5rem;
         color: white;
+        font-size: 1.8rem;
+        box-shadow: 0 8px 20px rgba(74, 108, 139, 0.2);
+    }
+
+    .feature-item h3 {
+        font-family: 'Playfair Display', serif;
+        font-size: 1.3rem;
+        color: var(--dark);
+        margin-bottom: 1rem;
+    }
+
+    .feature-item p {
+        color: var(--text);
+        line-height: 1.7;
+    }
+
+    /* CTA Section */
+    .cta-section {
+        background: linear-gradient(135deg, rgba(74, 108, 139, 0.95), rgba(217, 165, 102, 0.95)),
+                    url('/imgs/floral-wallpaper-empty-room-with-wooden-floor_53876-74596.jpg') center/cover;
+        padding: 5rem 0;
+        text-align: center;
+        color: white;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .cta-section::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(45, 49, 66, 0.1);
+    }
+
+    .cta-content {
+        position: relative;
+        z-index: 1;
+        max-width: 800px;
+        margin: 0 auto;
+    }
+
+    .cta-content h2 {
+        font-family: 'Playfair Display', serif;
+        font-size: 3rem;
+        font-weight: 700;
+        margin-bottom: 1.5rem;
+    }
+
+    .cta-content p {
+        font-size: 1.2rem;
+        margin-bottom: 2.5rem;
+        opacity: 0.95;
+    }
+
+    @media (max-width: 992px) {
+        .hero-container {
+            flex-direction: column;
+            text-align: center;
+        }
+
+        .hero-content {
+            max-width: 100%;
+        }
+
+        .hero-buttons {
+            justify-content: center;
+        }
+
+        .hero-stats {
+            justify-content: center;
+        }
+
+        .features-grid {
+            grid-template-columns: 1fr;
+            gap: 2.5rem;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .hero-content h1 {
+            font-size: 2.5rem;
+        }
+
+        .hero-buttons {
+            flex-direction: column;
+        }
+
+        .hero-stats {
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .collection-grid-clean {
+            grid-template-columns: 1fr;
+        }
     }
 </style>
 @endpush
 
 @section('content')
-<!-- Hero Section with Real Wallpaper Background -->
-<section class="hero-wallpaper-bg relative min-h-screen flex items-center justify-center overflow-hidden">
-    <div class="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black opacity-20"></div>
-    
-    <div class="container mx-auto px-4 lg:px-8 relative z-10">
-        <div class="max-w-5xl mx-auto text-center text-white">
-            <!-- Main Heading with Creative Typography -->
-            <h1 class="creative-heading text-5xl md:text-6xl lg:text-7xl mb-6 animate-fade-in">
-                Créez le Papier Peint <br>
-                <span class="gradient-text">de vos Rêves</span>
-            </h1>
-            
-            <p class="elegant-text text-xl md:text-2xl mb-8 text-white/90 max-w-3xl mx-auto leading-relaxed">
-                Découvrez notre collection exclusive de papiers peints artistiques personnalisables qui transformeront votre intérieur en une œuvre d'art unique
-            </p>
-            
-            <!-- Stats Bar -->
-            <div class="grid grid-cols-3 gap-8 max-w-2xl mx-auto mb-12 py-8">
-                <div>
-                    <div class="stats-number">{{ $wallpapers->count() }}+</div>
-                    <p class="elegant-text text-white/80 uppercase tracking-widest text-sm">Motifs Exclusifs</p>
+<!-- Hero Section -->
+<section class="hero-section">
+    <div class="container mx-auto px-4 lg:px-8">
+        <div class="hero-container">
+            <!-- Left: Content -->
+            <div class="hero-content">
+                <span class="hero-tagline">Papiers Peints Premium</span>
+                <h1>Créez le Papier Peint de vos Rêves</h1>
+                <p>Découvrez notre plateforme de personnalisation avancée pour concevoir des papiers peints uniques qui reflètent votre style et votre personnalité.</p>
+                
+                <div class="hero-buttons">
+                    <a href="{{ route('shop.index') }}" class="btn-primary-clean">
+                        Explorer le Catalogue
+                    </a>
+                    <a href="{{ route('designs.index') }}" class="btn-outline-clean">
+                        Personnaliser
+                    </a>
                 </div>
-                <div>
-                    <div class="stats-number">{{ $designers->count() }}+</div>
-                    <p class="elegant-text text-white/80 uppercase tracking-widest text-sm">Designers</p>
-                </div>
-                <div>
-                    <div class="stats-number">{{ $categories->count() }}</div>
-                    <p class="elegant-text text-white/80 uppercase tracking-widest text-sm">Collections</p>
+                
+                <div class="hero-stats">
+                    <div class="hero-stat">
+                        <div class="hero-stat-number">{{ $wallpapers->count() }}+</div>
+                        <div class="hero-stat-text">Designs</div>
+                    </div>
+                    <div class="hero-stat">
+                        <div class="hero-stat-number">{{ $categories->count() }}</div>
+                        <div class="hero-stat-text">Collections</div>
+                    </div>
+                    <div class="hero-stat">
+                        <div class="hero-stat-number">{{ $designers->count() }}+</div>
+                        <div class="hero-stat-text">Designers</div>
+                    </div>
                 </div>
             </div>
             
-            <!-- CTA Buttons -->
-            <div class="flex flex-col sm:flex-row justify-center gap-4 sm:gap-6">
-                <a href="{{ route('designs.index') }}" class="btn-primary-custom inline-block">
-                    <i class="fas fa-compass mr-2"></i> Explorer le Catalogue
-                </a>
-                <a href="{{ route('shop.index') }}" class="btn-secondary-custom inline-block">
-                    <i class="fas fa-palette mr-2"></i> Personnaliser
-                </a>
+            <!-- Right: Featured Image -->
+            <div class="hero-image-container">
+                <div class="hero-image">
+                    @if($wallpapers->first() && $wallpapers->first()->primaryImage)
+                        <img src="{{ asset('storage/' . $wallpapers->first()->primaryImage->image_path) }}" 
+                             alt="{{ $wallpapers->first()->title }}">
+                    @else
+                        <img src="{{ asset('imgs/floral-wallpaper-empty-room-with-wooden-floor_53876-74596.jpg') }}" 
+                             alt="Intérieur avec papier peint design élégant">
+                    @endif
+                    <div class="hero-badge">NOUVEAU 2025</div>
+                    <div class="hero-image-accent"></div>
+                </div>
             </div>
         </div>
-    </div>
-    
-    <!-- Scroll Indicator -->
-    <div class="absolute bottom-10 left-1/2 transform -translate-x-1/2 text-white/70 animate-bounce">
-        <i class="fas fa-chevron-down text-2xl"></i>
     </div>
 </section>
 
-<!-- Featured Wallpapers Gallery with Real Images -->
-<section class="relative py-20 bg-white">
-    <div class="pattern-overlay"></div>
-    
-    <div class="container mx-auto px-4 lg:px-8 relative z-10">
-        <div class="text-center mb-16">
-            <h2 class="creative-heading text-4xl md:text-5xl mb-4 text-gray-900">
-                Collections <span class="gradient-text">Populaires</span>
-            </h2>
-            <div class="w-24 h-1 bg-gradient-to-r from-transparent via-[#D9A566] to-transparent mx-auto mb-6"></div>
-            <p class="elegant-text text-gray-600 text-lg max-w-2xl mx-auto">
-                Nos papiers peints les plus appréciés, créés par des designers talentueux
-            </p>
+<!-- Featured Collections Section -->
+<section class="section-clean" style="background-color: var(--light);">
+    <div class="container mx-auto px-4 lg:px-8">
+        <div class="section-title-clean">
+            <h2>Collections Populaires</h2>
+            <p>Découvrez nos papiers peints les plus appréciés, créés par des designers talentueux</p>
         </div>
         
-        <!-- Wallpaper Grid with Real Product Images -->
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
+        <div class="collection-grid-clean">
             @forelse($wallpapers->take(8) as $wallpaper)
-            <div class="wallpaper-card bg-white rounded-xl shadow-lg">
-                <div class="aspect-w-3 aspect-h-4 overflow-hidden rounded-t-xl">
-                    @if($wallpaper->primaryImage)
-                        <img src="{{ asset('storage/' . $wallpaper->primaryImage->image_path) }}" 
-                             alt="{{ $wallpaper->title }}" 
-                             class="w-full h-64 object-cover">
-                    @else
-                        <img src="{{ asset('imgs/nocturne.jpg') }}" 
-                             alt="Wallpaper Design" 
-                             class="w-full h-64 object-cover">
-                    @endif
-                </div>
-                <div class="p-5">
-                    <h3 class="font-semibold text-gray-900 mb-2 truncate">{{ $wallpaper->title ?? 'Design Exclusif' }}</h3>
-                    <p class="text-sm text-gray-600 mb-3">{{ $wallpaper->category->name ?? 'Collection Premium' }}</p>
-                    <a href="{{ route('shop.show', $wallpaper->id) }}" class="text-[#4A6C8B] hover:text-[#D9A566] font-medium text-sm inline-flex items-center transition">
-                        Découvrir <i class="fas fa-arrow-right ml-2"></i>
-                    </a>
-                </div>
-            </div>
+                <a href="{{ route('shop.show', $wallpaper->id) }}" class="collection-card-clean">
+                    <div class="collection-card-image">
+                        @if($wallpaper->primaryImage)
+                            <img src="{{ asset('storage/' . $wallpaper->primaryImage->image_path) }}" 
+                                 alt="{{ $wallpaper->title }}">
+                        @else
+                            <img src="{{ asset('imgs/nocturne.jpg') }}" 
+                                 alt="{{ $wallpaper->title }}">
+                        @endif
+                        <div class="collection-card-overlay">
+                            <span style="font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px;">
+                                {{ $wallpaper->category->name ?? 'Design' }}
+                            </span>
+                        </div>
+                    </div>
+                    <div class="collection-card-body">
+                        <h3>{{ $wallpaper->title }}</h3>
+                        <p>{{ Str::limit($wallpaper->description, 80) }}</p>
+                        <span class="collection-card-price">{{ number_format($wallpaper->price, 2) }} €</span>
+                    </div>
+                </a>
             @empty
-            <!-- Fallback with Actual Images -->
-            @foreach(['nocturne.jpg', 'hummingbirds-100-14070.jpg', 'woods-pears.jpg', 'falsterbo-stripe.jpg', 'charlie.jpg', 'green-lake.jpg', 'venice (1).jpg', 'pine-green.jpg'] as $image)
-            <div class="wallpaper-card bg-white rounded-xl shadow-lg">
-                <div class="aspect-w-3 aspect-h-4 overflow-hidden rounded-t-xl">
-                    <img src="{{ asset('imgs/' . $image) }}" 
-                         alt="Wallpaper Design" 
-                         class="w-full h-64 object-cover">
-                </div>
-                <div class="p-5">
-                    <h3 class="font-semibold text-gray-900 mb-2">Design Exclusif {{ $loop->iteration }}</h3>
-                    <p class="text-sm text-gray-600 mb-3">Collection Premium</p>
-                    <a href="{{ route('shop.index') }}" class="text-[#4A6C8B] hover:text-[#D9A566] font-medium text-sm inline-flex items-center transition">
-                        Découvrir <i class="fas fa-arrow-right ml-2"></i>
+                @foreach(['nocturne.jpg', 'hummingbirds-100-14070.jpg', 'woods-pears.jpg', 'falsterbo-stripe.jpg', 'charlie.jpg', 'green-lake.jpg', 'venice (1).jpg', 'pine-green.jpg'] as $index => $image)
+                    <a href="{{ route('shop.index') }}" class="collection-card-clean">
+                        <div class="collection-card-image">
+                            <img src="{{ asset('imgs/' . $image) }}" alt="Design Exclusif">
+                            <div class="collection-card-overlay">
+                                <span style="font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px;">
+                                    Collection Premium
+                                </span>
+                            </div>
+                        </div>
+                        <div class="collection-card-body">
+                            <h3>Design Exclusif {{ $index + 1 }}</h3>
+                            <p>Papier peint de haute qualité pour transformer votre intérieur</p>
+                            <span class="collection-card-price">29.99 €</span>
+                        </div>
                     </a>
-                </div>
-            </div>
-            @endforeach
+                @endforeach
             @endforelse
         </div>
         
-        <div class="text-center mt-12">
-            <a href="{{ route('shop.index') }}" class="btn-primary-custom inline-block">
-                Voir Toute la Collection <i class="fas fa-arrow-right ml-2"></i>
+        <div style="text-align: center; margin-top: 3rem;">
+            <a href="{{ route('shop.index') }}" class="btn-primary-clean">
+                Voir Toute la Collection
             </a>
         </div>
     </div>
 </section>
 
 <!-- How It Works Section -->
-<section class="relative py-20 bg-gradient-to-br from-gray-50 to-white">
+<section class="section-clean features-clean">
     <div class="container mx-auto px-4 lg:px-8">
-        <div class="text-center mb-16">
-            <h2 class="creative-heading text-4xl md:text-5xl mb-4 text-gray-900">
-                Comment <span class="gradient-text">Ça Marche</span>
-            </h2>
-            <div class="w-24 h-1 bg-gradient-to-r from-transparent via-[#D9A566] to-transparent mx-auto mb-6"></div>
+        <div class="section-title-clean">
+            <h2>Comment Ça Marche</h2>
+            <p>Notre processus simple en trois étapes pour créer votre papier peint parfait</p>
         </div>
         
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-12 max-w-5xl mx-auto">
-            <!-- Step 1 -->
-            <div class="text-center">
-                <div class="feature-icon-circle">
+        <div class="features-grid">
+            <div class="feature-item">
+                <div class="feature-icon">
                     <i class="fas fa-search"></i>
                 </div>
-                <h3 class="creative-heading text-2xl mb-4">1. Explorez</h3>
-                <p class="elegant-text text-gray-600 leading-relaxed">
-                    Parcourez notre collection de motifs créés par des designers talentueux ou téléchargez votre propre design
-                </p>
+                <h3>1. Explorez</h3>
+                <p>Parcourez notre collection de motifs créés par des designers talentueux ou téléchargez votre propre design</p>
             </div>
             
-            <!-- Step 2 -->
-            <div class="text-center">
-                <div class="feature-icon-circle">
+            <div class="feature-item">
+                <div class="feature-icon">
                     <i class="fas fa-palette"></i>
                 </div>
-                <h3 class="creative-heading text-2xl mb-4">2. Personnalisez</h3>
-                <p class="elegant-text text-gray-600 leading-relaxed">
-                    Ajustez les couleurs, dimensions et choisissez parmi nos différentes qualités de papier
-                </p>
+                <h3>2. Personnalisez</h3>
+                <p>Ajustez les couleurs, dimensions et choisissez parmi nos différentes qualités de papier</p>
             </div>
             
-            <!-- Step 3 -->
-            <div class="text-center">
-                <div class="feature-icon-circle">
+            <div class="feature-item">
+                <div class="feature-icon">
                     <i class="fas fa-shipping-fast"></i>
                 </div>
-                <h3 class="creative-heading text-2xl mb-4">3. Recevez</h3>
-                <p class="elegant-text text-gray-600 leading-relaxed">
-                    Nous imprimons et livrons votre papier peint personnalisé directement chez vous
-                </p>
+                <h3>3. Recevez</h3>
+                <p>Nous imprimons et livrons votre papier peint personnalisé directement chez vous</p>
             </div>
         </div>
     </div>
 </section>
 
-<!-- Featured Designs Section -->
 @if($designs->count() > 0)
-<section class="relative py-20" style="background-image: linear-gradient(135deg, rgba(248, 247, 245, 0.95) 0%, rgba(255, 255, 255, 0.95) 100%), url('{{ asset('imgs/wall-paper-1024x683.jpg') }}'); background-size: cover; background-position: center;">
+<!-- Featured Designs Section -->
+<section class="section-clean" style="background-color: var(--light);">
     <div class="container mx-auto px-4 lg:px-8">
-        <div class="text-center mb-16">
-            <h2 class="creative-heading text-4xl md:text-5xl mb-4 text-gray-900">
-                Designs <span class="gradient-text">des Créateurs</span>
-            </h2>
-            <div class="w-24 h-1 bg-gradient-to-r from-transparent via-[#D9A566] to-transparent mx-auto mb-6"></div>
-            <p class="elegant-text text-gray-600 text-lg max-w-2xl mx-auto">
-                Découvrez les créations uniques de nos designers
-            </p>
+        <div class="section-title-clean">
+            <h2>Designs des Créateurs</h2>
+            <p>Découvrez les créations uniques de nos designers</p>
         </div>
         
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div class="collection-grid-clean">
             @foreach($designs->take(6) as $design)
-            <div class="wallpaper-card bg-white rounded-xl shadow-lg">
-                <div class="aspect-w-4 aspect-h-3 overflow-hidden rounded-t-xl">
-                    <img src="{{ asset('storage/' . ($design->image_path ?? 'default.jpg')) }}" 
-                         alt="{{ $design->name }}" 
-                         class="w-full h-48 object-cover">
-                </div>
-                <div class="p-6">
-                    <h3 class="font-semibold text-gray-900 text-lg mb-2">{{ $design->name }}</h3>
-                    <p class="text-sm text-gray-600 mb-4">Par {{ $design->designer->name ?? 'Designer' }}</p>
-                    <a href="{{ route('designs.show', $design->id) }}" class="text-[#4A6C8B] hover:text-[#D9A566] font-medium inline-flex items-center transition">
-                        Voir le design <i class="fas fa-arrow-right ml-2"></i>
-                    </a>
-                </div>
-            </div>
+                <a href="{{ route('designs.show', $design->id) }}" class="collection-card-clean">
+                    <div class="collection-card-image">
+                        @if($design->image_path)
+                            <img src="{{ asset('storage/' . $design->image_path) }}" 
+                                 alt="{{ $design->name }}">
+                        @else
+                            <img src="{{ asset('imgs/nocturne.jpg') }}" 
+                                 alt="{{ $design->name }}">
+                        @endif
+                        <div class="collection-card-overlay">
+                            <span style="font-size: 0.85rem;">
+                                Par {{ $design->designer->name ?? 'Designer' }}
+                            </span>
+                        </div>
+                    </div>
+                    <div class="collection-card-body">
+                        <h3>{{ $design->name }}</h3>
+                        <p>Design créé par {{ $design->designer->name ?? 'notre équipe' }}</p>
+                    </div>
+                </a>
             @endforeach
         </div>
         
-        <div class="text-center mt-12">
-            <a href="{{ route('designs.index') }}" class="btn-secondary-custom inline-block">
-                Tous les Designs <i class="fas fa-arrow-right ml-2"></i>
+        <div style="text-align: center; margin-top: 3rem;">
+            <a href="{{ route('designs.index') }}" class="btn-outline-clean" style="border-color: var(--secondary); color: var(--secondary);">
+                Tous les Designs
             </a>
         </div>
     </div>
 </section>
 @endif
 
-<!-- Designers Section -->
-@if($designers->count() > 0)
-<section class="relative py-20 bg-gradient-to-br from-[#4A6C8B] to-[#6D8BA6]">
+<!-- Call to Action Section -->
+<section class="cta-section">
     <div class="container mx-auto px-4 lg:px-8">
-        <div class="text-center mb-16">
-            <h2 class="creative-heading text-4xl md:text-5xl mb-4 text-white">
-                Nos Designers Talentueux
-            </h2>
-            <div class="w-24 h-1 bg-[#D9A566] mx-auto mb-6"></div>
-            <p class="elegant-text text-white/90 text-lg max-w-2xl mx-auto">
-                Rencontrez les artistes qui créent des papiers peints exceptionnels
-            </p>
-        </div>
-        
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-4xl mx-auto">
-            @foreach($designers as $designer)
-            <div class="text-center">
-                @if($designer->profile_image)
-                    <img src="{{ asset('storage/' . $designer->profile_image) }}" 
-                         alt="{{ $designer->name }}" 
-                         class="designer-avatar mx-auto mb-4">
-                @else
-                    <div class="designer-avatar mx-auto mb-4 bg-[#D9A566] flex items-center justify-center text-white text-3xl font-bold">
-                        {{ substr($designer->name, 0, 1) }}
-                    </div>
-                @endif
-                <h4 class="creative-heading text-white text-lg mb-1">{{ $designer->name }}</h4>
-                <p class="elegant-text text-white/70 text-sm">Designer</p>
-            </div>
-            @endforeach
-        </div>
-    </div>
-</section>
-@endif
-
-<!-- CTA Section -->
-<section class="relative py-24" style="background-image: linear-gradient(135deg, rgba(217, 165, 102, 0.9) 0%, rgba(74, 108, 139, 0.9) 100%), url('{{ asset('imgs/floral-wallpaper-empty-room-with-wooden-floor_53876-74596.jpg') }}'); background-size: cover; background-position: center; background-attachment: fixed;">
-    <div class="container mx-auto px-4 lg:px-8">
-        <div class="max-w-4xl mx-auto text-center text-white">
-            <h2 class="creative-heading text-4xl md:text-5xl lg:text-6xl mb-6">
-                Prêt à Transformer Votre Intérieur ?
-            </h2>
-            <p class="elegant-text text-xl md:text-2xl mb-10 text-white/90 leading-relaxed">
-                Créez dès maintenant votre papier peint unique qui reflète parfaitement votre style et votre personnalité
-            </p>
-            <div class="flex flex-col sm:flex-row justify-center gap-4 sm:gap-6">
-                <a href="{{ route('designs.index') }}" class="bg-white text-[#4A6C8B] hover:bg-gray-100 px-10 py-4 rounded-full font-semibold text-lg transition inline-block shadow-xl">
-                    <i class="fas fa-rocket mr-2"></i> Commencer Maintenant
+        <div class="cta-content">
+            <h2>Prêt à Transformer Votre Intérieur ?</h2>
+            <p>Créez dès maintenant votre papier peint unique qui reflète parfaitement votre style et votre personnalité</p>
+            <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+                <a href="{{ route('shop.index') }}" class="btn-primary-clean" style="background-color: white; color: var(--primary);">
+                    <i class="fas fa-rocket"></i> Commencer Maintenant
                 </a>
-                <a href="{{ route('about') }}" class="bg-white/10 backdrop-blur-sm text-white hover:bg-white/20 px-10 py-4 rounded-full font-semibold text-lg transition inline-block border-2 border-white/30">
-                    <i class="fas fa-info-circle mr-2"></i> En Savoir Plus
+                <a href="{{ route('about') }}" class="btn-outline-clean" style="border-color: white; color: white;">
+                    <i class="fas fa-info-circle"></i> En Savoir Plus
                 </a>
             </div>
         </div>

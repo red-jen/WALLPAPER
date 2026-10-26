@@ -52,22 +52,23 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Google Fonts: Montserrat and Open Sans -->
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Open+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Google Fonts: Playfair Display and Poppins -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <!-- Custom Tailwind Configuration -->
     <script>
         tailwind.config = {
             theme: {
                 extend: {
                     colors: {
-                        primary: '#FFA500', // Orange
-                        secondary: '#6C9BCF', // Bleu clair
-                        background: '#F5F5F5', // Blanc cassé
-                        dark: '#333333', // Gris foncé
+                        primary: '#4A6C8B', // Muted blue
+                        secondary: '#D9A566', // Warm gold
+                        accent: '#9C6A8C', // Soft purple
+                        background: '#F8F7F5', // Off-white
+                        dark: '#2D3142', // Deep blue-gray
                     },
                     fontFamily: {
-                        heading: ['Montserrat', 'sans-serif'],
-                        sans: ['Open Sans', 'sans-serif'],
+                        heading: ['Playfair Display', 'serif'],
+                        sans: ['Poppins', 'sans-serif'],
                     },
                 }
             }
@@ -75,8 +76,29 @@
     </script>
     <!-- Custom Styles -->
     <style>
-        h1, h2, h3, h4, h5, h6 { font-family: 'Montserrat', sans-serif; }
-        body { font-family: 'Open Sans', sans-serif; }
+        :root {
+            --primary: #4A6C8B;
+            --primary-light: #6D8BA6;
+            --primary-dark: #354E64;
+            --secondary: #D9A566;
+            --secondary-light: #E6C393;
+            --secondary-dark: #B78546;
+            --accent: #9C6A8C;
+            --light: #F8F7F5;
+            --dark: #2D3142;
+            --text: #4F4F4F;
+            --text-light: #8E8E8E;
+            --shadow: 0 8px 30px rgba(0, 0, 0, 0.06);
+        }
+        h1, h2, h3, h4, h5, h6 { 
+            font-family: 'Playfair Display', serif;
+            color: var(--dark);
+        }
+        body { 
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--light);
+            color: var(--text);
+        }
         
         /* Animation pour le loader */
         .loader {
