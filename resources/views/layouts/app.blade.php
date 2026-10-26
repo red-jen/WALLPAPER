@@ -76,19 +76,23 @@
     </script>
     <!-- Custom Styles -->
     <style>
+        /* Butterfly-inspired color palette: cool iridescent wing-blue + warm copper-gold + soft mauve */
         :root {
-            --primary: #4A6C8B;
-            --primary-light: #6D8BA6;
-            --primary-dark: #354E64;
-            --secondary: #D9A566;
-            --secondary-light: #E6C393;
-            --secondary-dark: #B78546;
-            --accent: #9C6A8C;
-            --light: #F8F7F5;
-            --dark: #2D3142;
-            --text: #4F4F4F;
-            --text-light: #8E8E8E;
-            --shadow: 0 8px 30px rgba(0, 0, 0, 0.06);
+            --primary: #4B7C9D;           /* Cool wing-blue (morpho-inspired slate-teal) */
+            --primary-light: #6A96B3;
+            --primary-dark: #355871;
+            --secondary: #D4A04F;         /* Warm copper-gold (swallowtail amber) */
+            --secondary-light: #E5C287;
+            --secondary-dark: #B8873D;
+            --accent: #9B6D94;            /* Soft violet-mauve accent */
+            --accent-light: #B590AE;
+            --light: #FAF9F7;             /* Off-white paper ground */
+            --dark: #2A3240;              /* Deep blue-gray */
+            --text: #4D4D4D;
+            --text-light: #8A8A8A;
+            --shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+            --shadow-soft: 0 4px 20px rgba(0, 0, 0, 0.06);
+            --shadow-inset: inset 0 2px 8px rgba(0, 0, 0, 0.04);
         }
         h1, h2, h3, h4, h5, h6 { 
             font-family: 'Playfair Display', serif;
@@ -137,7 +141,107 @@
         }
         
         ::-webkit-scrollbar-thumb:hover {
-            background: #FFA500;
+            background: var(--secondary);
+        }
+        
+        /* Navbar - Minimal & Light */
+        .navbar {
+            background-color: rgba(255, 255, 255, 0.96);
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+            padding: 0.6rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            backdrop-filter: blur(12px);
+        }
+        
+        .navbar-brand {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+        
+        .navbar-brand span { 
+            color: var(--secondary);
+        }
+        
+        .nav-link {
+            color: var(--dark);
+            text-decoration: none;
+            padding: 0.4rem 0.85rem;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            font-size: 0.85rem;
+            letter-spacing: 0.3px;
+            position: relative;
+        }
+        
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: var(--primary);
+            transition: width 0.3s ease;
+        }
+        
+        .nav-link:hover::after {
+            width: 100%;
+        }
+        
+        .nav-link:hover {
+            color: var(--primary);
+        }
+        
+        .nav-link.active {
+            color: var(--primary);
+            font-weight: 600;
+        }
+        
+        .nav-link.active::after {
+            width: 100%;
+        }
+        
+        /* Buttons */
+        .btn {
+            padding: 0.75rem 2rem;
+            border-radius: 30px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+            border: 2px solid var(--primary);
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+            border-color: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(74, 108, 139, 0.3);
+        }
+        
+        .btn-outline {
+            background-color: transparent;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+        }
+        
+        .btn-outline:hover {
+            background-color: var(--primary);
+            color: white;
         }
     </style>
     

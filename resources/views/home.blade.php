@@ -4,30 +4,19 @@
 
 @push('styles')
 <style>
-    /* French WallArt Color Palette */
+    /* Butterfly-inspired palette override for home */
     :root {
-        --primary: #4A6C8B;
-        --primary-light: #6D8BA6;
-        --primary-dark: #354E64;
-        --secondary: #D9A566;
-        --secondary-light: #E6C393;
-        --secondary-dark: #B78546;
-        --accent: #9C6A8C;
-        --light: #F8F7F5;
-        --dark: #2D3142;
-        --neutral: #E0DED8;
-        --text: #4F4F4F;
-        --text-light: #8E8E8E;
-        --shadow: 0 8px 30px rgba(0, 0, 0, 0.06);
         --transition: all 0.3s ease-in-out;
     }
 
-    /* Clean minimalist hero */
+    /* Hero with wallpaper background + frosted overlay */
     .hero-section {
         position: relative;
         padding: 6rem 0 5rem;
         overflow: hidden;
-        background-color: var(--light);
+        background: 
+            linear-gradient(135deg, rgba(75, 124, 157, 0.92) 0%, rgba(212, 160, 79, 0.88) 100%),
+            url('/imgs/floral-wallpaper-empty-room-with-wooden-floor_53876-74596.jpg') center/cover fixed;
     }
 
     .hero-section::before {
@@ -37,7 +26,8 @@
         left: 0;
         width: 100%;
         height: 100%;
-        background: linear-gradient(45deg, rgba(74, 108, 139, 0.03), rgba(217, 165, 102, 0.03));
+        background: rgba(250, 249, 247, 0.05);
+        backdrop-filter: blur(0.5px);
         z-index: 0;
     }
 
@@ -56,29 +46,32 @@
     }
 
     .hero-tagline {
-        color: var(--secondary);
+        color: rgba(255, 255, 255, 0.9);
         font-weight: 600;
         font-size: 0.9rem;
         letter-spacing: 2px;
         text-transform: uppercase;
         display: block;
         margin-bottom: 1.5rem;
+        text-shadow: 0 1px 6px rgba(0, 0, 0, 0.1);
     }
 
     .hero-content h1 {
         font-family: 'Playfair Display', serif;
         font-size: 3.5rem;
         font-weight: 700;
-        color: var(--dark);
+        color: white;
         margin-bottom: 1.5rem;
         line-height: 1.2;
+        text-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
     }
 
     .hero-content p {
         font-size: 1.15rem;
-        color: var(--text);
+        color: rgba(255, 255, 255, 0.95);
         margin-bottom: 2.5rem;
         line-height: 1.8;
+        text-shadow: 0 1px 8px rgba(0, 0, 0, 0.1);
     }
 
     .hero-buttons {
@@ -88,28 +81,28 @@
     }
 
     .btn-primary-clean {
-        background-color: var(--primary);
-        color: white;
+        background-color: white;
+        color: var(--primary);
         padding: 1rem 2.5rem;
         border-radius: 30px;
         font-weight: 600;
         text-decoration: none;
         display: inline-block;
         transition: var(--transition);
-        box-shadow: 0 4px 15px rgba(74, 108, 139, 0.2);
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
     }
 
     .btn-primary-clean:hover {
-        background-color: var(--primary-dark);
+        background-color: rgba(255, 255, 255, 0.95);
         transform: translateY(-2px);
-        box-shadow: 0 6px 25px rgba(74, 108, 139, 0.3);
-        color: white;
+        box-shadow: 0 6px 30px rgba(0, 0, 0, 0.25);
+        color: var(--primary-dark);
     }
 
     .btn-outline-clean {
         background-color: transparent;
-        color: var(--primary);
-        border: 2px solid var(--primary);
+        color: white;
+        border: 2px solid rgba(255, 255, 255, 0.8);
         padding: 1rem 2.5rem;
         border-radius: 30px;
         font-weight: 600;
@@ -119,7 +112,8 @@
     }
 
     .btn-outline-clean:hover {
-        background-color: var(--primary);
+        background-color: rgba(255, 255, 255, 0.15);
+        border-color: white;
         color: white;
         transform: translateY(-2px);
     }
@@ -137,12 +131,13 @@
         font-family: 'Playfair Display', serif;
         font-size: 2.5rem;
         font-weight: 700;
-        color: var(--secondary);
+        color: white;
         margin-bottom: 0.5rem;
+        text-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
     }
 
     .hero-stat-text {
-        color: var(--text-light);
+        color: rgba(255, 255, 255, 0.85);
         font-size: 0.85rem;
         text-transform: uppercase;
         letter-spacing: 1px;
@@ -157,8 +152,9 @@
     .hero-image {
         border-radius: 20px;
         overflow: hidden;
-        box-shadow: var(--shadow);
+        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.25), inset 0 2px 6px rgba(0, 0, 0, 0.08);
         position: relative;
+        border: 1px solid rgba(255, 255, 255, 0.2);
     }
 
     .hero-image img {
@@ -230,7 +226,7 @@
         margin: 1.5rem auto 0;
     }
 
-    /* Collection Grid */
+    /* Collection Grid with Depth */
     .collection-grid-clean {
         display: grid;
         grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -242,14 +238,15 @@
         background-color: white;
         border-radius: 15px;
         overflow: hidden;
-        box-shadow: var(--shadow);
+        box-shadow: var(--shadow-soft), inset 0 1px 0 rgba(255, 255, 255, 0.5);
         transition: var(--transition);
         cursor: pointer;
+        border: 1px solid rgba(0, 0, 0, 0.03);
     }
 
     .collection-card-clean:hover {
         transform: translateY(-10px);
-        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.12);
+        box-shadow: 0 16px 45px rgba(0, 0, 0, 0.14), inset 0 1px 0 rgba(255, 255, 255, 0.6);
     }
 
     .collection-card-image {
@@ -275,9 +272,10 @@
         bottom: 0;
         left: 0;
         right: 0;
-        background: linear-gradient(to top, rgba(45, 49, 66, 0.9), transparent);
+        background: linear-gradient(to top, rgba(42, 50, 64, 0.92), transparent);
         padding: 1.5rem;
         color: white;
+        box-shadow: inset 0 -2px 8px rgba(0, 0, 0, 0.15);
     }
 
     .collection-card-body {
@@ -304,9 +302,12 @@
         font-size: 1.2rem;
     }
 
-    /* Features Section */
+    /* Features Section with Background Texture */
     .features-clean {
-        background-color: white;
+        background: 
+            linear-gradient(rgba(250, 249, 247, 0.96), rgba(250, 249, 247, 0.96)),
+            url('/imgs/wall-paper-1024x683.jpg') center/cover;
+        box-shadow: inset 0 2px 12px rgba(0, 0, 0, 0.04);
     }
 
     .features-grid {
@@ -318,6 +319,16 @@
 
     .feature-item {
         text-align: center;
+        background: white;
+        padding: 2rem;
+        border-radius: 12px;
+        box-shadow: var(--shadow-soft), inset 0 1px 0 rgba(255, 255, 255, 0.8);
+        transition: var(--transition);
+    }
+
+    .feature-item:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 12px 35px rgba(0, 0, 0, 0.1);
     }
 
     .feature-icon {
@@ -331,7 +342,7 @@
         margin: 0 auto 1.5rem;
         color: white;
         font-size: 1.8rem;
-        box-shadow: 0 8px 20px rgba(74, 108, 139, 0.2);
+        box-shadow: 0 8px 24px rgba(75, 124, 157, 0.25), inset 0 -2px 4px rgba(0, 0, 0, 0.1);
     }
 
     .feature-item h3 {
@@ -346,15 +357,17 @@
         line-height: 1.7;
     }
 
-    /* CTA Section */
+    /* CTA Section with Wallpaper Background + Depth */
     .cta-section {
-        background: linear-gradient(135deg, rgba(74, 108, 139, 0.95), rgba(217, 165, 102, 0.95)),
-                    url('/imgs/floral-wallpaper-empty-room-with-wooden-floor_53876-74596.jpg') center/cover;
+        background: 
+            linear-gradient(135deg, rgba(75, 124, 157, 0.94), rgba(212, 160, 79, 0.90)),
+            url('/imgs/nocturne.jpg') center/cover fixed;
         padding: 5rem 0;
         text-align: center;
         color: white;
         position: relative;
         overflow: hidden;
+        box-shadow: inset 0 3px 15px rgba(0, 0, 0, 0.12);
     }
 
     .cta-section::before {
@@ -364,7 +377,8 @@
         left: 0;
         right: 0;
         bottom: 0;
-        background: rgba(45, 49, 66, 0.1);
+        background: rgba(42, 50, 64, 0.08);
+        backdrop-filter: blur(0.5px);
     }
 
     .cta-content {
