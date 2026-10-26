@@ -100,6 +100,7 @@ Route::match(['GET', 'POST'], '/__seed-demo', function () {
 });
 
 // Home route
+Route::get('/', [HomeController::class, 'index'])->name('home');
 
 
 // Authentication Routes

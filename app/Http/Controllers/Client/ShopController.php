@@ -8,6 +8,7 @@ use App\Models\Review;
 use Illuminate\Http\Request;
 use App\Models\Category;
 use App\Models\CartItem;
+use Inertia\Inertia;
 
 class ShopController extends Controller
 {
@@ -16,7 +17,7 @@ class ShopController extends Controller
      */
     public function index(Request $request)
     {
-        $wallpapers = Wallpaper::with(['category', 'images', 'reviews'])
+        $query = Wallpaper::with(['category', 'images', 'reviews'])
             ->when($request->category, function($query, $category) {
                 return $query->where('category_id', $category);
             })
@@ -33,13 +34,39 @@ class ShopController extends Controller
                 }
             }, function($query) {
                 return $query->latest();
-            })
-            ->paginate(12);
+            });
+            
+        $wallpapers = $query->paginate(12)->through(function ($wallpaper) {
+            return [
+                'id' => $wallpaper->id,
+                'title' => $wallpaper->title,
+                'description' => $wallpaper->description,
+                'price' => $wallpaper->price,
+                'stock' => $wallpaper->stock ?? 10,
+                'category' => $wallpaper->category ? [
+                    'id' => $wallpaper->category->id,
+                    'name' => $wallpaper->category->name,
+                ] : null,
+                'primary_image' => $wallpaper->primaryImage ? [
+                    'image_path' => $wallpaper->primaryImage->image_path,
+                ] : null,
+                'reviews_count' => $wallpaper->reviews->count(),
+            ];
+        });
             
         // Fetch categories for the filter
-        $categories = Category::all();
+        $categories = Category::all()->map(function ($category) {
+            return [
+                'id' => $category->id,
+                'name' => $category->name,
+            ];
+        });
 
-        return view('client.shop.index', compact('wallpapers', 'categories'));
+        return Inertia::render('Shop/Index', [
+            'wallpapers' => $wallpapers,
+            'categories' => $categories,
+            'selectedCategory' => $request->category ? (int) $request->category : null,
+        ]);
     }
 
 
